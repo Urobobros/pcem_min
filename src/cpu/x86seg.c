@@ -10,7 +10,6 @@
 #include "cpu.h"
 #include "config.h"
 #include "paths.h"
-#include "i440bx.h"
 #include "logging-internal.h"
 
 /*Controls whether the accessed bit in a descriptor is set when CS is loaded.*/

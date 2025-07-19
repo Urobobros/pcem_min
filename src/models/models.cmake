@@ -1,15 +1,5 @@
 set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/models/dma.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/headland.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/i430fx.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/i430hx.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/i430lx.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/i430vx.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/i440bx.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/i440fx.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/intel.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/jim.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/laserxt.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/model.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/mvp3.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/neat.h
@@ -40,16 +30,6 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
 
 set(PCEM_SRC ${PCEM_SRC}
         models/dma.c
-        models/headland.c
-        models/i430fx.c
-        models/i430hx.c
-        models/i430lx.c
-        models/i430vx.c
-        models/i440bx.c
-        models/i440fx.c
-        models/intel.c
-        models/jim.c
-        models/laserxt.c
         models/model.c
         models/mvp3.c
         models/neat.c

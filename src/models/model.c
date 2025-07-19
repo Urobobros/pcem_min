@@ -22,22 +22,12 @@
 #include "fdc37c665.h"
 #include "fdc37c93x.h"
 #include "gameport.h"
-#include "headland.h"
-#include "i430fx.h"
-#include "i430hx.h"
-#include "i430lx.h"
-#include "i430vx.h"
-#include "i440bx.h"
-#include "i440fx.h"
 #include "ide.h"
-#include "intel.h"
 #include "intel_flash.h"
-#include "jim.h"
 #include "keyboard_at.h"
 #include "keyboard_olim24.h"
 #include "keyboard_pcjr.h"
 #include "keyboard_xt.h"
-#include "laserxt.h"
 #include "lpt.h"
 #include "mem.h"
 #include "mouse_ps2.h"
@@ -83,13 +73,9 @@ void pcjr_init();
 void tandy1k_init();
 void tandy1ksl2_init();
 void pc5086_init();
-void europc_init();
 void olim24_init();
 void at_init();
 void ibm_at_init();
-void pb_l300sx_init();
-void ps1_m2121_init();
-void ps1_m2133_init(void);
 void ps2_m30_286_init();
 void ps2_model_50_init();
 void ps2_model_55sx_init();
@@ -99,27 +85,14 @@ void at_neat_init();
 void at_scamp_init();
 void at_scat_init();
 void at_scatsx_init();
-void at_acer386sx_init();
-void at_headland_init();
 void at_opti495_init();
 void at_sis496_init();
-void at_p55va_init();
-void at_i430vx_init();
-void at_batman_init();
-void at_endeavor_init();
-void at_p55t2p4_init();
-void xt_laserxt_init();
 void at_t3100e_init();
 void xt_t1000_init();
 void xt_t1200_init();
 void at_sl82c460_init();
-void at_zappa_init();
-void at_pb410a_init();
-void at_pb520r_init();
-void at_pb570_init();
 void compaq_xt_init();
 void xt_xi8088_init();
-void at_vs440fx_init();
 
 int AMSTRAD, AT, PCI, TANDY, MCA;
 
@@ -245,15 +218,6 @@ void pc5086_init() {
         superxt_init();
 }
 
-void europc_init() {
-        common_init();
-        mem_add_bios();
-        jim_init();
-        keyboard_xt_init();
-        nmi_init();
-        device_add(&gameport_device);
-}
-
 void olim24_init() {
         common_init();
         mem_add_bios();
@@ -262,11 +226,6 @@ void olim24_init() {
         olivetti_m24_init();
         nmi_init();
         device_add(&gameport_device);
-}
-
-void xt_laserxt_init() {
-        xt_init();
-        laserxt_init();
 }
 
 void xt_xi8088_init() {
@@ -386,11 +345,6 @@ void at_scatsx_init() {
         scatsx_init();
 }
 
-void at_headland_init() {
-        at_init();
-        headland_init();
-}
-
 void at_opti495_init() {
         at_init();
         opti495_init();
@@ -409,96 +363,6 @@ void at_sis496_init() {
 void at_sl82c460_init() {
         at_init();
         sl82c460_init();
-}
-
-void at_batman_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_2);
-        pci_slot(0xc);
-        pci_slot(0xe);
-        pci_slot(0x6);
-        i430lx_init();
-        sio_init(2, 0xc, 0xe, 0x6, 0);
-        fdc37c665_init();
-        intel_batman_init();
-        device_add(&intel_flash_bxt_ami_device);
-}
-void at_endeavor_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_1);
-        pci_slot(0xd);
-        pci_slot(0xe);
-        pci_slot(0xf);
-        pci_slot(0x10);
-        i430fx_init();
-        piix_init(7, 0xd, 0xe, 0xf, 0x10, i430fx_reset);
-        pc87306_init(0x2e);
-        intel_endeavor_init();
-        device_add(&intel_flash_bxt_ami_device);
-}
-void at_pb570_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_1);
-        pci_slot(0x11);
-        pci_slot(0x13);
-        i430fx_init();
-        piix_init(7, 0x11, 0x13, 0xb, 0x8, i430fx_reset);
-        pc87306_init(0x2e);
-        intel_endeavor_init();
-        device_add(&intel_flash_bxt_ami_device);
-}
-void at_zappa_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_1);
-        pci_slot(0xd);
-        pci_slot(0xe);
-        pci_slot(0xf);
-        pci_slot(0x10);
-        i430fx_init();
-        piix_init(7, 0xd, 0xf, 0xe, 0x10, i430fx_reset);
-        pc87306_init(0x2e);
-        intel_zappa_init();
-        device_add(&intel_flash_bxt_ami_device);
-}
-
-void at_p55va_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_1);
-        pci_slot(0x08);
-        pci_slot(0x09);
-        pci_slot(0x0A);
-        pci_slot(0x0B);
-        i430vx_init();
-        piix_init(7, 0x08, 0x09, 0x0A, 0x0B, i430vx_reset);
-        fdc37c932fr_init();
-        device_add(&intel_flash_bxt_device);
-}
-
-void at_i430vx_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_1);
-        pci_slot(0x11);
-        pci_slot(0x12);
-        pci_slot(0x13);
-        pci_slot(0x14);
-        i430vx_init();
-        piix_init(7, 18, 17, 20, 19, i430vx_reset);
-        um8669f_init();
-        device_add(&intel_flash_bxt_device);
-}
-
-void at_vs440fx_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_1);
-        pci_slot(0xb);
-        pci_slot(0xf);
-        pci_slot(0x11);
-        pci_slot(0x13);
-        i440fx_init();
-        piix_init(7, 0xb, 0xf, 0x11, 0x13, i440fx_reset);
-        pc87307_init(0x2e);
-        //        i440fx_init();
-        device_add(&intel_flash_28fb200bxt_device);
 }
 
 void model_init() {
@@ -632,16 +496,6 @@ MODEL m_pxxt = {"[8088] Phoenix XT clone",
                 64,
                 xt_init,
                 NULL};
-MODEL m_europc = {"[8088] Schneider EuroPC",
-                  ROM_EUROPC,
-                  "europc",
-                  {{"", cpus_europc}, {"", NULL}, {"", NULL}},
-                  MODEL_GFX_NONE,
-                  512,
-                  640,
-                  128,
-                  europc_init,
-                  NULL};
 MODEL m_tandy = {
         "[8088] Tandy 1000", ROM_TANDY,        "tandy", {{"", cpus_8088}, {"", NULL}, {"", NULL}}, MODEL_GFX_FIXED, 128, 640, 128,
         tandy1k_init,        &tandy1000_device};
@@ -668,16 +522,6 @@ MODEL m_to16_pc = {"[8088] Thomson TO16 PC",
 MODEL m_t1000 = {"[8088] Toshiba T1000", ROM_T1000, "t1000", {{"", cpus_8088}, {"", NULL}, {"", NULL}},
                  MODEL_GFX_FIXED,        512,       1280,    768,
                  xt_t1000_init,          NULL};
-MODEL m_ltxt = {"[8088] VTech Laser Turbo XT",
-                ROM_LTXT,
-                "ltxt",
-                {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                MODEL_GFX_NONE,
-                64,
-                1152,
-                64,
-                xt_laserxt_init,
-                NULL};
 MODEL m_xi8088 = {"[8088] Xi8088",
                   ROM_XI8088,
                   "xi8088",
@@ -725,9 +569,6 @@ MODEL m_tandy1000sl2 = {"[8086] Tandy 1000 SL/2",
 MODEL m_t1200 = {"[8088] Toshiba T1200", ROM_T1200, "t1200", {{"", cpus_8086}, {"", NULL}, {"", NULL}},
                  MODEL_GFX_FIXED,        1024,      2048,    1024,
                  xt_t1200_init,          NULL};
-MODEL m_lxt3 = {"[8086] VTech Laser XT3", ROM_LXT3, "lxt3", {{"", cpus_8086}, {"", NULL}, {"", NULL}},
-                MODEL_GFX_NONE,           512,      1152,   128,
-                xt_laserxt_init,          NULL};
 
 /* 286 PC's */
 MODEL m_ami286 = {"[286] AMI 286 clone",
@@ -900,16 +741,6 @@ MODEL m_t3100e = {"[286] Toshiba T3100e",
                   256,
                   at_t3100e_init,
                   NULL};
-MODEL m_tg286m = {"[286] Trigem 286M",
-                  ROM_TG286M,
-                  "tg286m",
-                  {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                  MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                  512,
-                  8192,
-                  128,
-                  at_headland_init,
-                  NULL};
 MODEL m_tulip_tc7 = {"[286] Tulip AT Compact",
                      ROM_TULIP_TC7,
                      "tulip_tc7",
@@ -922,16 +753,6 @@ MODEL m_tulip_tc7 = {"[286] Tulip AT Compact",
                      NULL};
 
 /* 386SX PC's */
-MODEL m_ama932j = {"[386SX] AMA-932J",
-                   ROM_AMA932J,
-                   "ama932j",
-                   {{"Intel", cpus_i386SX}, {"AMD", cpus_Am386SX}, {"Cyrix", cpus_486SLC}},
-                   MODEL_GFX_FIXED | MODEL_AT | MODEL_HAS_IDE,
-                   512,
-                   8192,
-                   128,
-                   at_headland_init,
-                   NULL};
 MODEL m_cbm_sl386sx25 = {"[386SX] Commodore SL386SX-25",
                          ROM_CBM_SL386SX25,
                          "cbm_sl386sx25",
@@ -1068,84 +889,7 @@ MODEL m_ibmps2_m70_type4 = {"[486] IBM PS/2 Model 70 (type 4)",
                             ps2_model_70_init,
                             NULL};
 
-/* Socket 4 PC's */
-MODEL m_revenge = {"[Socket 4] Intel Premiere/PCI",
-                   ROM_REVENGE,
-                   "revenge",
-                   {{"Intel", cpus_Pentium5V}, {"", NULL}, {"", NULL}},
-                   MODEL_GFX_NONE | MODEL_AT | MODEL_PCI | MODEL_PS2 | MODEL_HAS_IDE,
-                   1,
-                   128,
-                   1,
-                   at_batman_init,
-                   NULL};
 
-
-/* Socket 5 PC's */
-MODEL m_endeavor = {"[Socket 5] Intel Advanced/EV",
-                    ROM_ENDEAVOR,
-                    "endeavor",
-                    {{"Intel", cpus_PentiumS5}, {"IDT", cpus_WinChip}, {"", NULL}},
-                    MODEL_GFX_NONE | MODEL_AT | MODEL_PCI | MODEL_PS2 | MODEL_HAS_IDE,
-                    1,
-                    128,
-                    1,
-                    at_endeavor_init,
-                    NULL};
-MODEL m_zappa = {"[Socket 5] Intel Advanced/ZP",
-                 ROM_ZAPPA,
-                 "zappa",
-                 {{"Intel", cpus_PentiumS5}, {"IDT", cpus_WinChip}, {"", NULL}},
-                 MODEL_GFX_NONE | MODEL_AT | MODEL_PCI | MODEL_PS2 | MODEL_HAS_IDE,
-                 1,
-                 128,
-                 1,
-                 at_zappa_init,
-                 NULL};
-MODEL m_infowaym = {"[Socket 5] Itautec Infoway Multimidia",
-                    ROM_ITAUTEC_INFOWAYM,
-                    "infowaym",
-                    {{"Intel", cpus_PentiumS5}, {"IDT", cpus_WinChip}, {"", NULL}},
-                    MODEL_GFX_NONE | MODEL_AT | MODEL_PCI | MODEL_PS2 | MODEL_HAS_IDE,
-                    8,
-                    128,
-                    1,
-                    at_zappa_init,
-                    NULL};
-MODEL m_pb570 = {"[Socket 5] Packard Bell PB570",
-                 ROM_PB570,
-                 "pb570",
-                 {{"Intel", cpus_PentiumS5}, {"IDT", cpus_WinChip}, {"", NULL}},
-                 MODEL_GFX_DISABLE_SW | MODEL_AT | MODEL_PCI | MODEL_PS2 | MODEL_HAS_IDE,
-                 1,
-                 128,
-                 1,
-                 at_pb570_init,
-                 NULL};
-
-MODEL m_430vx = {"[Socket 7] Shuttle HOT-557",
-                 ROM_430VX,
-                 "430vx",
-                 {{"Intel", cpus_Pentium}, {"AMD", cpus_K6_S7}, {"IDT", cpus_WinChip}, {"Cyrix", cpus_6x86}},
-                 MODEL_GFX_NONE | MODEL_AT | MODEL_PCI | MODEL_PS2 | MODEL_HAS_IDE,
-                 8,
-                 128,
-                 1,
-                 at_i430vx_init,
-                 NULL};
-
-
-/* Socket 8 PC's */
-MODEL m_vs440fx = {"[Socket 8] Intel VS440FX",
-                   ROM_VS440FX,
-                   "vs440fx",
-                   {{"Intel", cpus_PentiumPro}},
-                   MODEL_GFX_NONE | MODEL_AT | MODEL_PCI | MODEL_PS2 | MODEL_HAS_IDE,
-                   8,
-                   256,
-                   8,
-                   at_vs440fx_init,
-                   NULL};
 
 
 void model_init_builtin() {
@@ -1165,12 +909,10 @@ void model_init_builtin() {
         pcem_add_model(&m_ledge_modelm);
         pcem_add_model(&m_ncr_pc4i);
         pcem_add_model(&m_pxxt);
-        pcem_add_model(&m_europc);
         pcem_add_model(&m_tandy);
         pcem_add_model(&m_tandy1000hx);
         pcem_add_model(&m_to16_pc);
         pcem_add_model(&m_t1000);
-        pcem_add_model(&m_ltxt);
         pcem_add_model(&m_xi8088);
 
         /* 8086 PC's */
@@ -1179,7 +921,6 @@ void model_init_builtin() {
         pcem_add_model(&m_olivetti_m24);
         pcem_add_model(&m_tandy1000sl2);
         pcem_add_model(&m_t1200);
-        pcem_add_model(&m_lxt3);
 
         /* 286 PC's */
         pcem_add_model(&m_ami286);
@@ -1199,11 +940,9 @@ void model_init_builtin() {
         pcem_add_model(&m_spc4216p);
         pcem_add_model(&m_spc4620p);
         pcem_add_model(&m_t3100e);
-        pcem_add_model(&m_tg286m);
         pcem_add_model(&m_tulip_tc7);
 
         /* 386SX PC's */
-        pcem_add_model(&m_ama932j);
         pcem_add_model(&m_cbm_sl386sx25);
         pcem_add_model(&m_dtk386);
         pcem_add_model(&m_epson_pcax3);
@@ -1221,18 +960,4 @@ void model_init_builtin() {
         pcem_add_model(&m_elx_pc425x);
         pcem_add_model(&m_ibmps2_m70_type4);
 
-        /* Socket 4 PC's */
-        pcem_add_model(&m_revenge);
-
-        /* Socket 5 PC's */
-        pcem_add_model(&m_endeavor);
-        pcem_add_model(&m_zappa);
-        pcem_add_model(&m_infowaym);
-        pcem_add_model(&m_pb570);
-
-        /* Socket 7 PC's */
-        pcem_add_model(&m_430vx);
-
-        /* Socket 8 PC's */
-        pcem_add_model(&m_vs440fx);
 }
