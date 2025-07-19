@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void compaq_pii_init() {
+        ibm_at_init();
+}
+
 MODEL m_compaq_pii = {"[286] Compaq Portable II",
                       ROM_COMPAQ_PII,
                       "compaq_pii",
@@ -7,5 +12,5 @@ MODEL m_compaq_pii = {"[286] Compaq Portable II",
                       256,
                       15872,
                       128,
-                      ibm_at_init,
+                      compaq_pii_init,
                       NULL};

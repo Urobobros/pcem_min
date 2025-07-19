@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void ataripc3_init() {
+        xt_init();
+}
+
 MODEL m_ataripc3 = {"[8088] Atari PC3",
                     ROM_ATARIPC3,
                     "ataripc3",
@@ -7,5 +12,5 @@ MODEL m_ataripc3 = {"[8088] Atari PC3",
                     64,
                     640,
                     64,
-                    xt_init,
+                    ataripc3_init,
                     NULL};

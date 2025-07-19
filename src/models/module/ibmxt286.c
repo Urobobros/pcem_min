@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void ibmxt286_init() {
+        ibm_at_init();
+}
+
 MODEL m_ibmxt286 = {"[286] IBM XT Model 286",
                     ROM_IBMXT286,
                     "ibmxt286",
@@ -7,6 +12,6 @@ MODEL m_ibmxt286 = {"[286] IBM XT Model 286",
                     256,
                     15872,
                     128,
-                    ibm_at_init,
+                    ibmxt286_init,
                     NULL};
 

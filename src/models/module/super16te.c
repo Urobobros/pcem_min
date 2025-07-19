@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void super16te_init() {
+        xt_init();
+}
+
 MODEL m_super16te = {"[8088] Hyundai Super16TE",
                       ROM_HYUNDAI_SUPER16TE,
                       "super16te",
@@ -7,5 +12,5 @@ MODEL m_super16te = {"[8088] Hyundai Super16TE",
                       640,
                       640,
                       64,
-                      xt_init,
+                      super16te_init,
                       NULL};

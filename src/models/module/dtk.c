@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void dtk_init() {
+        xt_init();
+}
+
 MODEL m_dtk = {"[8088] DTK XT clone",
                ROM_DTKXT,
                "dtk",
@@ -7,5 +12,5 @@ MODEL m_dtk = {"[8088] DTK XT clone",
                64,
                640,
                64,
-               xt_init,
+               dtk_init,
                NULL};

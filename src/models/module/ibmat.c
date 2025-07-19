@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void ibmat_init() {
+        ibm_at_init();
+}
+
 MODEL m_ibmat = {"[286] IBM AT",
                  ROM_IBMAT,
                  "ibmat",
@@ -7,5 +12,5 @@ MODEL m_ibmat = {"[286] IBM AT",
                  256,
                  15872,
                  128,
-                 ibm_at_init,
+                 ibmat_init,
                  NULL};

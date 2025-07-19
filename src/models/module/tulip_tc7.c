@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void tulip_tc7_init() {
+        ibm_at_init();
+}
+
 MODEL m_tulip_tc7 = {"[286] Tulip AT Compact",
                      ROM_TULIP_TC7,
                      "tulip_tc7",
@@ -7,7 +12,7 @@ MODEL m_tulip_tc7 = {"[286] Tulip AT Compact",
                      640,
                      15872,
                      128,
-                     ibm_at_init,
+                     tulip_tc7_init,
                      NULL};
 
 

@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void bull_micral_45_init() {
+        ibm_at_init();
+}
+
 MODEL m_bull_micral_45 = {"[286] Bull Micral 45",
                           ROM_BULL_MICRAL_45,
                           "bull_micral_45",
@@ -7,5 +12,5 @@ MODEL m_bull_micral_45 = {"[286] Bull Micral 45",
                           1024,
                           6144,
                           128,
-                          ibm_at_init,
+                          bull_micral_45_init,
                           NULL};

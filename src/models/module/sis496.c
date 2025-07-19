@@ -1,4 +1,14 @@
 #include "module/common.h"
+
+void at_sis496_init() {
+        at_init();
+        pci_init(PCI_CONFIG_TYPE_1);
+        pci_slot(0xb);
+        pci_slot(0xd);
+        pci_slot(0xf);
+        device_add(&sis496_device);
+}
+
 MODEL m_sis496 = {"[486] Award SiS 496/497",
                   ROM_SIS496,
                   "sis496",
