@@ -115,24 +115,6 @@ char *device_get_config_string(char *s) {
         return NULL;
 }
 
-int model_get_config_int(char *s) {
-        device_t *device = model_getdevice(model);
-        device_config_t *config;
-
-        if (!device)
-                return 0;
-
-        config = device->config;
-
-        while (config->type != -1) {
-                if (!strcmp(s, config->name))
-                        return config_get_int(CFG_MACHINE, device->name, s, config->default_int);
-
-                config++;
-        }
-        return 0;
-}
-
 char *model_get_config_string(char *s) {
         device_t *device = model_getdevice(model);
         device_config_t *config;

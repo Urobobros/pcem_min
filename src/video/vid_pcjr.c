@@ -510,7 +510,6 @@ static void *pcjr_video_init() {
         pcjr_t *pcjr = malloc(sizeof(pcjr_t));
         memset(pcjr, 0, sizeof(pcjr_t));
 
-        display_type = model_get_config_int("display_type");
         pcjr->composite = (display_type != PCJR_RGB);
 
         pcjr->memctrl = -1;

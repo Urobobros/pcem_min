@@ -14,7 +14,6 @@
 #include "vid_svga.h"
 #include "vid_svga_render.h"
 #include "vid_unk_ramdac.h"
-#include "wd76c10.h"
 
 typedef struct paradise_t {
         svga_t svga;

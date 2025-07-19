@@ -31,22 +31,13 @@
 #include "lpt.h"
 #include "mem.h"
 #include "mouse_ps2.h"
-#include "mvp3.h"
-#include "neat.h"
 #include "nmi.h"
 #include "nvr.h"
-#include "olivetti_m24.h"
-#include "opti495.h"
-#include "pc87306.h"
-#include "pc87307.h"
 #include "pci.h"
 #include "pic.h"
 #include "piix.h"
 #include "pit.h"
-#include "ps2.h"
-#include "ps2_mca.h"
 #include "scamp.h"
-#include "scat.h"
 #include "serial.h"
 #include "sio.h"
 #include "sis496.h"
@@ -58,41 +49,19 @@
 #include "sst39sf010.h"
 #include "tandy_eeprom.h"
 #include "tandy_rom.h"
-#include "um8669f.h"
 #include "vid_pcjr.h"
 #include "vid_tandy.h"
 #include "vid_t1000.h"
-#include "vl82c480.h"
-#include "vt82c586b.h"
-#include "wd76c10.h"
-#include "xi8088.h"
 #include <pcem/devices.h>
 
 void xt_init();
 void pcjr_init();
 void tandy1k_init();
 void tandy1ksl2_init();
-void pc5086_init();
-void olim24_init();
 void at_init();
 void ibm_at_init();
-void ps2_m30_286_init();
-void ps2_model_50_init();
-void ps2_model_55sx_init();
-void ps2_model_70_init();
-void ps2_model_80_init();
-void at_neat_init();
-void at_scamp_init();
-void at_scat_init();
-void at_scatsx_init();
-void at_opti495_init();
 void at_sis496_init();
-void at_t3100e_init();
-void xt_t1000_init();
-void xt_t1200_init();
-void at_sl82c460_init();
 void compaq_xt_init();
-void xt_xi8088_init();
 
 int AMSTRAD, AT, PCI, TANDY, MCA;
 
@@ -207,38 +176,7 @@ void tandy1ksl2_init() {
         device_add(&gameport_device);
 }
 
-void pc5086_init() {
-        xt_init();
-        lpt1_remove(); /* remove LPT ports, they will be enabled by 82C710 */
-        lpt2_remove();
-        serial1_remove(); /* remove COM ports, they will be enabled by 82C710 */
-        serial2_remove();
-        device_add(&nvr_device);
-        fdc_set_dskchg_activelow();
-        superxt_init();
-}
 
-void olim24_init() {
-        common_init();
-        mem_add_bios();
-        keyboard_olim24_init();
-        device_add(&nvr_device);
-        olivetti_m24_init();
-        nmi_init();
-        device_add(&gameport_device);
-}
-
-void xt_xi8088_init() {
-        common_init();
-        mem_add_bios();
-        keyboard_at_init();
-        keyboard_at_init_ps2();
-        nmi_init();
-        device_add(&nvr_device);
-        pic2_init();
-        device_add(&gameport_device);
-        device_add(&sst_39sf010_device);
-}
 
 void at_init() {
         AT = 1;
@@ -274,20 +212,6 @@ void ps1_common_init() {
 }
 
 
-void ps2_m30_286_init() {
-        AT = 1;
-        common_init();
-        mem_add_bios();
-        pit_set_out_func(&pit, 1, pit_refresh_timer_at);
-        dma16_init();
-        keyboard_at_init();
-        //        mouse_ps2_init();
-        device_add(&nvr_device);
-        pic2_init();
-        ps2board_init();
-        fdc_set_dskchg_activelow();
-}
-
 static void ps2_common_init() {
         AT = 1;
         common_init();
@@ -305,50 +229,16 @@ static void ps2_common_init() {
         nmi_mask = 0x80;
 }
 
-void ps2_model_50_init() {
-        ps2_common_init();
-        ps2_mca_board_model_50_init();
-}
 
-void ps2_model_55sx_init() {
-        ps2_common_init();
-        ps2_mca_board_model_55sx_init();
-}
 
-void ps2_model_70_init() {
-        ps2_common_init();
-        ps2_mca_board_model_70_type34_init(romset == ROM_IBMPS2_M70_TYPE4);
-}
 
-void ps2_model_80_init() {
-        ps2_common_init();
-        ps2_mca_board_model_80_type2_init();
-}
 
-void at_neat_init() {
-        at_init();
-        neat_init();
-}
 
-void at_scamp_init() {
-        at_init();
-        scamp_init();
-}
 
-void at_scat_init() {
-        at_init();
-        scat_init();
-}
 
-void at_scatsx_init() {
-        at_init();
-        scatsx_init();
-}
 
-void at_opti495_init() {
-        at_init();
-        opti495_init();
-}
+
+
 
 
 void at_sis496_init() {
@@ -360,10 +250,6 @@ void at_sis496_init() {
         device_add(&sis496_device);
 }
 
-void at_sl82c460_init() {
-        at_init();
-        sl82c460_init();
-}
 
 void model_init() {
         pclog("Initting as %s\n", model_getname());
@@ -519,43 +405,10 @@ MODEL m_to16_pc = {"[8088] Thomson TO16 PC",
                    128,
                    xt_init,
                    NULL};
-MODEL m_t1000 = {"[8088] Toshiba T1000", ROM_T1000, "t1000", {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                 MODEL_GFX_FIXED,        512,       1280,    768,
-                 xt_t1000_init,          NULL};
-MODEL m_xi8088 = {"[8088] Xi8088",
-                  ROM_XI8088,
-                  "xi8088",
-                  {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                  MODEL_GFX_NONE | MODEL_AT | MODEL_PS2,
-                  64,
-                  1024,
-                  128,
-                  xt_xi8088_init,
-                  &xi8088_device};
 
-MODEL m_pc5086 = {"[8086] Amstrad PC5086",
-                  ROM_PC5086,
-                  "pc5086",
-                  {{"", cpus_8086}, {"", NULL}, {"", NULL}},
-                  MODEL_GFX_NONE | MODEL_PS2,
-                  640,
-                  640,
-                  0,
-                  pc5086_init,
-                  &f82c710_upc_device};
 MODEL m_deskpro = {"[8086] Compaq Deskpro", ROM_DESKPRO, "deskpro", {{"", cpus_8086}, {"", NULL}, {"", NULL}},
                    MODEL_GFX_NONE,          128,         640,       128,
                    compaq_xt_init,          NULL};
-MODEL m_olivetti_m24 = {"[8086] Olivetti M24",
-                        ROM_OLIM24,
-                        "olivetti_m24",
-                        {{"", cpus_8086}, {"", NULL}, {"", NULL}},
-                        MODEL_GFX_FIXED | MODEL_OLIM24,
-                        128,
-                        640,
-                        128,
-                        olim24_init,
-                        NULL};
 MODEL m_tandy1000sl2 = {"[8086] Tandy 1000 SL/2",
                         ROM_TANDY1000SL2,
                         "tandy1000sl2",
@@ -566,31 +419,9 @@ MODEL m_tandy1000sl2 = {"[8086] Tandy 1000 SL/2",
                         128,
                         tandy1ksl2_init,
                         NULL};
-MODEL m_t1200 = {"[8088] Toshiba T1200", ROM_T1200, "t1200", {{"", cpus_8086}, {"", NULL}, {"", NULL}},
-                 MODEL_GFX_FIXED,        1024,      2048,    1024,
-                 xt_t1200_init,          NULL};
-
 /* 286 PC's */
-MODEL m_ami286 = {"[286] AMI 286 clone",
-                  ROM_AMI286,
-                  "ami286",
-                  {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                  MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                  512,
-                  16384,
-                  128,
-                  at_neat_init,
-                  NULL};
-MODEL m_award286 = {"[286] Award 286 clone",
-                    ROM_AWARD286,
-                    "award286",
-                    {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                    512,
-                    16384,
-                    128,
-                    at_scat_init,
-                    NULL};
+
+
 MODEL m_bull_micral_45 = {"[286] Bull Micral 45",
                           ROM_BULL_MICRAL_45,
                           "bull_micral_45",
@@ -631,36 +462,8 @@ MODEL m_epson_pcax2e = {"[286] Epson PC AX2e",
                         128,
                         at_init,
                         NULL};
-MODEL m_gdc212m = {"[286] Goldstar GDC-212M",
-                   ROM_GDC212M,
-                   "gdc212m",
-                   {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                   MODEL_GFX_NONE | MODEL_AT | MODEL_PS2 | MODEL_HAS_IDE,
-                   512,
-                   4096,
-                   512,
-                   at_scat_init,
-                   NULL};
-MODEL m_gw286ct = {"[286] GW-286CT GEAR",
-                   ROM_GW286CT,
-                   "gw286ct",
-                   {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                   MODEL_GFX_NONE | MODEL_AT,
-                   512,
-                   16384,
-                   128,
-                   at_scat_init,
-                   NULL};
-MODEL m_super286tr = {"[286] Hyundai Super-286TR",
-                      ROM_HYUNDAI_SUPER286TR,
-                      "super286tr",
-                      {{"AMD", cpus_super286tr}, {"", NULL}, {"", NULL}},
-                      MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                      1024,
-                      4096,
-                      128,
-                      at_scat_init,
-                      &f82c710_upc_device};
+
+
 MODEL m_ibmat = {"[286] IBM AT",
                  ROM_IBMAT,
                  "ibmat",
@@ -671,26 +474,6 @@ MODEL m_ibmat = {"[286] IBM AT",
                  128,
                  ibm_at_init,
                  NULL};
-MODEL m_ibmps2_m30_286 = {"[286] IBM PS/2 Model 30-286",
-                          ROM_IBMPS2_M30_286,
-                          "ibmps2_m30_286",
-                          {{"", cpus_ps2_m30_286}, {"", NULL}, {"", NULL}},
-                          MODEL_GFX_FIXED | MODEL_AT | MODEL_PS2,
-                          1,
-                          16,
-                          1,
-                          ps2_m30_286_init,
-                          NULL};
-MODEL m_ibmps2_m50 = {"[286] IBM PS/2 Model 50",
-                      ROM_IBMPS2_M50,
-                      "ibmps2_m50",
-                      {{"", cpus_ps2_m30_286}, {"", NULL}, {"", NULL}},
-                      MODEL_GFX_DISABLE_SW | MODEL_AT | MODEL_PS2 | MODEL_MCA,
-                      1,
-                      16,
-                      1,
-                      ps2_model_50_init,
-                      NULL};
 MODEL m_ibmxt286 = {"[286] IBM XT Model 286",
                     ROM_IBMXT286,
                     "ibmxt286",
@@ -701,46 +484,7 @@ MODEL m_ibmxt286 = {"[286] IBM XT Model 286",
                     128,
                     ibm_at_init,
                     NULL};
-MODEL m_spc4200p = {"[286] Samsung SPC-4200P",
-                    ROM_SPC4200P,
-                    "spc4200p",
-                    {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_NONE | MODEL_AT | MODEL_PS2 | MODEL_HAS_IDE,
-                    512,
-                    2048,
-                    128,
-                    at_scat_init,
-                    NULL};
-MODEL m_spc4216p = {"[286] Samsung SPC-4216P",
-                    ROM_SPC4216P,
-                    "spc4216p",
-                    {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_NONE | MODEL_AT | MODEL_PS2 | MODEL_HAS_IDE,
-                    1,
-                    5,
-                    1,
-                    at_scat_init,
-                    NULL};
-MODEL m_spc4620p = {"[286] Samsung SPC-4620P",
-                    ROM_SPC4620P,
-                    "spc4620p",
-                    {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_DISABLE_HW | MODEL_AT | MODEL_PS2 | MODEL_HAS_IDE,
-                    1,
-                    5,
-                    1,
-                    at_scat_init,
-                    NULL};
-MODEL m_t3100e = {"[286] Toshiba T3100e",
-                  ROM_T3100E,
-                  "t3100e",
-                  {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                  MODEL_GFX_FIXED | MODEL_AT | MODEL_HAS_IDE,
-                  1024,
-                  5120,
-                  256,
-                  at_t3100e_init,
-                  NULL};
+
 MODEL m_tulip_tc7 = {"[286] Tulip AT Compact",
                      ROM_TULIP_TC7,
                      "tulip_tc7",
@@ -752,27 +496,8 @@ MODEL m_tulip_tc7 = {"[286] Tulip AT Compact",
                      ibm_at_init,
                      NULL};
 
-/* 386SX PC's */
-MODEL m_cbm_sl386sx25 = {"[386SX] Commodore SL386SX-25",
-                         ROM_CBM_SL386SX25,
-                         "cbm_sl386sx25",
-                         {{"Intel", cpus_i386SX}, {"AMD", cpus_Am386SX}, {"Cyrix", cpus_486SLC}},
-                         MODEL_GFX_FIXED | MODEL_AT | MODEL_PS2 | MODEL_HAS_IDE,
-                         1024,
-                         16384,
-                         512,
-                         at_scamp_init,
-                         NULL};
-MODEL m_dtk386 = {"[386SX] DTK 386SX clone",
-                  ROM_DTK386,
-                  "dtk386",
-                  {{"Intel", cpus_i386SX}, {"AMD", cpus_Am386SX}, {"Cyrix", cpus_486SLC}},
-                  MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                  512,
-                  16384,
-                  128,
-                  at_neat_init,
-                  NULL};
+
+
 MODEL m_epson_pcax3 = {"[386SX] Epson PC AX3",
                        ROM_EPSON_PCAX3,
                        "epson_pcax3",
@@ -783,79 +508,8 @@ MODEL m_epson_pcax3 = {"[386SX] Epson PC AX3",
                        128,
                        at_init,
                        NULL};
-MODEL m_ibmps2_m55sx = {"[386SX] IBM PS/2 Model 55SX",
-                        ROM_IBMPS2_M55SX,
-                        "ibmps2_m55sx",
-                        {{"Intel", cpus_i386SX}, {"AMD", cpus_Am386SX}, {"Cyrix", cpus_486SLC}},
-                        MODEL_GFX_DISABLE_SW | MODEL_AT | MODEL_PS2 | MODEL_MCA,
-                        1,
-                        8,
-                        1,
-                        ps2_model_55sx_init,
-                        NULL};
-MODEL m_kmxc02 = {"[386SX] KMX-C-02",
-                  ROM_KMXC02,
-                  "kmxc02",
-                  {{"Intel", cpus_i386SX}, {"AMD", cpus_Am386SX}, {"Cyrix", cpus_486SLC}},
-                  MODEL_GFX_NONE | MODEL_AT,
-                  512,
-                  16384,
-                  512,
-                  at_scatsx_init,
-                  NULL};
 
-MODEL m_spc6033p = {"[386SX] Samsung SPC-6033P",
-                    ROM_SPC6033P,
-                    "spc6033p",
-                    {{"Intel", cpus_i386SX}, {"AMD", cpus_Am386SX}, {"Cyrix", cpus_486SLC}},
-                    MODEL_GFX_DISABLE_HW | MODEL_AT | MODEL_PS2 | MODEL_HAS_IDE,
-                    2,
-                    12,
-                    2,
-                    at_scamp_init,
-                    NULL};
 
-/* 386DX PC's */
-MODEL m_ami386dx = {"[386DX] AMI 386DX clone",
-                    ROM_AMI386DX_OPTI495,
-                    "ami386dx",
-                    {{"Intel", cpus_i386DX}, {"AMD", cpus_Am386DX}, {"Cyrix", cpus_486DLC}},
-                    MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                    1,
-                    256,
-                    1,
-                    at_opti495_init,
-                    NULL};
-MODEL m_ibmps2_m70_type3 = {"[386DX] IBM PS/2 Model 70 (type 3)",
-                            ROM_IBMPS2_M70_TYPE3,
-                            "ibmps2_m70_type3",
-                            {{"Intel", cpus_i386DX}, {"AMD", cpus_Am386DX}, {"Cyrix", cpus_486DLC}},
-                            MODEL_GFX_DISABLE_SW | MODEL_AT | MODEL_PS2 | MODEL_MCA,
-                            2,
-                            16,
-                            2,
-                            ps2_model_70_init,
-                            NULL};
-MODEL m_ibmps2_m80 = {"[386DX] IBM PS/2 Model 80",
-                      ROM_IBMPS2_M80,
-                      "ibmps2_m80",
-                      {{"Intel", cpus_i386DX}, {"AMD", cpus_Am386DX}, {"Cyrix", cpus_486DLC}},
-                      MODEL_GFX_DISABLE_SW | MODEL_AT | MODEL_PS2 | MODEL_MCA,
-                      1,
-                      12,
-                      1,
-                      ps2_model_80_init,
-                      NULL};
-MODEL m_mr386dx = {"[386DX] MR 386DX clone",
-                   ROM_MR386DX_OPTI495,
-                   "mr386dx",
-                   {{"Intel", cpus_i386DX}, {"AMD", cpus_Am386DX}, {"Cyrix", cpus_486DLC}},
-                   MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                   1,
-                   256,
-                   1,
-                   at_opti495_init,
-                   NULL};
 
 /* 486 PC's */
 MODEL m_sis496 = {"[486] Award SiS 496/497",
@@ -868,26 +522,7 @@ MODEL m_sis496 = {"[486] Award SiS 496/497",
                   1,
                   at_sis496_init,
                   NULL};
-MODEL m_elx_pc425x = {"[486] Elonex PC-425X",
-                      ROM_ELX_PC425X,
-                      "elx_pc425x",
-                      {{"Intel", cpus_i486}, {"AMD", cpus_Am486}, {"Cyrix", cpus_Cx486}},
-                      MODEL_GFX_FIXED | MODEL_AT | MODEL_HAS_IDE,
-                      1,
-                      256,
-                      1,
-                      at_sl82c460_init,
-                      NULL};
-MODEL m_ibmps2_m70_type4 = {"[486] IBM PS/2 Model 70 (type 4)",
-                            ROM_IBMPS2_M70_TYPE4,
-                            "ibmps2_m70_type4",
-                            {{"Intel", cpus_i486}, {"AMD", cpus_Am486}, {"Cyrix", cpus_Cx486}},
-                            MODEL_GFX_DISABLE_SW | MODEL_AT | MODEL_PS2 | MODEL_MCA,
-                            2,
-                            16,
-                            2,
-                            ps2_model_70_init,
-                            NULL};
+
 
 
 
@@ -912,52 +547,23 @@ void model_init_builtin() {
         pcem_add_model(&m_tandy);
         pcem_add_model(&m_tandy1000hx);
         pcem_add_model(&m_to16_pc);
-        pcem_add_model(&m_t1000);
-        pcem_add_model(&m_xi8088);
 
         /* 8086 PC's */
-        pcem_add_model(&m_pc5086);
         pcem_add_model(&m_deskpro);
-        pcem_add_model(&m_olivetti_m24);
         pcem_add_model(&m_tandy1000sl2);
-        pcem_add_model(&m_t1200);
 
         /* 286 PC's */
-        pcem_add_model(&m_ami286);
-        pcem_add_model(&m_award286);
         pcem_add_model(&m_bull_micral_45);
         pcem_add_model(&m_compaq_pii);
         pcem_add_model(&m_epson_pcax);
         pcem_add_model(&m_epson_pcax2e);
-        pcem_add_model(&m_gdc212m);
-        pcem_add_model(&m_gw286ct);
-        pcem_add_model(&m_super286tr);
         pcem_add_model(&m_ibmat);
-        pcem_add_model(&m_ibmps2_m30_286);
-        pcem_add_model(&m_ibmps2_m50);
         pcem_add_model(&m_ibmxt286);
-        pcem_add_model(&m_spc4200p);
-        pcem_add_model(&m_spc4216p);
-        pcem_add_model(&m_spc4620p);
-        pcem_add_model(&m_t3100e);
         pcem_add_model(&m_tulip_tc7);
 
         /* 386SX PC's */
-        pcem_add_model(&m_cbm_sl386sx25);
-        pcem_add_model(&m_dtk386);
         pcem_add_model(&m_epson_pcax3);
-        pcem_add_model(&m_ibmps2_m55sx);
-        pcem_add_model(&m_kmxc02);
-        pcem_add_model(&m_spc6033p);
 
-        /* 386DX PC's */
-        pcem_add_model(&m_ami386dx);
-        pcem_add_model(&m_ibmps2_m70_type3);
-        pcem_add_model(&m_ibmps2_m80);
-        pcem_add_model(&m_mr386dx);
         /* 486 PC's */
         pcem_add_model(&m_sis496);
-        pcem_add_model(&m_elx_pc425x);
-        pcem_add_model(&m_ibmps2_m70_type4);
-
 }

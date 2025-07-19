@@ -9,7 +9,6 @@ extern int model;
 
 int device_get_config_int(char *name);
 char *device_get_config_string(char *s);
-int model_get_config_int(char *s);
 char *model_get_config_string(char *s);
 device_t *model_getdevice(int model);
 

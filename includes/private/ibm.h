@@ -219,7 +219,6 @@ enum {
         ROM_IBMPS1_2011,
         ROM_DESKPRO_386,
         ROM_IBMPS1_2121,
-        ROM_AMI386DX_OPTI495,
         ROM_MR386DX_OPTI495,
         ROM_P55T2P4, /* ASUS P/I-P55T2P4/430HX/Award/Winbond W8387F*/
         ROM_IBMPS2_M30_286,

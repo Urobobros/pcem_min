@@ -1,61 +1,22 @@
 set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/models/dma.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/model.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/mvp3.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/neat.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/nmi.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/olivetti_m24.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/opti495.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/pc87306.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/pc87307.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/pic.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/piix.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/piix_pm.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/pit.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/ps2.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/ps2_mca.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/scat.h
         ${CMAKE_SOURCE_DIR}/includes/private/models/serial.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/sio.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/sl82c460.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/superxt.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/t1000.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/t3100e.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/um8669f.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/um8881f.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/vl82c480.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/vt82c586b.h
-        ${CMAKE_SOURCE_DIR}/includes/private/models/xi8088.h
         )
 
 set(PCEM_SRC ${PCEM_SRC}
         models/dma.c
         models/model.c
-        models/mvp3.c
-        models/neat.c
         models/nmi.c
         models/nvr_tc8521.c
-        models/olivetti_m24.c
-        models/opti495.c
-        models/pc87306.c
-        models/pc87307.c
         models/pic.c
         models/piix.c
         models/piix_pm.c
         models/pit.c
-        models/ps2.c
-        models/ps2_mca.c
-        models/scamp.c
-        models/scat.c
         models/serial.c
-        models/sio.c
-        models/sl82c460.c
-        models/superxt.c
-        models/t1000.c
-        models/t3100e.c
-        models/um8669f.c
-        models/um8881f.c
-        models/vl82c480.c
-        models/vt82c586b.c
-        models/xi8088.c
         )

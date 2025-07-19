@@ -4,7 +4,6 @@
 #include "fdc.h"
 #include "io.h"
 #include "mem.h"
-#include "ps2_mca.h"
 #include "video.h"
 #include "x86.h"
 
@@ -690,7 +689,6 @@ static void dma_ps2_run(int channel) {
                         dma_c->cc--;
                 } while (dma_c->cc > 0);
 
-                ps2_cache_clean();
                 dma_stat |= (1 << channel);
                 break;
 

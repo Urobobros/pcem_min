@@ -3,7 +3,7 @@
 #include "device.h"
 #include "mem.h"
 #include "sst39sf010.h"
-#include "xi8088.h"
+
 
 typedef struct sst_t {
         int command_state;
@@ -30,7 +30,7 @@ static uint32_t sst_masked_rom_addr(uint32_t addr) {
         // in ram the mapping is as the software sees. This does not cause
         // problems with the programming commands because they only use the
         // lower 2 bytes.
-        if (romset == ROM_XI8088 && !xi8088_bios_128kb())
+        if (romset == ROM_XI8088)
                 return addr & 0xffff;
         else
                 return addr & 0x1ffff;
@@ -180,8 +180,6 @@ static void *sst_39sf010_init() {
         if (f) {
                 switch (romset) {
                 case ROM_XI8088:
-                        if (xi8088_bios_128kb())
-                                fread(rom + 0x10000, 0x10000, 1, f);
                         fread(rom, 0x10000, 1, f);
                         break;
 
@@ -208,8 +206,7 @@ static void sst_39sf010_close(void *p) {
                 FILE *f = romfopen(sst->flash_path, "wb");
                 switch (romset) {
                 case ROM_XI8088:
-                        if (xi8088_bios_128kb())
-                                fwrite(sst->data + 0x10000, 0x10000, 1, f);
+                       
                         fwrite(sst->data, 0x10000, 1, f);
                         break;
 

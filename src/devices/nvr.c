@@ -12,7 +12,6 @@
 #include "config.h"
 #include "model.h"
 #include "nmi.h"
-#include "t1000.h"
 #include "x86.h"
 
 int oldromset;
@@ -417,10 +416,7 @@ void loadnvr() {
                 f = nvrfopen("mr386dx_opti495.nvr", "rb");
                 nvrmask = 127;
                 break;
-        case ROM_AMI386DX_OPTI495:
-                f = nvrfopen("ami386dx_opti495.nvr", "rb");
-                nvrmask = 127;
-                break;
+
         case ROM_EPSON_PCAX:
                 f = nvrfopen("epson_pcax.nvr", "rb");
                 nvrmask = 127;
@@ -443,16 +439,6 @@ void loadnvr() {
         case ROM_T3100E:
                 f = nvrfopen("t3100e.nvr", "rb");
                 break;
-        case ROM_T1000:
-                tc8521_loadnvr();
-                t1000_configsys_loadnvr();
-                t1000_emsboard_loadnvr();
-                return;
-        case ROM_T1200:
-                tc8521_loadnvr();
-                t1200_state_loadnvr();
-                t1000_emsboard_loadnvr();
-                return;
         case ROM_ELX_PC425X:
                 f = nvrfopen("elx_pc425.nvr", "rb");
                 nvrmask = 127;
@@ -691,9 +677,6 @@ void savenvr() {
         case ROM_MR386DX_OPTI495:
                 f = nvrfopen("mr386dx_opti495.nvr", "wb");
                 break;
-        case ROM_AMI386DX_OPTI495:
-                f = nvrfopen("ami386dx_opti495.nvr", "wb");
-                break;
         case ROM_EPSON_PCAX:
                 f = nvrfopen("epson_pcax.nvr", "wb");
                 break;
@@ -712,15 +695,9 @@ void savenvr() {
         case ROM_T3100E:
                 f = nvrfopen("t3100e.nvr", "wb");
                 break;
-        case ROM_T1000:
-                tc8521_savenvr();
-                t1000_configsys_savenvr();
-                t1000_emsboard_savenvr();
-                return;
+
         case ROM_T1200:
                 tc8521_savenvr();
-                t1200_state_savenvr();
-                t1000_emsboard_savenvr();
                 return;
         case ROM_ELX_PC425X:
                 f = nvrfopen("elx_pc425.nvr", "wb");
