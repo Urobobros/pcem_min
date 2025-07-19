@@ -89,18 +89,20 @@ Frame::Frame(App *app, const wxString &title, const wxPoint &pos, const wxSize &
         CenterOnScreen();
 }
 
-void Frame::Start() {
-        if (wx_start(this))
-                ShowConfigSelection();
-        else
-                Quit(0);
-}
+void Frame::Start() { ShowConfigSelection(); }
 
 void Frame::ShowConfigSelection() {
-        if (wx_load_config(this))
-                start_emulation(this);
-        else
+        if (!wx_load_config(this)) {
                 Quit(1);
+                return;
+        }
+
+        if (!wx_start(this)) {
+                Quit(0);
+                return;
+        }
+
+        start_emulation(this);
 }
 
 void Frame::OnCallbackEvent(CallbackEvent &event) {
