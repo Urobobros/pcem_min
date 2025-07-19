@@ -63,14 +63,14 @@ message("***************************************************************")
 option(PLUGIN_ENGINE "Build PCem with plugin support" ON)
 message("Plugin Support: ${PLUGIN_ENGINE}")
 
-option(USE_NETWORKING "Build PCem with networking support" ON)
+option(USE_NETWORKING "Build PCem with networking support" OFF)
 message("Networking Support: ${USE_NETWORKING}")
 
 if(USE_NETWORKING)
 # Turning off to see if it does build with CLang, I think it passes warnings but still builds.
 #        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=gnu17")
 #        message("       Switching C to gnu17 to allow slirp to build")
-        option(USE_PCAP_NETWORKING "Build PCem with PCAP support" ON)
+        option(USE_PCAP_NETWORKING "Build PCem with PCAP support" OFF)
         message("       PCAP Networking Support: ${USE_PCAP_NETWORKING}")
 endif()
 
@@ -83,6 +83,9 @@ endif()
 
 option(USE_EXPERIMENTAL "Build PCem with experimental code" OFF)
 message("Experimental Modules: ${USE_EXPERIMENTAL}")
+
+option(ENABLE_GC_SECTIONS "Link time garbage collect unused code" OFF)
+message("Enable GC of unused sections: ${ENABLE_GC_SECTIONS}")
 
 if(USE_EXPERIMENTAL)
         option(USE_EXPERIMENTAL_PGC "Build Professional Graphics Controller Support" OFF)

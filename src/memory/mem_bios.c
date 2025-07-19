@@ -4,7 +4,6 @@
 #include "mem_bios.h"
 #include "rom.h"
 #include "video.h"
-#include "xi8088.h"
 
 static void romfread(uint8_t *buf, size_t size, size_t count, FILE *fp) {
         int result = fread(buf, size, count, fp);
@@ -1084,21 +1083,6 @@ int loadbios() {
                 fclose(f);
                 return 1;
 
-        case ROM_XI8088:
-                f = romfopen("xi8088/bios-xi8088.bin", "rb"); /* use the bios without xt-ide because it's configurable in pcem */
-                if (!f)
-                        break;
-                if (xi8088_bios_128kb()) {
-                        /* high bit is flipped in xi8088 */
-                        romfread(rom + 0x10000, 0x10000, 1, f);
-                        romfread(rom, 0x10000, 1, f);
-                        biosmask = 0x1ffff;
-                } else {
-                        /* smaller bios, more UMBs */
-                        romfread(rom, 0x10000, 1, f);
-                }
-                fclose(f);
-                return 1;
 
         case ROM_IBMPS2_M70_TYPE3:
                 f = romfopen("ibmps2_m70_type3/70-a_even.bin", "rb");

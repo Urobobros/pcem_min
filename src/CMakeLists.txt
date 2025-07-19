@@ -79,4 +79,8 @@ target_compile_options(pcem PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fcommon> $<$<COMPI
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
         target_link_options(pcem PRIVATE "-Wl,--subsystem,windows")
 endif()
+if(ENABLE_GC_SECTIONS)
+        target_compile_options(pcem PRIVATE -ffunction-sections -fdata-sections)
+        target_link_options(pcem PRIVATE "-Wl,--gc-sections" "-Wl,--print-gc-sections")
+endif()
 target_link_libraries(pcem ${PCEM_LIBRARIES})

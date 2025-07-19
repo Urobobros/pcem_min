@@ -98,7 +98,6 @@ install(FILES ${CMAKE_SOURCE_DIR}/docs/roms.txt DESTINATION ${PCEM_SHARE_DIR}/ro
 install(FILES ${CMAKE_SOURCE_DIR}/docs/roms.txt DESTINATION ${PCEM_SHARE_DIR}/roms/voodoo3_3000)
 install(FILES ${CMAKE_SOURCE_DIR}/docs/roms.txt DESTINATION ${PCEM_SHARE_DIR}/roms/vs440fx)
 install(FILES ${CMAKE_SOURCE_DIR}/docs/roms.txt DESTINATION ${PCEM_SHARE_DIR}/roms/win486)
-install(FILES ${CMAKE_SOURCE_DIR}/docs/roms.txt DESTINATION ${PCEM_SHARE_DIR}/roms/xi8088)
 install(FILES ${CMAKE_SOURCE_DIR}/docs/roms.txt DESTINATION ${PCEM_SHARE_DIR}/roms/zappa)
 install(FILES ${CMAKE_SOURCE_DIR}/docs/roms.txt DESTINATION ${PCEM_SHARE_DIR}/roms/zdsupers)
 install(FILES ${CMAKE_SOURCE_DIR}/docs/configs.txt DESTINATION ${PCEM_SHARE_DIR}/configs)

@@ -473,10 +473,6 @@ void loadnvr() {
                 f = nvrfopen("pb520r.nvr", "rb");
                 nvrmask = 127;
                 break;
-        case ROM_XI8088:
-                f = nvrfopen("xi8088.nvr", "rb");
-                nvrmask = 127;
-                break;
         case ROM_IBMPS2_M70_TYPE3:
                 f = nvrfopen("ibmps2_m70_type3.nvr", "rb");
                 break;
@@ -736,9 +732,6 @@ void savenvr() {
                 break;
         case ROM_PB520R:
                 f = nvrfopen("pb520r.nvr", "wb");
-                break;
-        case ROM_XI8088:
-                f = nvrfopen("xi8088.nvr", "wb");
                 break;
         case ROM_IBMPS2_M70_TYPE3:
                 f = nvrfopen("ibmps2_m70_type3.nvr", "wb");

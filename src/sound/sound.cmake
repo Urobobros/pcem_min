@@ -21,7 +21,6 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/sound/sound_mmb.h
         ${CMAKE_SOURCE_DIR}/includes/private/sound/sound_mpu401_uart.h
         ${CMAKE_SOURCE_DIR}/includes/private/sound/sound_opl.h
-        ${CMAKE_SOURCE_DIR}/includes/private/sound/sound_pas16.h
         ${CMAKE_SOURCE_DIR}/includes/private/sound/sound_ps1.h
         ${CMAKE_SOURCE_DIR}/includes/private/sound/sound_pssj.h
         ${CMAKE_SOURCE_DIR}/includes/private/sound/sound_resid.h
@@ -48,7 +47,6 @@ set(PCEM_SRC ${PCEM_SRC}
         sound/sound_mmb.c
         sound/sound_mpu401_uart.c
         sound/sound_opl.c
-        sound/sound_pas16.c
         sound/sound_ps1.c
         sound/sound_pssj.c
         sound/sound_resid.cc

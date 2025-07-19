@@ -16,7 +16,6 @@
 #include "sound_adlibgold.h"
 #include "sound_audiopci.h"
 #include "sound_azt2316a.h"
-#include "sound_pas16.h"
 #include "sound_sb.h"
 #include "sound_sb_dsp.h"
 #include "sound_wss.h"
@@ -48,7 +47,6 @@ SOUND_CARD sc_adlibgold = {"Adlib Gold", "adlibgold", &adgold_device};
 SOUND_CARD sc_wss = {"Windows Sound System", "wss", &wss_device};
 SOUND_CARD sc_azt2316a = {"Aztech Sound Galaxy Pro 16 AB (Washington)", "azt2316a", &azt2316a_device};
 SOUND_CARD sc_azt1605 = {"Aztech Sound Galaxy Nova 16 Extra (Clinton)", "azt1605", &azt1605_device};
-SOUND_CARD sc_pas16 = {"Pro Audio Spectrum 16", "pas16", &pas16_device};
 SOUND_CARD sc_es1371 = {"Ensoniq AudioPCI (ES1371)", "es1371", &es1371_device};
 SOUND_CARD sc_sbpci128 = {"Sound Blaster PCI 128", "sbpci128", &es1371_device};
 SOUND_CARD sc_mmb = {"Mindscape Music Board", "mmb", &mmb_device};
@@ -283,7 +281,6 @@ void sound_init_builtin() {
         pcem_add_sound(&sc_wss);
         pcem_add_sound(&sc_azt2316a);
         pcem_add_sound(&sc_azt1605);
-        pcem_add_sound(&sc_pas16);
         pcem_add_sound(&sc_es1371);
         pcem_add_sound(&sc_sbpci128);
         pcem_add_sound(&sc_mmb);

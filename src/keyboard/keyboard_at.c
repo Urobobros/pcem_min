@@ -5,11 +5,9 @@
 #include "pit.h"
 #include "sound.h"
 #include "sound_speaker.h"
-#include "t3100e.h"
 #include "timer.h"
 #include "video.h"
 #include "x86.h"
-#include "xi8088.h"
 
 #include "keyboard.h"
 #include "keyboard_at.h"
@@ -169,56 +167,6 @@ void keyboard_at_adddata_keyboard(uint8_t val) {
                                 output = 3;
                 }*/
 
-        /* Test for T3100E 'Fn' key (Right Alt / Right Ctrl) */
-        if (romset == ROM_T3100E && (pcem_key[0xb8] || pcem_key[0x9d])) {
-                switch (val) {
-                case 0x4f:
-                        t3100e_notify_set(0x01);
-                        break; /* End */
-                case 0x50:
-                        t3100e_notify_set(0x02);
-                        break; /* Down */
-                case 0x51:
-                        t3100e_notify_set(0x03);
-                        break; /* PgDn */
-                case 0x52:
-                        t3100e_notify_set(0x04);
-                        break; /* Ins */
-                case 0x53:
-                        t3100e_notify_set(0x05);
-                        break; /* Del */
-                case 0x54:
-                        t3100e_notify_set(0x06);
-                        break; /* SysRQ */
-                case 0x45:
-                        t3100e_notify_set(0x07);
-                        break; /* NumLock */
-                case 0x46:
-                        t3100e_notify_set(0x08);
-                        break; /* ScrLock */
-                case 0x47:
-                        t3100e_notify_set(0x09);
-                        break; /* Home */
-                case 0x48:
-                        t3100e_notify_set(0x0A);
-                        break; /* Up */
-                case 0x49:
-                        t3100e_notify_set(0x0B);
-                        break; /* PgUp */
-                case 0x4A:
-                        t3100e_notify_set(0x0C);
-                        break; /* Keypad -*/
-                case 0x4B:
-                        t3100e_notify_set(0x0D);
-                        break; /* Left */
-                case 0x4C:
-                        t3100e_notify_set(0x0E);
-                        break; /* KP 5 */
-                case 0x4D:
-                        t3100e_notify_set(0x0F);
-                        break; /* Right */
-                }
-        }
         if (keyboard_at.translate) {
                 if (val == 0xf0) {
                         keyboard_at.next_is_release = 1;
@@ -245,8 +193,6 @@ void keyboard_at_adddata_mouse(uint8_t val) {
 
 void keyboard_at_write(uint16_t port, uint8_t val, void *priv) {
         //        pclog("keyboard_at : write %04X %02X %i  %02X\n", port, val, keyboard_at.key_wantdata, ram[8]);
-        if (romset == ROM_XI8088 && port == 0x63)
-                port = 0x61;
         /*        if (ram[8] == 0xc3)
                 {
                         output = 3;
@@ -300,9 +246,7 @@ void keyboard_at_write(uint16_t port, uint8_t val, void *priv) {
                                 }
                                 break;
 
-                        case 0xb6: /* T3100e - set colour/mono switch */
-                                if (romset == ROM_T3100E)
-                                        t3100e_mono_set(val);
+                        case 0xb6:
                                 break;
                         case 0xcb: /*AMI - set keyboard mode*/
                                 break;
@@ -469,12 +413,6 @@ void keyboard_at_write(uint16_t port, uint8_t val, void *priv) {
                         was_speaker_enable = 1;
                 pit_set_gate(&pit, 2, val & 1);
 
-                if (romset == ROM_XI8088) {
-                        if (val & 0x04)
-                                xi8088_turbo_set(1);
-                        else
-                                xi8088_turbo_set(0);
-                }
                 break;
 
         case 0x64:
@@ -608,41 +546,14 @@ void keyboard_at_write(uint16_t port, uint8_t val, void *priv) {
                         keyboard_at.mem[0] &= ~0x10;
                         break;
 
-                case 0xb0: /* T3100e: Turbo on */
-                        if (romset == ROM_T3100E)
-                                t3100e_turbo_set(1);
+                case 0xb0:
+                case 0xb1:
+                case 0xb2:
+                case 0xb3:
+                case 0xb4:
+                case 0xb5:
+                case 0xb6:
                         break;
-
-                case 0xb1: /* T3100e: Turbo off */
-                        if (romset == ROM_T3100E)
-                                t3100e_turbo_set(0);
-                        break;
-
-                case 0xb2: /* T3100e: Select external display */
-                        if (romset == ROM_T3100E)
-                                t3100e_display_set(0x00);
-                        break;
-
-                case 0xb3: /* T3100e: Select internal display */
-                        if (romset == ROM_T3100E)
-                                t3100e_display_set(0x01);
-                        break;
-
-                case 0xb4: /* T3100e: Get configuration / status */
-                        if (romset == ROM_T3100E)
-                                keyboard_at_adddata(t3100e_config_get());
-                        break;
-
-                case 0xb5: /* T3100e: Get colour / mono byte */
-                        if (romset == ROM_T3100E)
-                                keyboard_at_adddata(t3100e_mono_get());
-                        break;
-
-                case 0xb6: /* T3100e: Set colour / mono byte */
-                        if (romset == ROM_T3100E)
-                                keyboard_at.want60 = 1;
-                        break;
-
                 case 0xba:
                         if (romset == ROM_ENDEAVOR || romset == ROM_ZAPPA || romset == ROM_ITAUTEC_INFOWAYM)
                                 keyboard_at_adddata(0);
@@ -666,16 +577,10 @@ void keyboard_at_write(uint16_t port, uint8_t val, void *priv) {
                         }
                         break;
 
-                case 0xbc: /* T3100e: Reset Fn+Key notification */
-                        if (romset == ROM_T3100E)
-                                t3100e_notify_set(0x00);
+                case 0xbc:
                         break;
 
                 case 0xc0: /*Read input port*/
-                        /* The T3100e returns all bits set except bit 6 which
-                         * is set by t3100e_mono_set() */
-                        if (romset == ROM_T3100E)
-                                keyboard_at.input_port = (t3100e_mono_get() & 1) ? 0xFF : 0xBF;
 
                         if (romset == ROM_ENDEAVOR || romset == ROM_ZAPPA || romset == ROM_ITAUTEC_INFOWAYM)
                                 keyboard_at_adddata(keyboard_at.input_port | 4 | 0x40);
@@ -768,8 +673,6 @@ uint8_t keyboard_at_read(uint16_t port, void *priv) {
         if (romset != ROM_IBMAT && romset != ROM_IBMXT286)
                 cycles -= ISA_CYCLES(8);
         //        if (port != 0x61) pclog("keyboard_at : read %04X ", port);
-        if (romset == ROM_XI8088 && port == 0x63)
-                port = 0x61;
         switch (port) {
         case 0x60:
                 temp = keyboard_at.out;
@@ -788,12 +691,7 @@ uint8_t keyboard_at_read(uint16_t port, void *priv) {
                         else
                                 temp &= ~0x10;
                 }
-                if (romset == ROM_XI8088) {
-                        if (xi8088_turbo_get())
-                                temp |= 0x04;
-                        else
-                                temp &= ~0x04;
-                }
+
                 break;
 
         case 0x64:
@@ -813,10 +711,7 @@ void keyboard_at_reset() {
         keyboard_at.mem[0] = 0x11;
         keyboard_at.wantirq = 0;
         keyboard_at.output_port = 0xcf;
-        if (romset == ROM_XI8088)
-                keyboard_at.input_port = (video_is_mda()) ? 0xb0 : 0xf0;
-        else
-                keyboard_at.input_port = (video_is_mda()) ? 0xf0 : 0xb0;
+        keyboard_at.input_port = (video_is_mda()) ? 0xf0 : 0xb0;
         keyboard_at.out_new = -1;
         keyboard_at.out_delayed = -1;
         keyboard_at.last_irq = 0;
