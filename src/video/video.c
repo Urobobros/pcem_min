@@ -142,8 +142,6 @@ VIDEO_CARD v_n9_9fx = {"Number Nine 9FX (S3 Trio64)",   "n9_9fx", &s3_9fx_device
                        {VIDEO_BUS, 3, 2, 4, 25, 25, 40}};
 VIDEO_CARD v_oti037 = {
         "OAK OTI-037", "oti037", &oti037_device, GFX_OTI037, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_ISA, 6, 8, 16, 6, 8, 16}};
-VIDEO_CARD v_oti067 = {
-        "OAK OTI-067", "oti067", &oti067_device, GFX_OTI067, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_ISA, 6, 8, 16, 6, 8, 16}};
 VIDEO_CARD v_olivetti_go481 = {"Olivetti GO481 (Paradise PVGA1A)",
                                "olivetti_go481",
                                &paradise_pvga1a_oli_go481_device,
@@ -282,12 +280,6 @@ device_t *video_card_getdevice(int card, int romset) {
                 if (card == GFX_BUILTIN)
                         return &ati28800k_spc6033p_device;
                 break;
-
-        case ROM_ACER386:
-                return &oti067_acer386_device;
-
-        case ROM_AMA932J:
-                return &oti067_ama932j_device;
 
         case ROM_IBMPS1_2011:
         case ROM_IBMPS2_M30_286:
@@ -832,18 +824,6 @@ void video_init() {
                 }
                 break;
 
-        case ROM_ACER386:
-                device_add(&oti067_acer386_device);
-                if (gfxcard != GFX_BUILTIN) {
-                        svga_set_override(svga_get_pri(), 1);
-                        break;
-                }
-                return;
-
-        case ROM_AMA932J:
-                device_add(&oti067_ama932j_device);
-                return;
-
         case ROM_IBMPS1_2011:
         case ROM_IBMPS2_M30_286:
                 device_add(&ps1vga_device);
@@ -1326,7 +1306,6 @@ void video_init_builtin() {
         pcem_add_video(&v_genius);
         pcem_add_video(&v_n9_9fx);
         pcem_add_video(&v_oti037);
-        pcem_add_video(&v_oti067);
         pcem_add_video(&v_olivetti_go481);
         pcem_add_video(&v_bahamas64);
 #ifdef USE_EXPERIMENTAL_PGC

@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "ibm.h": "c",
+        "codegen.h": "c",
+        "fdc37c93x.h": "c",
+        "mouse_serial.h": "c"
+    }
+}

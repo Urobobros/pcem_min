@@ -99,7 +99,6 @@ set(PCEM_SRC ${PCEM_SRC}
         video/vid_mga.c
         video/vid_olivetti_m24.c
         video/vid_oti037.c
-        video/vid_oti067.c
         video/vid_paradise.c
         video/vid_pc1512.c
         video/vid_pc1640.c

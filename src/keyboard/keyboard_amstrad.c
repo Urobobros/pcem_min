@@ -8,7 +8,6 @@
 #include "timer.h"
 
 #include "keyboard.h"
-#include "keyboard_amstrad.h"
 
 #define STAT_PARITY 0x80
 #define STAT_RTIMEOUT 0x40
@@ -151,13 +150,3 @@ void keyboard_amstrad_reset() {
         keyboard_scan = 1;
 }
 
-void keyboard_amstrad_init() {
-        // return;
-        pclog("keyboard_amstrad_init\n");
-        io_sethandler(0x0060, 0x0006, keyboard_amstrad_read, NULL, NULL, keyboard_amstrad_write, NULL, NULL, NULL);
-        keyboard_amstrad_reset();
-        keyboard_send = keyboard_amstrad_adddata;
-        keyboard_poll = keyboard_amstrad_poll;
-
-        timer_add(&keyboard_amstrad.send_delay_timer, (void *)keyboard_amstrad_poll, NULL, 1);
-}

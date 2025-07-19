@@ -56,7 +56,6 @@
 #include "timer.h"
 #include "vid_voodoo.h"
 #include "video.h"
-#include "amstrad.h"
 #include "hdd.h"
 #include "x86.h"
 #include "paths.h"
@@ -186,7 +185,6 @@ void pc_reset() {
 
         //        sb_reset();
 
-        ali1429_reset();
         //        video_init();
 }
 #undef printf
@@ -312,7 +310,6 @@ void initpc(int argc, char *argv[]) {
         }
 
         /*        if (romset==ROM_AMI386 || romset==ROM_AMI486) */ fullspeed();
-        ali1429_reset();
         //        CPUID=(is486 && (cpuspeed==7 || cpuspeed>=9));
         //        pclog("Init - CPUID %i %i\n",CPUID,cpuspeed);
 
@@ -397,8 +394,6 @@ void resetpchard() {
         //        cpuspeed2 = (AT)?2:1;
         //        atfullspeed = 0;
         //        setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-
-        ali1429_reset();
 
         keyboard_at_reset();
 
