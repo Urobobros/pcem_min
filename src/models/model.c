@@ -62,6 +62,35 @@ void ibm_at_init();
 void at_sis496_init();
 void compaq_xt_init();
 
+extern MODEL m_amixt;
+extern MODEL m_ataripc3;
+extern MODEL m_cbm_pc10;
+extern MODEL m_compaq_pip;
+extern MODEL m_dtk;
+extern MODEL m_genxt;
+extern MODEL m_super16t;
+extern MODEL m_super16te;
+extern MODEL m_ibmpc;
+extern MODEL m_ibmpcjr;
+extern MODEL m_ibmxt;
+extern MODEL m_jukopc;
+extern MODEL m_ledge_modelm;
+extern MODEL m_ncr_pc4i;
+extern MODEL m_pxxt;
+extern MODEL m_tandy;
+extern MODEL m_tandy1000hx;
+extern MODEL m_to16_pc;
+extern MODEL m_deskpro;
+extern MODEL m_tandy1000sl2;
+extern MODEL m_bull_micral_45;
+extern MODEL m_compaq_pii;
+extern MODEL m_epson_pcax;
+extern MODEL m_epson_pcax2e;
+extern MODEL m_ibmat;
+extern MODEL m_ibmxt286;
+extern MODEL m_tulip_tc7;
+extern MODEL m_epson_pcax3;
+extern MODEL m_sis496;
 int AMSTRAD, AT, PCI, TANDY, MCA;
 
 int model_getromset() { return models[model]->id; }
@@ -248,271 +277,6 @@ void model_init() {
 }
 
 /* 8088 PC's */
-MODEL m_amixt = {"[8088] AMI XT clone",
-                 ROM_AMIXT,
-                 "amixt",
-                 {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                 MODEL_GFX_NONE,
-                 64,
-                 640,
-                 64,
-                 xt_init,
-                 NULL};
-MODEL m_ataripc3 = {"[8088] Atari PC3",
-                    ROM_ATARIPC3,
-                    "ataripc3",
-                    {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_NONE,
-                    64,
-                    640,
-                    64,
-                    xt_init,
-                    NULL};
-MODEL m_cbm_pc10 = {"[8088] Commodore PC-10",
-                    ROM_CBM_PC10,
-                    "cbm_pc10",
-                    {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_NONE,
-                    640,
-                    640,
-                    64,
-                    xt_init,
-                    NULL};
-MODEL m_compaq_pip = {"[8088] Compaq Portable Plus",
-                      ROM_COMPAQ_PIP,
-                      "compaq_pip",
-                      {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                      MODEL_GFX_NONE,
-                      128,
-                      640,
-                      64,
-                      compaq_xt_init,
-                      NULL};
-MODEL m_dtk = {"[8088] DTK XT clone",
-               ROM_DTKXT,
-               "dtk",
-               {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-               MODEL_GFX_NONE,
-               64,
-               640,
-               64,
-               xt_init,
-               NULL};
-MODEL m_genxt = {"[8088] Generic XT clone",
-                 ROM_GENXT,
-                 "genxt",
-                 {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                 MODEL_GFX_NONE,
-                 32,
-                 704,
-                 16,
-                 xt_init,
-                 NULL};
-MODEL m_super16t = {"[8088] Hyundai Super16T",
-                     ROM_HYUNDAI_SUPER16T,
-                     "super16t",
-                     {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                     MODEL_GFX_NONE,
-                     640,
-                     640,
-                     64,
-                     xt_init,
-                     NULL};
-MODEL m_super16te = {"[8088] Hyundai Super16TE",
-                      ROM_HYUNDAI_SUPER16TE,
-                      "super16te",
-                      {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                      MODEL_GFX_NONE,
-                      640,
-                      640,
-                      64,
-                      xt_init,
-                      NULL};
-MODEL m_ibmpc = {"[8088] IBM PC", ROM_IBMPC, "ibmpc", {{"", cpus_8088}, {"", NULL}, {"", NULL}}, MODEL_GFX_NONE, 64, 640, 32,
-                 xt_init,         NULL};
-MODEL m_ibmpcjr = {"[8088] IBM PCjr", ROM_IBMPCJR, "ibmpcjr", {{"", cpus_pcjr}, {"", NULL}, {"", NULL}},
-                   MODEL_GFX_FIXED,   128,         640,       64,
-                   pcjr_init,         &pcjr_device};
-MODEL m_ibmxt = {"[8088] IBM XT", ROM_IBMXT, "ibmxt", {{"", cpus_8088}, {"", NULL}, {"", NULL}}, MODEL_GFX_NONE, 64, 640, 64,
-                 xt_init,         NULL};
-MODEL m_jukopc = {"[8088] Juko XT clone",
-                  ROM_JUKOPC,
-                  "jukopc",
-                  {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                  MODEL_GFX_NONE,
-                  64,
-                  640,
-                  64,
-                  xt_init,
-                  NULL};
-MODEL m_ledge_modelm = {"[8088] Leading Edge Model M",
-                        ROM_LEDGE_MODELM,
-                        "ledge_modelm",
-                        {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                        MODEL_GFX_NONE,
-                        128,
-                        704,
-                        64,
-                        xt_init,
-                        NULL};
-MODEL m_ncr_pc4i = {"[8088] NCR PC4i", ROM_NCR_PC4I, "ncr_pc4i", {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_NONE,    256,          640,        64,
-                    xt_init,           NULL};
-MODEL m_pxxt = {"[8088] Phoenix XT clone",
-                ROM_PXXT,
-                "pxxt",
-                {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                MODEL_GFX_NONE,
-                64,
-                640,
-                64,
-                xt_init,
-                NULL};
-MODEL m_tandy = {
-        "[8088] Tandy 1000", ROM_TANDY,        "tandy", {{"", cpus_8088}, {"", NULL}, {"", NULL}}, MODEL_GFX_FIXED, 128, 640, 128,
-        tandy1k_init,        &tandy1000_device};
-MODEL m_tandy1000hx = {"[8088] Tandy 1000 HX",
-                       ROM_TANDY1000HX,
-                       "tandy1000hx",
-                       {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                       MODEL_GFX_FIXED,
-                       256,
-                       640,
-                       128,
-                       tandy1k_init,
-                       &tandy1000hx_device};
-MODEL m_to16_pc = {"[8088] Thomson TO16 PC",
-                   ROM_TO16_PC,
-                   "to16_pc",
-                   {{"", cpus_8088}, {"", NULL}, {"", NULL}},
-                   MODEL_GFX_NONE,
-                   512,
-                   640,
-                   128,
-                   xt_init,
-                   NULL};
-
-MODEL m_deskpro = {"[8086] Compaq Deskpro", ROM_DESKPRO, "deskpro", {{"", cpus_8086}, {"", NULL}, {"", NULL}},
-                   MODEL_GFX_NONE,          128,         640,       128,
-                   compaq_xt_init,          NULL};
-MODEL m_tandy1000sl2 = {"[8086] Tandy 1000 SL/2",
-                        ROM_TANDY1000SL2,
-                        "tandy1000sl2",
-                        {{"", cpus_8086}, {"", NULL}, {"", NULL}},
-                        MODEL_GFX_FIXED,
-                        512,
-                        768,
-                        128,
-                        tandy1ksl2_init,
-                        NULL};
-/* 286 PC's */
-
-
-MODEL m_bull_micral_45 = {"[286] Bull Micral 45",
-                          ROM_BULL_MICRAL_45,
-                          "bull_micral_45",
-                          {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                          MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                          1024,
-                          6144,
-                          128,
-                          ibm_at_init,
-                          NULL};
-MODEL m_compaq_pii = {"[286] Compaq Portable II",
-                      ROM_COMPAQ_PII,
-                      "compaq_pii",
-                      {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                      MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                      256,
-                      15872,
-                      128,
-                      ibm_at_init,
-                      NULL};
-MODEL m_epson_pcax = {"[286] Epson PC AX",
-                      ROM_EPSON_PCAX,
-                      "epson_pcax",
-                      {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                      MODEL_GFX_NONE | MODEL_AT,
-                      256,
-                      15872,
-                      128,
-                      at_init,
-                      NULL};
-MODEL m_epson_pcax2e = {"[286] Epson PC AX2e",
-                        ROM_EPSON_PCAX2E,
-                        "epson_pcax2e",
-                        {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                        MODEL_GFX_NONE | MODEL_AT | MODEL_PS2,
-                        256,
-                        15872,
-                        128,
-                        at_init,
-                        NULL};
-
-
-MODEL m_ibmat = {"[286] IBM AT",
-                 ROM_IBMAT,
-                 "ibmat",
-                 {{"", cpus_ibmat}, {"", NULL}, {"", NULL}},
-                 MODEL_GFX_NONE | MODEL_AT,
-                 256,
-                 15872,
-                 128,
-                 ibm_at_init,
-                 NULL};
-MODEL m_ibmxt286 = {"[286] IBM XT Model 286",
-                    ROM_IBMXT286,
-                    "ibmxt286",
-                    {{"", cpus_ibmxt286}, {"", NULL}, {"", NULL}},
-                    MODEL_GFX_NONE | MODEL_AT,
-                    256,
-                    15872,
-                    128,
-                    ibm_at_init,
-                    NULL};
-
-MODEL m_tulip_tc7 = {"[286] Tulip AT Compact",
-                     ROM_TULIP_TC7,
-                     "tulip_tc7",
-                     {{"", cpus_286}, {"", NULL}, {"", NULL}},
-                     MODEL_GFX_NONE | MODEL_AT | MODEL_HAS_IDE,
-                     640,
-                     15872,
-                     128,
-                     ibm_at_init,
-                     NULL};
-
-
-
-MODEL m_epson_pcax3 = {"[386SX] Epson PC AX3",
-                       ROM_EPSON_PCAX3,
-                       "epson_pcax3",
-                       {{"Intel", cpus_i386SX}, {"AMD", cpus_Am386SX}, {"Cyrix", cpus_486SLC}},
-                       MODEL_GFX_NONE | MODEL_AT,
-                       256,
-                       15872,
-                       128,
-                       at_init,
-                       NULL};
-
-
-
-/* 486 PC's */
-MODEL m_sis496 = {"[486] Award SiS 496/497",
-                  ROM_SIS496,
-                  "sis496",
-                  {{"Intel", cpus_i486}, {"AMD", cpus_Am486}, {"Cyrix", cpus_Cx486}},
-                  MODEL_GFX_NONE | MODEL_AT | MODEL_PCI | MODEL_HAS_IDE,
-                  1,
-                  256,
-                  1,
-                  at_sis496_init,
-                  NULL};
-
-
-
-
-
 void model_init_builtin() {
         /* 8088 PC's */
         pcem_add_model(&m_amixt);
