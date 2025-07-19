@@ -257,7 +257,10 @@ void initpc(int argc, char *argv[]) {
 
         initvideo();
         mem_init();
-        loadbios();
+        if (!loadbios()) {
+                fprintf(stderr, "Failed to load BIOS for romset %d\n", romset);
+                exit(1);
+        }
 
         // this is now done per-model
         // mem_add_bios();
