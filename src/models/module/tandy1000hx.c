@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void tandy1000hx_init() {
+        tandy1k_init();
+}
+
 MODEL m_tandy1000hx = {"[8088] Tandy 1000 HX",
                        ROM_TANDY1000HX,
                        "tandy1000hx",
@@ -7,5 +12,5 @@ MODEL m_tandy1000hx = {"[8088] Tandy 1000 HX",
                        256,
                        640,
                        128,
-                       tandy1k_init,
+                       tandy1000hx_init,
                        &tandy1000hx_device};

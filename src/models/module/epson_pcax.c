@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void epson_pcax_init() {
+        at_init();
+}
+
 MODEL m_epson_pcax = {"[286] Epson PC AX",
                       ROM_EPSON_PCAX,
                       "epson_pcax",
@@ -7,5 +12,5 @@ MODEL m_epson_pcax = {"[286] Epson PC AX",
                       256,
                       15872,
                       128,
-                      at_init,
+                      epson_pcax_init,
                       NULL};

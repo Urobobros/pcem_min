@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void jukopc_init() {
+        xt_init();
+}
+
 MODEL m_jukopc = {"[8088] Juko XT clone",
                   ROM_JUKOPC,
                   "jukopc",
@@ -7,5 +12,5 @@ MODEL m_jukopc = {"[8088] Juko XT clone",
                   64,
                   640,
                   64,
-                  xt_init,
+                  jukopc_init,
                   NULL};

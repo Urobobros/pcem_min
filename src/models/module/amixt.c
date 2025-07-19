@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void amixt_init() {
+        xt_init();
+}
+
 MODEL m_amixt = {"[8088] AMI XT clone",
                  ROM_AMIXT,
                  "amixt",
@@ -7,5 +12,5 @@ MODEL m_amixt = {"[8088] AMI XT clone",
                  64,
                  640,
                  64,
-                 xt_init,
+                 amixt_init,
                  NULL};

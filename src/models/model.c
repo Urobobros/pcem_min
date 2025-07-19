@@ -59,7 +59,6 @@ void tandy1k_init();
 void tandy1ksl2_init();
 void at_init();
 void ibm_at_init();
-void at_sis496_init();
 void compaq_xt_init();
 
 extern MODEL m_amixt;
@@ -257,14 +256,6 @@ static void ps2_common_init() {
         nmi_mask = 0x80;
 }
 
-void at_sis496_init() {
-        at_init();
-        pci_init(PCI_CONFIG_TYPE_1);
-        pci_slot(0xb);
-        pci_slot(0xd);
-        pci_slot(0xf);
-        device_add(&sis496_device);
-}
 
 void model_init() {
         pclog("Initting as %s\n", model_getname());

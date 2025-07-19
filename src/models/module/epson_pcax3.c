@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void epson_pcax3_init() {
+        at_init();
+}
+
 MODEL m_epson_pcax3 = {"[386SX] Epson PC AX3",
                        ROM_EPSON_PCAX3,
                        "epson_pcax3",
@@ -7,7 +12,7 @@ MODEL m_epson_pcax3 = {"[386SX] Epson PC AX3",
                        256,
                        15872,
                        128,
-                       at_init,
+                       epson_pcax3_init,
                        NULL};
 
 

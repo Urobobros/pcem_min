@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void pxxt_init() {
+        xt_init();
+}
+
 MODEL m_pxxt = {"[8088] Phoenix XT clone",
                 ROM_PXXT,
                 "pxxt",
@@ -7,5 +12,5 @@ MODEL m_pxxt = {"[8088] Phoenix XT clone",
                 64,
                 640,
                 64,
-                xt_init,
+                pxxt_init,
                 NULL};

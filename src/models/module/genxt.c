@@ -1,4 +1,9 @@
 #include "module/common.h"
+
+void genxt_init() {
+        xt_init();
+}
+
 MODEL m_genxt = {"[8088] Generic XT clone",
                  ROM_GENXT,
                  "genxt",
@@ -7,5 +12,5 @@ MODEL m_genxt = {"[8088] Generic XT clone",
                  32,
                  704,
                  16,
-                 xt_init,
+                 genxt_init,
                  NULL};
