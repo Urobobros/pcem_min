@@ -35,7 +35,6 @@
 #include "nvr.h"
 #include "pci.h"
 #include "pic.h"
-#include "piix.h"
 #include "pit.h"
 #include "scamp.h"
 #include "serial.h"
@@ -229,18 +228,6 @@ static void ps2_common_init() {
         nmi_mask = 0x80;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 void at_sis496_init() {
         at_init();
         pci_init(PCI_CONFIG_TYPE_1);
@@ -249,7 +236,6 @@ void at_sis496_init() {
         pci_slot(0xf);
         device_add(&sis496_device);
 }
-
 
 void model_init() {
         pclog("Initting as %s\n", model_getname());
