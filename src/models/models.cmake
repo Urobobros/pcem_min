@@ -15,4 +15,33 @@ set(PCEM_SRC ${PCEM_SRC}
         models/pic.c
         models/pit.c
         models/serial.c
+        models/module/amixt.c
+        models/module/ataripc3.c
+        models/module/bull_micral_45.c
+        models/module/cbm_pc10.c
+        models/module/compaq_pii.c
+        models/module/compaq_pip.c
+        models/module/deskpro.c
+        models/module/dtk.c
+        models/module/epson_pcax.c
+        models/module/epson_pcax2e.c
+        models/module/epson_pcax3.c
+        models/module/genxt.c
+        models/module/ibmat.c
+        models/module/ibmpc.c
+        models/module/ibmpcjr.c
+        models/module/ibmxt.c
+        models/module/ibmxt286.c
+        models/module/jukopc.c
+        models/module/ledge_modelm.c
+        models/module/ncr_pc4i.c
+        models/module/pxxt.c
+        models/module/sis496.c
+        models/module/super16t.c
+        models/module/super16te.c
+        models/module/tandy.c
+        models/module/tandy1000hx.c
+        models/module/tandy1000sl2.c
+        models/module/to16_pc.c
+        models/module/tulip_tc7.c
         )
