@@ -46,6 +46,9 @@ if(${PCEM_CPU_TYPE} STREQUAL "x86_64")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64-v2")
 endif()
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -finstrument-functions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -finstrument-functions")
+
 set(PCEM_VERSION_STRING "vNext" CACHE STRING "PCem Version String")
 set(PCEM_DISPLAY_ENGINE "wxWidgets" CACHE STRING "PCem Display Engine")
 set(PCEM_DEFINES ${PCEM_DEFINES} PCEM_VERSION_STRING="${PCEM_VERSION_STRING}")
@@ -204,6 +207,7 @@ if(USE_NETWORKING AND USE_PCAP_NETWORKING)
 endif()
 
 find_package(OpenGL REQUIRED)
+set(PCEM_ADDITIONAL_LIBS ${PCEM_ADDITIONAL_LIBS} dl)
 
 add_subdirectory(src)
 
