@@ -5,7 +5,7 @@
 #include "mouse_ps2.h"
 #include "plat-mouse.h"
 #include "x86.h"
-#include "f82c710_upc.h"
+
 
 int mouse_scan = 0;
 
@@ -221,10 +221,7 @@ void *mouse_ps2_init() {
         mouse->flags = 0;
         mouse->mode = MOUSE_STREAM;
 
-        if (romset == ROM_PC5086)
-                upc_set_mouse(mouse_ps2_write, mouse);
-        else
-                keyboard_at_set_mouse(mouse_ps2_write, mouse);
+        keyboard_at_set_mouse(mouse_ps2_write, mouse);
 
         return mouse;
 }

@@ -20,7 +20,6 @@
 #include "device.h"
 #include "cassette.h"
 #include "dma.h"
-#include "f82c710_upc.h"
 #include "fdc.h"
 #include "fdc37c665.h"
 #include "fdc37c93x.h"

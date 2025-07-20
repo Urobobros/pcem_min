@@ -18,7 +18,6 @@
 #include "scsi_cd.h"
 #include "sound.h"
 #include "video.h"
-#include "vid_voodoo.h"
 #include "wx-config-eventbinder.h"
 
 #include "minivhd/minivhd.h"
@@ -1167,9 +1166,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                                 wx_enablewindow(h, TRUE);
                         else
                                 wx_enablewindow(h, FALSE);
-                } else if (wParam == WX_ID("IDC_CONFIGUREVOODOO")) {
-                        deviceconfig_open(hdlg, (void *)&voodoo_device);
-                } else if (wParam == WX_ID("IDC_COMBOHDD")) {
+                } 
+                else if (wParam == WX_ID("IDC_COMBOHDD")) {
                         hdconf_update(hdlg);
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));

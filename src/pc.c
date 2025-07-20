@@ -11,7 +11,6 @@
 #include "ibm.h"
 #include "device.h"
 
-#include "ali1429.h"
 #include "cdrom-ioctl.h"
 #include "cdrom-image.h"
 #include "cpu.h"
@@ -54,7 +53,6 @@
 #include "sound_speaker.h"
 #include "sound_ssi2001.h"
 #include "timer.h"
-#include "vid_voodoo.h"
 #include "video.h"
 #include "hdd.h"
 #include "x86.h"
@@ -382,8 +380,6 @@ void resetpchard() {
                 device_add(&cms_device);
         if (SSI2001)
                 device_add(&ssi2001_device);
-        if (voodoo_enabled)
-                device_add(&voodoo_device);
         hdd_controller_init(hdd_controller_name);
         pc_reset();
 

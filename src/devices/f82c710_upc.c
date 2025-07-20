@@ -408,11 +408,6 @@ void upc_mouse_enable(upc_t *upc) {
         io_sethandler(upc->mdata_addr, 0x0002, upc_mouse_read, NULL, NULL, upc_mouse_write, NULL, NULL, upc);
 }
 
-void upc_set_mouse(void (*mouse_write)(uint8_t val, void *p), void *p) {
-        upc.mouse_write = mouse_write;
-        upc.mouse_p = p;
-}
-
 void upc_mouse_poll(void *priv) {
         upc_t *upc = (upc_t *)priv;
         timer_advance_u64(&upc->mouse_delay_timer, (1000 * TIMER_USEC));
