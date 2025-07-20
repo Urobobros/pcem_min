@@ -67,6 +67,7 @@ set(PCEM_SRC ${PCEM_SRC}
         rtc.c
         rtc_tc8521.c
         timer.c
+        instrumentation.c
         )
 
 set(PCEM_LIBRARIES ${DISPLAY_ENGINE_LIBRARIES} ${SDL2_LIBRARIES} ${OPENAL_LIBRARY} ${OPENGL_LIBRARIES} ${PCEM_ADDITIONAL_LIBS})
