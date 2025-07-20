@@ -5,7 +5,8 @@
 #include "cpu.h"
 
 #ifdef PORT_DEBUG
-#define PORT_LOG(fmt, ...) pclog(fmt, __VA_ARGS__)
+#include <pcem/portlog.h>
+#define PORT_LOG(fmt, ...) portlog(fmt, __VA_ARGS__)
 #else
 #define PORT_LOG(fmt, ...)
 #endif

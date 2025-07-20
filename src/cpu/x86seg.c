@@ -11,6 +11,7 @@
 #include "config.h"
 #include "paths.h"
 #include "logging-internal.h"
+#include "portlog-internal.h"
 
 /*Controls whether the accessed bit in a descriptor is set when CS is loaded.*/
 #define CS_ACCESSED
@@ -43,6 +44,7 @@ void x86abort(const char *format, ...) {
         va_end(ap);
         dumpregs();
         pclog_end();
+        portlog_end();
         exit(-1);
 }
 
