@@ -46,8 +46,11 @@ if(${PCEM_CPU_TYPE} STREQUAL "x86_64")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64-v2")
 endif()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -finstrument-functions")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -finstrument-functions")
+# Enable compiler-driven function tracing. Using the variant that
+# instruments functions only after inlining avoids undefined symbol
+# issues with inline functions from the C++ standard library.
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -finstrument-functions-after-inlining")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -finstrument-functions-after-inlining")
 
 set(PCEM_VERSION_STRING "vNext" CACHE STRING "PCem Version String")
 set(PCEM_DISPLAY_ENGINE "wxWidgets" CACHE STRING "PCem Display Engine")
@@ -207,7 +210,15 @@ if(USE_NETWORKING AND USE_PCAP_NETWORKING)
 endif()
 
 find_package(OpenGL REQUIRED)
-set(PCEM_ADDITIONAL_LIBS ${PCEM_ADDITIONAL_LIBS} dl)
+# Explicitly add the C++ standard libraries when linking. Normally
+# CMake does this automatically for C++ targets but the custom build
+# rules used by PCem omit them, which leads to unresolved symbols when
+# enabling function instrumentation with Clang.  Append the implicit
+# C++ libraries to our additional link list so they are always linked.
+set(PCEM_ADDITIONAL_LIBS
+    ${PCEM_ADDITIONAL_LIBS}
+    dl
+    ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
 
 add_subdirectory(src)
 
