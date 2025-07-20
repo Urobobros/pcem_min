@@ -110,12 +110,12 @@ int t237 = 0;
 uint8_t inb(uint16_t port) {
         uint8_t temp = 0xff;
 
-        PORT_LOG("IN  port 0x%04X, size 1\n", port);
-
         if (port_inb[port][0])
                 temp &= port_inb[port][0](port, port_priv[port][0]);
         if (port_inb[port][1])
                 temp &= port_inb[port][1](port, port_priv[port][1]);
+
+        PORT_LOG("IN  port 0x%04X, size 1, value 0x%02X\n", port, temp);
 
         /*           if (!port_inb[port][0] && !port_inb[port][1])
                         pclog("Bad INB %04X %04X:%04X\n", port, CS, pc);*/
@@ -139,13 +139,17 @@ void outb(uint16_t port, uint8_t val) {
 
 uint16_t inw(uint16_t port) {
         //        pclog("INW %04X\n", port);
-        PORT_LOG("IN  port 0x%04X, size 2\n", port);
+        uint16_t val;
         if (port_inw[port][0])
-                return port_inw[port][0](port, port_priv[port][0]);
-        if (port_inw[port][1])
-                return port_inw[port][1](port, port_priv[port][1]);
+                val = port_inw[port][0](port, port_priv[port][0]);
+        else if (port_inw[port][1])
+                val = port_inw[port][1](port, port_priv[port][1]);
+        else
+                val = inb(port) | (inb(port + 1) << 8);
 
-        return inb(port) | (inb(port + 1) << 8);
+        PORT_LOG("IN  port 0x%04X, size 2, value 0x%04X\n", port, val);
+
+        return val;
 }
 
 void outw(uint16_t port, uint16_t val) {
@@ -169,13 +173,17 @@ void outw(uint16_t port, uint16_t val) {
 
 uint32_t inl(uint16_t port) {
         //        pclog("INL %04X\n", port);
-        PORT_LOG("IN  port 0x%04X, size 4\n", port);
+        uint32_t val;
         if (port_inl[port][0])
-                return port_inl[port][0](port, port_priv[port][0]);
-        if (port_inl[port][1])
-                return port_inl[port][1](port, port_priv[port][1]);
+                val = port_inl[port][0](port, port_priv[port][0]);
+        else if (port_inl[port][1])
+                val = port_inl[port][1](port, port_priv[port][1]);
+        else
+                val = inw(port) | (inw(port + 2) << 16);
 
-        return inw(port) | (inw(port + 2) << 16);
+        PORT_LOG("IN  port 0x%04X, size 4, value 0x%08X\n", port, val);
+
+        return val;
 }
 
 void outl(uint16_t port, uint32_t val) {
