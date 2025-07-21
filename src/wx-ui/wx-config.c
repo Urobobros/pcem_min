@@ -653,6 +653,7 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
         int cpu_type;
         int temp_cd_model, temp_cd_speed;
         int temp_mouse_type;
+        int temp_keyboard_type;
         int temp_lpt1_current;
 #ifdef USE_NETWORKING
         int temp_network_card;
