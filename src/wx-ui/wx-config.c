@@ -12,6 +12,7 @@
 #include "lpt.h"
 #include "model.h"
 #include "mouse.h"
+#include "keyboard.h"
 #include "mem.h"
 #include "nethandler.h"
 #include "nvr.h"
@@ -30,6 +31,7 @@ extern int is486;
 static int romstolist[ROM_MAX], listtomodel[ROM_MAX], romstomodel[ROM_MAX], modeltolist[ROM_MAX];
 static int settings_sound_to_list[20], settings_list_to_sound[20];
 static int settings_mouse_to_list[20], settings_list_to_mouse[20];
+static int settings_keyboard_to_list[20], settings_list_to_keyboard[20];
 #ifdef USE_NETWORKING
 static int settings_network_to_list[20], settings_list_to_network[20];
 #endif
@@ -451,6 +453,7 @@ int config_dlgsave(void *hdlg) {
         int temp_dynarec;
         int temp_fda_type, temp_fdb_type;
         int temp_mouse_type;
+        int temp_keyboard_type;
         int temp_lpt1_device;
         int temp_joystick_type;
 #ifdef USE_NETWORKING
@@ -519,6 +522,9 @@ int config_dlgsave(void *hdlg) {
         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOMOUSE"));
         temp_mouse_type = settings_list_to_mouse[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
 
+        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOKEYBOARD"));
+        temp_keyboard_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
+
         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOHDD"));
         c = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
         if (hdd_names[c])
@@ -535,7 +541,7 @@ int config_dlgsave(void *hdlg) {
         if (temp_model != model || gfx != gfxcard || mem != mem_size || temp_fpu != fpu_type || temp_GAMEBLASTER != GAMEBLASTER ||
             temp_GUS != GUS || temp_SSI2001 != SSI2001 || temp_sound_card_current != sound_card_current ||
             temp_voodoo != voodoo_enabled || temp_dynarec != cpu_use_dynarec || temp_fda_type != fdd_get_type(0) ||
-            temp_fdb_type != fdd_get_type(1) || temp_mouse_type != mouse_type || hdd_changed || hd_changed ||
+            temp_fdb_type != fdd_get_type(1) || temp_mouse_type != mouse_type || temp_keyboard_type != keyboard_type || hdd_changed || hd_changed ||
             cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel || lpt1_current != temp_lpt1_device
 #ifdef USE_NETWORKING
             || temp_network_card != network_card_current
@@ -558,6 +564,7 @@ int config_dlgsave(void *hdlg) {
                         voodoo_enabled = temp_voodoo;
                         cpu_use_dynarec = temp_dynarec;
                         mouse_type = temp_mouse_type;
+                        keyboard_type = temp_keyboard_type;
                         strcpy(lpt1_device_name, lpt_device_get_internal_name(temp_lpt1_device));
 #ifdef USE_NETWORKING
                         network_card_current = temp_network_card;
@@ -854,6 +861,17 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 }
                 wx_sendmessage(h, WX_CB_SETCURSEL, settings_mouse_to_list[mouse_type], 0);
 
+                h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOKEYBOARD"));
+                c = 0;
+                while (1) {
+                        const char *s = keyboard_get_name(c);
+                        if (!s)
+                                break;
+                        wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
+                        c++;
+                }
+                wx_sendmessage(h, WX_CB_SETCURSEL, keyboard_type, 0);
+
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
                 c = d = 0;
                 while (1) {
@@ -1023,17 +1041,30 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                                 if (mouse_valid(type, temp_model)) {
                                         wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
 
-                                        settings_list_to_mouse[d] = c;
-                                        d++;
-                                }
+                                settings_list_to_mouse[d] = c;
+                                d++;
+                        }
 
-                                c++;
+                        c++;
                         }
 
                         if (mouse_valid(mouse_get_type(temp_mouse_type), temp_model))
                                 wx_sendmessage(h, WX_CB_SETCURSEL, settings_mouse_to_list[temp_mouse_type], 0);
                         else
                                 wx_sendmessage(h, WX_CB_SETCURSEL, 0, 0);
+
+                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOKEYBOARD"));
+                        temp_keyboard_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
+                        wx_sendmessage(h, WX_CB_RESETCONTENT, 0, 0);
+                        c = 0;
+                        while (1) {
+                                const char *s = keyboard_get_name(c);
+                                if (!s)
+                                        break;
+                                wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
+                                c++;
+                        }
+                        wx_sendmessage(h, WX_CB_SETCURSEL, temp_keyboard_type, 0);
 
                         recalc_vid_list(hdlg, temp_model, force_builtin_video);
 

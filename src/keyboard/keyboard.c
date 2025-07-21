@@ -1,6 +1,11 @@
 #include "ibm.h"
 #include "plat-keyboard.h"
 #include "keyboard.h"
+#include "keyboard_xt.h"
+#include "keyboard_at.h"
+#include "keyboard_pcjr.h"
+#include "keyboard_olim24.h"
+#include "keyboard_none.h"
 
 int keybsendcallback = 0;
 
@@ -1482,5 +1487,47 @@ void keyboard_send_scancode(int code, int is_break) {
         } else {
                 while (scancodes[code].scancodes_break[d] != 0)
                         keyboard_send(scancodes[code].scancodes_break[d++]);
+        }
+}
+
+int keyboard_type = KEYBOARD_TYPE_AT;
+
+const char *keyboard_get_name(int type) {
+        switch (type) {
+        case KEYBOARD_TYPE_NONE:
+                return "None";
+        case KEYBOARD_TYPE_AT:
+                return "AT";
+        case KEYBOARD_TYPE_XT:
+                return "XT";
+        case KEYBOARD_TYPE_PCJR:
+                return "PCjr";
+        case KEYBOARD_TYPE_OLIM24:
+                return "Olivetti M24";
+        default:
+                return NULL;
+        }
+}
+
+void keyboard_set_type(int type) {
+        keyboard_type = type;
+
+        switch (type) {
+        case KEYBOARD_TYPE_NONE:
+                keyboard_none_init();
+                break;
+        case KEYBOARD_TYPE_XT:
+                keyboard_xt_init();
+                break;
+        case KEYBOARD_TYPE_PCJR:
+                keyboard_pcjr_init();
+                break;
+        case KEYBOARD_TYPE_OLIM24:
+                keyboard_olim24_init();
+                break;
+        case KEYBOARD_TYPE_AT:
+        default:
+                keyboard_at_init();
+                break;
         }
 }

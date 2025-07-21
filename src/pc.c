@@ -363,6 +363,7 @@ void resetpchard() {
         if (!AT && models[model]->max_ram > 640 && models[model]->max_ram <= 768 && !video_is_ega_vga())
                 mem_set_704kb();
         model_init();
+        keyboard_set_type(keyboard_type);
         mouse_emu_init();
         video_init();
         speaker_init();
@@ -765,6 +766,7 @@ void loadconfig(char *fn) {
 
         joystick_type = config_get_int(CFG_MACHINE, NULL, "joystick_type", 0);
         mouse_type = config_get_int(CFG_MACHINE, NULL, "mouse_type", 0);
+        keyboard_type = config_get_int(CFG_MACHINE, NULL, "keyboard_type", KEYBOARD_TYPE_AT);
 
         for (c = 0; c < joystick_get_max_joysticks(joystick_type); c++) {
                 sprintf(s, "joystick_%i_nr", c);
@@ -912,6 +914,7 @@ void saveconfig(char *fn) {
 
         config_set_int(CFG_MACHINE, NULL, "joystick_type", joystick_type);
         config_set_int(CFG_MACHINE, NULL, "mouse_type", mouse_type);
+        config_set_int(CFG_MACHINE, NULL, "keyboard_type", keyboard_type);
 
         for (c = 0; c < joystick_get_max_joysticks(joystick_type); c++) {
                 char s[80];

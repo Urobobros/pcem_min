@@ -9,6 +9,13 @@ extern uint8_t pcem_key[272];
 
 enum { SCANCODE_SET_1, SCANCODE_SET_2, SCANCODE_SET_3 };
 
+enum { KEYBOARD_TYPE_NONE, KEYBOARD_TYPE_AT, KEYBOARD_TYPE_XT, KEYBOARD_TYPE_PCJR, KEYBOARD_TYPE_OLIM24, KEYBOARD_TYPE_MAX };
+
+extern int keyboard_type;
+
+const char *keyboard_get_name(int type);
+void keyboard_set_type(int type);
+
 void keyboard_set_scancode_set(int set);
 void keyboard_send_scancode(int code, int is_break);
 
