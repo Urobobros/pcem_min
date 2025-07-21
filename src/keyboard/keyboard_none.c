@@ -21,9 +21,11 @@ static void keyboard_none_send(uint8_t val) {
 void keyboard_none_poll() { /* Nothing to do */ }
 
 void keyboard_none_init() {
-        /* Install dummy handlers on typical keyboard ports */
-        io_sethandler(0x0060, 0x0005, keyboard_none_read, NULL, NULL, keyboard_none_write, NULL, NULL, NULL);
-        io_sethandler(0x00a0, 0x0008, keyboard_none_read, NULL, NULL, keyboard_none_write, NULL, NULL, NULL);
+        /* Remove any existing handlers for keyboard ports so the device appears absent */
+        io_removehandler(0x0060, 0x0005, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+        io_removehandler(0x00a0, 0x0008, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+        /* Use stub callbacks so keyboard events are ignored */
         keyboard_send = keyboard_none_send;
         keyboard_poll = keyboard_none_poll;
         keyboard_scan = 0;
