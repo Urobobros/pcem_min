@@ -80,6 +80,8 @@ captured.
 
 CD-ROM support currently only accesses `/dev/cdrom`. It has not been heavily tested.
 
+Windows builds can optionally use the Windows Hypervisor Platform for faster CPU emulation via the `whpx` CPU type.
+
 ## Links
 
 ### PCem emulates the following hardware:

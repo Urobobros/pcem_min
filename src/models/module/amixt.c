@@ -7,7 +7,7 @@ void amixt_init() {
 MODEL m_amixt = {"[8088] AMI XT clone",
                  ROM_AMIXT,
                  "amixt",
-                 {{"", cpus_8088}, {"", NULL}, {"", NULL}},
+                 {{"", cpus_8088}, {"whpx", cpus_WHPX}, {"", NULL}},
                  MODEL_GFX_NONE,
                  64,
                  640,
