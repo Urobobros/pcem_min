@@ -327,6 +327,8 @@ void initpc(int argc, char *argv[]) {
 
 void resetpc() {
         cpu_set();
+        if (models[model]->cpu[cpu_manufacturer].cpus[cpu].cpu_type == CPU_WHPX)
+                whpx_init();
         pc_reset();
         cpu_set_turbo(1);
         //        cpuspeed2=(AT)?2:1;
@@ -465,7 +467,9 @@ void runpc() {
 
         startblit();
 
-        if (is386) {
+        if (models[model]->cpu[cpu_manufacturer].cpus[cpu].cpu_type == CPU_WHPX) {
+                whpx_run(cycles_to_run);
+        } else if (is386) {
                 if (cpu_use_dynarec)
                         exec386_dynarec(cycles_to_run);
                 else
@@ -563,6 +567,8 @@ void speedchanged() {
 }
 
 void closepc() {
+        if (models[model]->cpu[cpu_manufacturer].cpus[cpu].cpu_type == CPU_WHPX)
+                whpx_shutdown();
         codegen_close();
         atapi->exit();
         //        ioctl_close();
