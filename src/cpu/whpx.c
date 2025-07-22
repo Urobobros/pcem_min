@@ -119,9 +119,17 @@ void whpx_init(void)
     WHvSetupPartition(whpx_partition);
 
     whpx_mem_size = (UINT64)mem_size * 1024 + 0x100000;
-    whpx_mem = VirtualAlloc(NULL, (SIZE_T)whpx_mem_size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-    if (!whpx_mem) {
-        pclog("whpx: memory alloc failed\n");
+    /* Map PCem's RAM directly into the WHPX partition */
+    whpx_mem = ram;
+
+    HRESULT map_hr = WHvMapGpaRange(
+        whpx_partition,
+        whpx_mem,
+        0,
+        whpx_mem_size,
+        WHvMapGpaRangeFlagRead | WHvMapGpaRangeFlagWrite | WHvMapGpaRangeFlagExecute);
+    if (FAILED(map_hr)) {
+        pclog("whpx: map memory failed %lx\n", (unsigned long)map_hr);
         WHvDeletePartition(whpx_partition);
         WHvEmulatorDestroyEmulator(whpx_emulator);
         whpx_partition = NULL;
@@ -129,8 +137,6 @@ void whpx_init(void)
         return;
     }
 
-    WHvMapGpaRange(whpx_partition, whpx_mem, 0, whpx_mem_size,
-                   WHvMapGpaRangeFlagRead | WHvMapGpaRangeFlagWrite | WHvMapGpaRangeFlagExecute);
 
     WHvCreateVirtualProcessor(whpx_partition, 0, 0);
 
@@ -190,10 +196,7 @@ void whpx_shutdown(void)
         WHvDeletePartition(whpx_partition);
         whpx_partition = NULL;
     }
-    if (whpx_mem) {
-        VirtualFree(whpx_mem, 0, MEM_RELEASE);
-        whpx_mem = NULL;
-    }
+    whpx_mem = NULL;
     if (whpx_emulator) {
         WHvEmulatorDestroyEmulator(whpx_emulator);
         whpx_emulator = NULL;
