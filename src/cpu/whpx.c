@@ -16,7 +16,7 @@ static UINT64 whpx_mem_size;
 static HRESULT CALLBACK whpx_io_cb(void *ctx, WHV_EMULATOR_IO_ACCESS_INFO *io)
 {
     (void)ctx;
-    if (io->Direction == WHvIoPortDirectionOut)
+    if (io->Direction)
     {
         switch (io->AccessSize)
         {
@@ -44,7 +44,7 @@ static HRESULT CALLBACK whpx_mmio_cb(void *ctx, WHV_EMULATOR_MEMORY_ACCESS_INFO 
     (void)ctx;
     UINT64 addr = mem->GpaAddress;
     for (UINT32 i = 0; i < mem->AccessSize; i++) {
-        if (mem->Direction == WHvEmulatorMemoryAccessWrite)
+        if (mem->Direction)
             mem_writeb_phys((uint32_t)addr + i, ((uint8_t *)mem->Data)[i]);
         else
             ((uint8_t *)mem->Data)[i] = mem_readb_phys((uint32_t)addr + i);
@@ -93,11 +93,11 @@ void whpx_init(void)
 
     WHV_EMULATOR_CALLBACKS cbs = {0};
     cbs.Size = sizeof(cbs);
-    cbs.IOPortCallback = whpx_io_cb;
-    cbs.MemoryCallback = whpx_mmio_cb;
-    cbs.GetVirtualProcessorRegisters = whpx_get_regs_cb;
-    cbs.SetVirtualProcessorRegisters = whpx_set_regs_cb;
-    cbs.TranslateGvaPage = whpx_translate_cb;
+    cbs.WHvEmulatorIoPortCallback = whpx_io_cb;
+    cbs.WHvEmulatorMemoryCallback = whpx_mmio_cb;
+    cbs.WHvEmulatorGetVirtualProcessorRegisters = whpx_get_regs_cb;
+    cbs.WHvEmulatorSetVirtualProcessorRegisters = whpx_set_regs_cb;
+    cbs.WHvEmulatorTranslateGvaPage = whpx_translate_cb;
 
     hr = WHvEmulatorCreateEmulator(&cbs, &whpx_emulator);
     if (FAILED(hr)) {
