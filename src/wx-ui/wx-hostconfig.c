@@ -15,7 +15,6 @@
 
 #include "ibm.h"
 #include "config.h"
-#include "nethandler.h"
 
 #ifdef USE_PCAP_NETWORKING
 static char *dev_names[20];

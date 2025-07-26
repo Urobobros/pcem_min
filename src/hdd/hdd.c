@@ -3,11 +3,6 @@
 #include "hdd.h"
 
 #include "ide.h"
-#include "mfm_at.h"
-#include "mfm_xebec.h"
-#include "scsi_53c400.h"
-#include "scsi_aha1540.h"
-
 #include <pcem/devices.h>
 #include <pcem/defines.h>
 
@@ -142,25 +137,9 @@ static void null_hdd_close(void *p) {}
 static device_t null_hdd_device = {"Null HDD controller", 0, null_hdd_init, null_hdd_close, NULL, NULL, NULL, NULL, NULL};
 
 HDD_CONTROLLER h_none = {"None", "none", &null_hdd_device, 0, 0, 0};
-HDD_CONTROLLER h_mfm_at = {"[MFM] AT Fixed Disk Adapter", "mfm_at", &mfm_at_device, 1, 0, 0};
-HDD_CONTROLLER h_dtc5150x = {"[MFM] DTC 5150X", "dtc5150x", &dtc_5150x_device, 1, 0, 0};
-HDD_CONTROLLER h_mfm_xebec = {"[MFM] Fixed Disk Adapter (Xebec)", "mfm_xebec", &mfm_xebec_device, 1, 0, 0};
 HDD_CONTROLLER h_ide = {"[IDE] Standard IDE", "ide", &ide_device, 0, 1, 0};
-HDD_CONTROLLER h_aha1542c = {"[SCSI] Adaptec AHA-1542C", "aha1542c", &scsi_aha1542c_device, 0, 0, 1};
-HDD_CONTROLLER h_bt545s = {"[SCSI] BusLogic BT-545S", "bt545s", &scsi_bt545s_device, 0, 0, 1};
-HDD_CONTROLLER h_lcs6821n = {"[SCSI] Longshine LCS-6821N", "lcs6821n", &scsi_lcs6821n_device, 0, 0, 1};
-HDD_CONTROLLER h_rt1000b = {"[SCSI] Rancho RT1000B", "rt1000b", &scsi_rt1000b_device, 0, 0, 1};
-HDD_CONTROLLER h_t130b = {"[SCSI] Trantor T130B", "t130b", &scsi_t130b_device, 0, 0, 1};
 
 void hdd_controller_init_builtin() {
         pcem_add_hddcontroller(&h_none);
-        pcem_add_hddcontroller(&h_mfm_at);
-        pcem_add_hddcontroller(&h_dtc5150x);
-        pcem_add_hddcontroller(&h_mfm_xebec);
         pcem_add_hddcontroller(&h_ide);
-        pcem_add_hddcontroller(&h_aha1542c);
-        pcem_add_hddcontroller(&h_bt545s);
-        pcem_add_hddcontroller(&h_lcs6821n);
-        pcem_add_hddcontroller(&h_rt1000b);
-        pcem_add_hddcontroller(&h_t130b);
 }

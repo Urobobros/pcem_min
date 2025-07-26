@@ -35,7 +35,6 @@
 #include "disc_img.h"
 #include "mem.h"
 #include "paths.h"
-#include "nethandler.h"
 
 #include "wx-sdl2-video.h"
 #include "wx-utils.h"

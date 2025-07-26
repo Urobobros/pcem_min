@@ -11,7 +11,6 @@
 #include "model.h"
 #include "mouse.h"
 #include "mem.h"
-#include "nethandler.h"
 #include "nvr.h"
 #include "scsi_cd.h"
 #include "sound.h"
