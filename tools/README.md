@@ -39,3 +39,7 @@ nasm -f bin ami_8088_bios_31jan89.asm -o ami_8088_bios_31jan89_rebuilt.bin
 
 Recreating the original binary exactly is difficult, but the process can help
 when experimenting with small modifications.
+
+## BIOS Modification FAR Plan
+
+Detailed step-by-step notes for modifying `ami_8088_bios_31jan89.bin` are kept in the `far/` directory. The scripts there (such as `tools/far.sh`) show how to disassemble with `radare2`, rebuild with `nasm`, and patch the binary using `dd`.
