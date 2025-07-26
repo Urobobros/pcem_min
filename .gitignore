@@ -112,6 +112,7 @@ StyleCopReport.xml
 *_wpftmp.csproj
 *.
 !/log_ami_xt_clone*
+!/logs
 *.tlog
 *.vspscc
 *.vssscc
