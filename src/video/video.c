@@ -5,7 +5,6 @@
 #include "device.h"
 #include "mem.h"
 #include "video.h"
-#include "vid_svga.h"
 #include "io.h"
 #include "cpu.h"
 #include "rom.h"

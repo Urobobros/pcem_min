@@ -239,7 +239,6 @@ void initpc(int argc, char *argv[]) {
         atfullspeed = 0;
 
         device_init();
-        viewer_reset();
 
         initvideo();
         mem_init();
@@ -331,9 +330,7 @@ void resetpc_cad() {
 void resetpchard() {
         device_close_all();
         mouse_emu_close();
-        viewer_close_all();
         device_init();
-        viewer_reset();
 
         timer_reset();
         sound_reset();
