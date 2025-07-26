@@ -6,5 +6,6 @@
         "mouse_serial.h": "c",
         "ide.h": "c",
         "pic.h": "c",
+        "vid_pc1512.h": "c"
     }
 }

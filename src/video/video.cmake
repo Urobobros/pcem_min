@@ -7,23 +7,6 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ht216.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_icd2061.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ics2595.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_im1024.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_incolor.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_mda.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_mga.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_olivetti_m24.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_oti037.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_oti067.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_paradise.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_pc1512.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_pc1640.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_pc200.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_pcjr.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_pgc.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ps1_svga.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_quadcolor.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_s3.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_s3_virge.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_sdac_ramdac.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_sigma.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_stg_ramdac.h
@@ -40,34 +23,10 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_tvp3026_ramdac.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_unk_ramdac.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_vga.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_banshee_blitter.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_banshee.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_blitter.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_codegen_x86-64.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_codegen_x86.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_common.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_display.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_dither.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_fb.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_fifo.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_reg.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_regs.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_render.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_setup.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_voodoo_texture.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_wy700.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ati18800.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ati28800.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ati68860_ramdac.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ati_eeprom.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ati_mach64.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_cga.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_cl5429.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_colorplus.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_compaq_cga.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ddc.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ega.h
         )
 
 if(USE_EXPERIMENTAL AND USE_EXPERIMENTAL_PGC)
@@ -75,17 +34,7 @@ if(USE_EXPERIMENTAL AND USE_EXPERIMENTAL_PGC)
 endif()
 
 set(PCEM_SRC ${PCEM_SRC}
-        video/vid_ati18800.c
-        video/vid_ati28800.c
-        video/vid_ati68860_ramdac.c
-        video/vid_ati_eeprom.c
-        video/vid_ati_mach64.c
         video/vid_cga.c
-        video/vid_cl5429.c
-        video/vid_colorplus.c
-        video/vid_compaq_cga.c
-        video/vid_ddc.c
-        video/vid_ega.c
         video/vid_et4000.c
         video/vid_et4000w32.c
         video/vid_genius.c
@@ -93,22 +42,7 @@ set(PCEM_SRC ${PCEM_SRC}
         video/vid_ht216.c
         video/vid_icd2061.c
         video/vid_ics2595.c
-        video/vid_im1024.c
         video/vid_incolor.c
-        video/vid_mda.c
-        video/vid_mga.c
-        video/vid_olivetti_m24.c
-        video/vid_oti037.c
-        video/vid_paradise.c
-        video/vid_pc1512.c
-        video/vid_pc1640.c
-        video/vid_pc200.c
-        video/vid_pcjr.c
-        video/vid_pgc.c
-        video/vid_ps1_svga.c
-        video/vid_quadcolor.c
-        video/vid_s3.c
-        video/vid_s3_virge.c
         video/vid_sdac_ramdac.c
         video/vid_sigma.c
         video/vid_stg_ramdac.c
@@ -124,17 +58,6 @@ set(PCEM_SRC ${PCEM_SRC}
         video/vid_tvp3026_ramdac.c
         video/vid_unk_ramdac.c
         video/vid_vga.c
-        video/vid_voodoo.c
-        video/vid_voodoo_banshee.c
-        video/vid_voodoo_banshee_blitter.c
-        video/vid_voodoo_blitter.c
-        video/vid_voodoo_display.c
-        video/vid_voodoo_fb.c
-        video/vid_voodoo_fifo.c
-        video/vid_voodoo_reg.c
-        video/vid_voodoo_render.c
-        video/vid_voodoo_setup.c
-        video/vid_voodoo_texture.c
         video/vid_wy700.c
         video/video.c
         )

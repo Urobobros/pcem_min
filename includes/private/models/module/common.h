@@ -48,7 +48,6 @@
 #include "sst39sf010.h"
 #include "tandy_eeprom.h"
 #include "tandy_rom.h"
-#include "vid_pcjr.h"
 #include "vid_tandy.h"
 #include "vid_t1000.h"
 #include <pcem/devices.h>
