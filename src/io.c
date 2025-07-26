@@ -4,6 +4,13 @@
 #include "video.h"
 #include "cpu.h"
 
+#ifdef PORT_DEBUG
+#include <pcem/portlog.h>
+#define PORT_LOG(fmt, ...) portlog(fmt, __VA_ARGS__)
+#else
+#define PORT_LOG(fmt, ...)
+#endif
+
 uint8_t (*port_inb[0x10000][2])(uint16_t addr, void *priv);
 uint16_t (*port_inw[0x10000][2])(uint16_t addr, void *priv);
 uint32_t (*port_inl[0x10000][2])(uint16_t addr, void *priv);
@@ -99,6 +106,7 @@ int hsync;
 uint8_t lpt2dat;
 int sw9;
 int t237 = 0;
+
 uint8_t inb(uint16_t port) {
         uint8_t temp = 0xff;
 
@@ -106,6 +114,8 @@ uint8_t inb(uint16_t port) {
                 temp &= port_inb[port][0](port, port_priv[port][0]);
         if (port_inb[port][1])
                 temp &= port_inb[port][1](port, port_priv[port][1]);
+
+        PORT_LOG("IN  port 0x%04X, size 1, value 0x%02X\n", port, temp);
 
         /*           if (!port_inb[port][0] && !port_inb[port][1])
                         pclog("Bad INB %04X %04X:%04X\n", port, CS, pc);*/
@@ -116,6 +126,7 @@ uint8_t inb(uint16_t port) {
 uint8_t cpu_readport(uint32_t port) { return inb(port); }
 
 void outb(uint16_t port, uint8_t val) {
+        PORT_LOG("OUT port 0x%04X, size 1, value 0x%02X\n", port, val);
         if (port_outb[port][0])
                 port_outb[port][0](port, val, port_priv[port][0]);
         if (port_outb[port][1])
@@ -128,18 +139,25 @@ void outb(uint16_t port, uint8_t val) {
 
 uint16_t inw(uint16_t port) {
         //        pclog("INW %04X\n", port);
+        uint16_t val;
         if (port_inw[port][0])
-                return port_inw[port][0](port, port_priv[port][0]);
-        if (port_inw[port][1])
-                return port_inw[port][1](port, port_priv[port][1]);
+                val = port_inw[port][0](port, port_priv[port][0]);
+        else if (port_inw[port][1])
+                val = port_inw[port][1](port, port_priv[port][1]);
+        else
+                val = inb(port) | (inb(port + 1) << 8);
 
-        return inb(port) | (inb(port + 1) << 8);
+        PORT_LOG("IN  port 0x%04X, size 2, value 0x%04X\n", port, val);
+
+        return val;
 }
 
 void outw(uint16_t port, uint16_t val) {
         //        printf("OUTW %04X %04X %04X:%08X\n",port,val, CS, pc);
         /*        if ((port & ~0xf) == 0xf000)
                    pclog("OUTW %04X %04X\n", port, val);*/
+
+        PORT_LOG("OUT port 0x%04X, size 2, value 0x%04X\n", port, val);
 
         if (port_outw[port][0])
                 port_outw[port][0](port, val, port_priv[port][0]);
@@ -155,17 +173,24 @@ void outw(uint16_t port, uint16_t val) {
 
 uint32_t inl(uint16_t port) {
         //        pclog("INL %04X\n", port);
+        uint32_t val;
         if (port_inl[port][0])
-                return port_inl[port][0](port, port_priv[port][0]);
-        if (port_inl[port][1])
-                return port_inl[port][1](port, port_priv[port][1]);
+                val = port_inl[port][0](port, port_priv[port][0]);
+        else if (port_inl[port][1])
+                val = port_inl[port][1](port, port_priv[port][1]);
+        else
+                val = inw(port) | (inw(port + 2) << 16);
 
-        return inw(port) | (inw(port + 2) << 16);
+        PORT_LOG("IN  port 0x%04X, size 4, value 0x%08X\n", port, val);
+
+        return val;
 }
 
 void outl(uint16_t port, uint32_t val) {
         /*        if ((port & ~0xf) == 0xf000)
                    pclog("OUTL %04X %08X\n", port, val);*/
+
+        PORT_LOG("OUT port 0x%04X, size 4, value 0x%08X\n", port, val);
 
         if (port_outl[port][0])
                 port_outl[port][0](port, val, port_priv[port][0]);

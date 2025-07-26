@@ -59,6 +59,7 @@ If you are using -DCMAKE_BUILD_TYPE=Debug, there are some more debug options you
   -DPCEM_SB_DSP_RECORD_DEBUG=OFF   : Build PCem with SB_DSP_RECORD_DEBUG debug output
   -DPCEM_MACH64_DEBUG=OFF          : Build PCem with MACH64_DEBUG debug output
   -DPCEM_DEBUG_EXTRA=OFF           : Build PCem with DEBUG_EXTRA debug output
+  -DPCEM_PORT_DEBUG=OFF            : Log all port I/O to a separate file
 ```
 
 If you are using -DCMAKE_BUILD_TYPE=RelWithDebInfo, there are additional options you can do

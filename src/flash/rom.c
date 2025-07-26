@@ -62,6 +62,8 @@ int rom_init(rom_t *rom, char *fn, uint32_t address, int size, int mask, int fil
         fread(rom->rom, size, 1, f);
         fclose(f);
 
+        pclog("BIOS loaded from %s (%d bytes)\n", fn, size);
+
         rom->mask = mask;
 
         mem_mapping_add(&rom->mapping, address, size, rom_read, rom_readw, rom_readl, mem_write_null, mem_write_nullw,
