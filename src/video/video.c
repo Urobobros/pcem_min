@@ -14,14 +14,8 @@
 
 #include "vid_cga.h"
 #include "vid_sigma.h"
-#include "vid_tandy.h"
-#include "vid_tandysl.h"
-#include "vid_tgui9440.h"
-#include "vid_tvga.h"
 #include "vid_vga.h"
 #include "vid_wy700.h"
-#include "vid_t3100e.h"
-#include "vid_t1000.h"
 
 #include <pcem/devices.h>
 
@@ -37,15 +31,6 @@ enum { VIDEO_ISA = 0, VIDEO_BUS };
 VIDEO_CARD v_cga = {"CGA", "cga", &cga_device, GFX_CGA, VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 VIDEO_CARD v_sigma400 = {"Sigma Color 400", "sigma400",          &sigma_device,
                          GFX_SIGMA400,      VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
-VIDEO_CARD v_tvga8900d = {"Trident TVGA8900D",           "tvga8900d", &tvga8900d_device, GFX_TVGA, VIDEO_FLAG_TYPE_SPECIAL,
-                          {VIDEO_ISA, 3, 3, 6, 8, 8, 12}};
-VIDEO_CARD v_tvga9000b = {"Trident TVGA9000B",     "tvga9000b",
-                          &tvga9000b_device,       GFX_TVGA9000B,
-                          VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_ISA, 7, 7, 12, 7, 7, 12}};
-VIDEO_CARD v_tgui9400cxi = {"Trident TGUI9400CXi", "tgui9400cxi",           &tgui9400cxi_device,
-                            GFX_TGUI9400CXI,       VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_BUS, 4, 8, 16, 4, 8, 16}};
-VIDEO_CARD v_tgui9440 = {
-        "Trident TGUI9440", "tgui9440", &tgui9440_device, GFX_TGUI9440, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_BUS, 4, 8, 16, 4, 8, 16}};
 VIDEO_CARD v_vga = {"VGA", "vga", &vga_device, GFX_VGA, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 VIDEO_CARD v_wy700 = {"Wyse 700", "wy700", &wy700_device, GFX_WY700, VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 
@@ -89,13 +74,6 @@ char *video_card_getname(int card) {
 
 device_t *video_card_getdevice(int card, int romset) {
         switch (romset) {
-        case ROM_TANDY:
-        case ROM_TANDY1000HX:
-                return &tandy_device;
-
-        case ROM_TANDY1000SL2:
-                return &tandysl_device;
-
         case ROM_IBMPS1_2011:
         case ROM_IBMPS2_M30_286:
                 return &ps1vga_device;
@@ -108,17 +86,6 @@ device_t *video_card_getdevice(int card, int romset) {
                 if (card == GFX_BUILTIN)
                         return &ps1vga_device;
                 break;
-
-        case ROM_T3100E:
-                return &t3100e_device;
-
-        case ROM_T1000:
-        case ROM_T1200:
-                return &t1000_device;
-
-        case ROM_ELX_PC425X:
-                return &tgui9400cxi_elx_device;
-
 
         }
         return video_cards[card]->device;
@@ -530,15 +497,6 @@ void video_init() {
         pclog("Video_init %i %i\n", romset, gfxcard);
 
         switch (romset) {
-        case ROM_TANDY:
-        case ROM_TANDY1000HX:
-                device_add(&tandy_device);
-                return;
-
-        case ROM_TANDY1000SL2:
-                device_add(&tandysl_device);
-                return;
-
         case ROM_IBMPS1_2011:
         case ROM_IBMPS2_M30_286:
                 device_add(&ps1vga_device);
@@ -553,19 +511,6 @@ void video_init() {
                 if (gfxcard == GFX_BUILTIN)
                         return;
                 break;
-
-        case ROM_T3100E:
-                device_add(&t3100e_device);
-                return;
-
-        case ROM_T1000:
-        case ROM_T1200:
-                device_add(&t1000_device);
-                return;
-
-        case ROM_ELX_PC425X:
-                device_add(&tgui9400cxi_elx_device);
-                return;
 
         }
         device_add(video_cards[video_old_to_new(gfxcard)]->device);
@@ -960,10 +905,6 @@ void video_init_builtin() {
         pcem_add_video(&v_pgc);
 #endif
         pcem_add_video(&v_sigma400);
-        pcem_add_video(&v_tvga8900d);
-        pcem_add_video(&v_tvga9000b);
-        pcem_add_video(&v_tgui9400cxi);
-        pcem_add_video(&v_tgui9440);
         pcem_add_video(&v_vga);
         pcem_add_video(&v_wy700);
 }
