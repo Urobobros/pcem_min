@@ -39,9 +39,6 @@
 #include "sio.h"
 #include "sis496.h"
 #include "sl82c460.h"
-#include "sound_ps1.h"
-#include "sound_pssj.h"
-#include "sound_sn76489.h"
 #include "superxt.h"
 #include <pcem/devices.h>
 void xt_init();

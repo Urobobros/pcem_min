@@ -26,7 +26,6 @@
 #include "dma.h"
 #include "fdc.h"
 #include "fdd.h"
-#include "sound_gus.h"
 #include "ide.h"
 #include "io.h"
 #include "keyboard.h"
@@ -37,18 +36,12 @@
 #include "pic.h"
 #include "pit.h"
 #include "plat-keyboard.h"
-#include "plat-midi.h"
 #include "plat-mouse.h"
 #include "scsi_cd.h"
 #include "scsi_zip.h"
 #include "serial.h"
 #include "sound.h"
-#include "sound_cms.h"
-#include "sound_dbopl.h"
-#include "sound_opl.h"
-#include "sound_sb.h"
 #include "sound_speaker.h"
-#include "sound_ssi2001.h"
 #include "timer.h"
 #include "video.h"
 #include "hdd.h"
@@ -350,12 +343,6 @@ void resetpchard() {
         speaker_init();
      
         sound_card_init();
-        if (GUS)
-                device_add(&gus_device);
-        if (GAMEBLASTER)
-                device_add(&cms_device);
-        if (SSI2001)
-                device_add(&ssi2001_device);
         hdd_controller_init(hdd_controller_name);
         pc_reset();
 

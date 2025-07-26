@@ -28,7 +28,6 @@
 #include "model.h"
 #include "mouse.h"
 #include "nvr.h"
-#include "plat-midi.h"
 #include "scsi_zip.h"
 #include "sound.h"
 #include "thread.h"
@@ -561,7 +560,6 @@ int start_emulation(void *params) {
 
         loadbios();
         resetpchard();
-        midi_init();
 
         display_start(params);
         mainthreadh = SDL_CreateThread(mainthread, "Main Thread", NULL);
@@ -611,7 +609,6 @@ int stop_emulation() {
         SDL_DestroyMutex(ghMutex);
 
         device_close_all();
-        midi_close();
 
         pclog("Emulation stopped.\n");
 

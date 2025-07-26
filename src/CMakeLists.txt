@@ -12,7 +12,6 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/pgc_palettes.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-dinput.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-keyboard.h
-        ${CMAKE_SOURCE_DIR}/includes/private/plat-midi.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-mouse.h
         ${CMAKE_SOURCE_DIR}/includes/private/pzx.h
         ${CMAKE_SOURCE_DIR}/includes/private/resources.h

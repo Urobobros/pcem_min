@@ -7,7 +7,6 @@
 #include "pic.h"
 #include "pit.h"
 #include "sound.h"
-#include "sound_sn76489.h"
 #include "sound_speaker.h"
 #include "timer.h"
 
@@ -123,13 +122,11 @@ void keyboard_pcjr_write(uint16_t port, uint8_t val, void *priv) {
                 if (speaker_enable)
                         was_speaker_enable = 1;
                 pit_set_gate(&pit, 2, val & 1);
-                sn76489_mute = speaker_mute = 1;
                 switch (val & 0x60) {
                 case 0x00:
                         speaker_mute = 0;
                         break;
                 case 0x60:
-                        sn76489_mute = 0;
                         break;
                 }
                 break;
