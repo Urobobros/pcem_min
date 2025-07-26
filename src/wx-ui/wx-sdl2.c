@@ -450,9 +450,6 @@ int pc_main(int argc, char **argv) {
         video_init_builtin();
         sound_init_builtin();
         hdd_controller_init_builtin();
-#ifdef USE_NETWORKING
-        network_card_init_builtin();
-#endif
 
         add_config_callback(sdl_loadconfig, sdl_saveconfig, sdl_onconfigloaded);
         add_config_callback(wx_loadconfig, wx_saveconfig, 0);

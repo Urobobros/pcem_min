@@ -29,9 +29,6 @@ extern int is486;
 static int romstolist[ROM_MAX], listtomodel[ROM_MAX], romstomodel[ROM_MAX], modeltolist[ROM_MAX];
 static int settings_sound_to_list[20], settings_list_to_sound[20];
 static int settings_mouse_to_list[20], settings_list_to_mouse[20];
-#ifdef USE_NETWORKING
-static int settings_network_to_list[20], settings_list_to_network[20];
-#endif
 static char *hdd_names[16];
 static void *eventBinder;
 
@@ -400,46 +397,6 @@ static void recalc_cd_list(void *hdlg, int cur_speed, char *cur_model) {
                 wx_sendmessage(h, WX_CB_SETCURSEL, 0, 0); // fall back TODO: is this necessary?
 }
 
-#ifdef USE_NETWORKING
-static void recalc_net_list(void *hdlg, int model) {
-        void *h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-        int c = 0, d = 0;
-        int found_card = 0;
-
-        wx_sendmessage(h, WX_CB_RESETCONTENT, 0, 0);
-
-        while (1) {
-                char *s = network_card_getname(c);
-                device_t *dev;
-
-                if (!s[0])
-                        break;
-
-                settings_network_to_list[c] = d;
-
-                dev = network_card_getdevice(c);
-
-                if (network_card_available(c) && (!dev || (models[model]->flags & MODEL_PCI) || !(dev->flags & DEVICE_PCI))) {
-                        device_t *network_dev = network_card_getdevice(c);
-
-                        if (!network_dev || (network_dev->flags & DEVICE_MCA) == (models[model]->flags & MODEL_MCA)) {
-                                wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
-                                settings_list_to_network[d] = c;
-                                if (c == network_card_current) {
-                                        wx_sendmessage(h, WX_CB_SETCURSEL, d, 0);
-                                        found_card = 1;
-                                }
-                                d++;
-                        }
-                }
-
-                c++;
-        }
-        if (!found_card)
-                wx_sendmessage(h, WX_CB_SETCURSEL, 0, 0);
-}
-#endif
-
 int config_dlgsave(void *hdlg) {
         char temp_str[256];
         void *h;
@@ -452,9 +409,6 @@ int config_dlgsave(void *hdlg) {
         int temp_mouse_type;
         int temp_lpt1_device;
         int temp_joystick_type;
-#ifdef USE_NETWORKING
-        int temp_network_card;
-#endif
         int hdd_changed = 0;
         char s[260];
         PcemHDC hd[7];
@@ -526,19 +480,11 @@ int config_dlgsave(void *hdlg) {
         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
         temp_lpt1_device = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
 
-#ifdef USE_NETWORKING
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-        temp_network_card = settings_list_to_network[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
-#endif
-
         if (temp_model != model || gfx != gfxcard || mem != mem_size || temp_fpu != fpu_type || temp_GAMEBLASTER != GAMEBLASTER ||
             temp_GUS != GUS || temp_SSI2001 != SSI2001 || temp_sound_card_current != sound_card_current ||
             temp_voodoo != voodoo_enabled || temp_dynarec != cpu_use_dynarec || temp_fda_type != fdd_get_type(0) ||
             temp_fdb_type != fdd_get_type(1) || temp_mouse_type != mouse_type || hdd_changed || hd_changed ||
             cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel 
-#ifdef USE_NETWORKING
-            || temp_network_card != network_card_current
-#endif
         ) {
                 if (!has_been_inited || confirm()) {
                         savenvr();
@@ -557,9 +503,6 @@ int config_dlgsave(void *hdlg) {
                         cpu_use_dynarec = temp_dynarec;
                         mouse_type = temp_mouse_type;
                        
-#ifdef USE_NETWORKING
-                        network_card_current = temp_network_card;
-#endif
 
                         fdd_set_type(0, temp_fda_type);
                         fdd_set_type(1, temp_fdb_type);
@@ -644,9 +587,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
         int cpu_type;
         int temp_cd_model, temp_cd_speed;
         int temp_mouse_type;
-#ifdef USE_NETWORKING
-        int temp_network_card;
-#endif
 
         switch (message) {
         case WX_INITDIALOG: {
@@ -875,16 +815,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                 recalc_cd_list(hdlg, cd_speed, cd_model);
 
-#ifdef USE_NETWORKING
-                recalc_net_list(hdlg, romstomodel[romset]);
-
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURE_NETCARD"));
-                if (network_card_has_config(network_card_current))
-                        wx_enablewindow(h, TRUE);
-                else
-                        wx_enablewindow(h, FALSE);
-#endif
-
                 return TRUE;
         } break;
         case WX_COMMAND: {
@@ -1024,9 +954,7 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                         recalc_cd_list(hdlg, cd_get_speed(temp_cd_speed), cd_get_model(temp_cd_model));
 
                         recalc_snd_list(hdlg, temp_model);
-#ifdef USE_NETWORKING
-                        recalc_net_list(hdlg, temp_model);
-#endif
+
                 } else if (wParam == WX_ID("IDC_COMBOCPUM")) {
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));
                         temp_model = listtomodel[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
@@ -1166,23 +1094,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                         temp_cd_speed = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
                         recalc_cd_list(hdlg, cd_get_speed(temp_cd_speed), cd_get_model(temp_cd_model));
                 }
-#ifdef USE_NETWORKING
-                else if (wParam == WX_ID("IDC_COMBO_NETCARD")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-                        temp_network_card = settings_list_to_network[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURE_NETCARD"));
-                        if (network_card_has_config(temp_network_card))
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
-                } else if (wParam == WX_ID("IDC_CONFIGURE_NETCARD")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-                        temp_network_card = settings_list_to_network[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
-
-                        deviceconfig_open(hdlg, (void *)network_card_getdevice(temp_network_card));
-                }
-#endif
                 else if (wParam == WX_ID("IDC_COMBOJOY")) {
                         int temp_joystick_type;
 

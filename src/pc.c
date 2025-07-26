@@ -59,14 +59,6 @@
 #include "plugin.h"
 #include "viewer.h"
 
-#ifdef USE_NETWORKING
-#include "nethandler.h"
-#include "wx-utils.h"
-#define NE2000 1
-uint8_t ethif;
-int inum;
-#endif
-
 int GAMEBLASTER, GUS, SSI2001, voodoo_enabled;
 int gfxcard;
 int readflash;
@@ -273,10 +265,6 @@ void initpc(int argc, char *argv[]) {
         disc_init();
         fdi_init();
         img_init();
-#ifdef USE_NETWORKING
-        vlan_reset(); // NETWORK
-        network_card_init();
-#endif
 
         // loadfont();
         loadnvr();
@@ -366,12 +354,6 @@ void resetpchard() {
         video_init();
         speaker_init();
      
-
-#ifdef USE_NETWORKING
-        vlan_reset(); // NETWORK
-        network_card_init();
-#endif
-
         sound_card_init();
         if (GUS)
                 device_add(&gus_device);
@@ -790,19 +772,6 @@ void loadconfig(char *fn) {
 
         p = (char *)config_get_string(CFG_MACHINE, NULL, "lpt1_device", "");
 
-#ifdef USE_NETWORKING
-        // network
-        ethif = config_get_int(CFG_GLOBAL, NULL, "netinterface", 1);
-        if (ethif >= inum)
-                inum = ethif + 1;
-
-        p = (char *)config_get_string(CFG_MACHINE, NULL, "netcard", "");
-        if (p)
-                network_card_current = network_card_get_from_internal_name(p);
-        else
-                network_card_current = 0;
-#endif
-
         for (d = 0; d < num_config_callbacks; ++d)
                 if (config_callbacks[d].loadconfig)
                         config_callbacks[d].loadconfig();
@@ -928,11 +897,6 @@ void saveconfig(char *fn) {
         }
 
         config_set_int(CFG_MACHINE, NULL, "enable_sync", enable_sync);
-
-#ifdef USE_NETWORKING
-        config_set_int(CFG_GLOBAL, NULL, "netinterface", ethif);
-        config_set_string(CFG_MACHINE, NULL, "netcard", network_card_get_internal_name(network_card_current));
-#endif
 
         for (d = 0; d < num_config_callbacks; ++d)
                 if (config_callbacks[d].saveconfig)

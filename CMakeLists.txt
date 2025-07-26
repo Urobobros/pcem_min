@@ -63,17 +63,6 @@ message("***************************************************************")
 option(PLUGIN_ENGINE "Build PCem with plugin support" ON)
 message("Plugin Support: ${PLUGIN_ENGINE}")
 
-option(USE_NETWORKING "Build PCem with networking support" ON)
-message("Networking Support: ${USE_NETWORKING}")
-
-if(USE_NETWORKING)
-# Turning off to see if it does build with CLang, I think it passes warnings but still builds.
-#        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=gnu17")
-#        message("       Switching C to gnu17 to allow slirp to build")
-        option(USE_PCAP_NETWORKING "Build PCem with PCAP support" ON)
-        message("       PCAP Networking Support: ${USE_PCAP_NETWORKING}")
-endif()
-
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         option(USE_ALSA "Build PCem with MIDI output using ALSA" OFF)
         message("ALSA MIDI Support: ${USE_ALSA}")
@@ -128,8 +117,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebIn
         message("       SLIRP_DEBUG debug output: ${PCEM_SLIRP_DEBUG}")
         option(PCEM_RECOMPILER_DEBUG "Build PCem with RECOMPILER_DEBUG debug output" OFF)
         message("       RECOMPILER_DEBUG debug output: ${PCEM_RECOMPILER_DEBUG}")
-        option(PCEM_NE2000_DEBUG "Build PCem with NE2000_DEBUG debug output" OFF)
-        message("       NE2000_DEBUG debug output: ${PCEM_NE2000_DEBUG}")
         option(PCEM_EMU8K_DEBUG_REGISTERS "Build PCem with EMU8K_DEBUG_REGISTERS debug output" OFF)
         message("       EMU8K_DEBUG_REGISTERS debug output: ${PCEM_EMU8K_DEBUG_REGISTERS}")
         option(PCEM_SB_DSP_RECORD_DEBUG "Build PCem with SB_DSP_RECORD_DEBUG debug output" OFF)
@@ -196,11 +183,6 @@ endif()
 if(USE_ALSA)
         find_package(ALSA REQUIRED)
         include_directories(${ALSA_INCLUDE_DIRS})
-endif()
-
-if(USE_NETWORKING AND USE_PCAP_NETWORKING)
-        find_package(PCAP REQUIRED)
-        include_directories(${PCAP_INCLUDE_DIR})
 endif()
 
 find_package(OpenGL REQUIRED)

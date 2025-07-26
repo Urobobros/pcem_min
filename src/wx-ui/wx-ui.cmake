@@ -55,12 +55,6 @@ set(PCEM_SRC ${PCEM_SRC}
         ${CMAKE_CURRENT_BINARY_DIR}/wx-ui/wx-resources.cpp
         )
 
-if(USE_NETWORKING)
-        set(PCEM_SRC ${PCEM_SRC}
-                wx-ui/wx-hostconfig.c
-                )
-endif()
-
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         set(PCEM_SRC ${PCEM_SRC}
                 wx-ui/wx-sdl2-display.c
