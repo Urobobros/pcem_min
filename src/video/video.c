@@ -13,12 +13,6 @@
 #include "timer.h"
 
 #include "vid_cga.h"
-#include "vid_et4000.h"
-#include "vid_et4000w32.h"
-#include "vid_genius.h"
-#include "vid_hercules.h"
-#include "vid_ht216.h"
-#include "vid_incolor.h"
 #include "vid_sigma.h"
 #include "vid_tandy.h"
 #include "vid_tandysl.h"
@@ -41,21 +35,6 @@ enum { VIDEO_ISA = 0, VIDEO_BUS };
 #define VIDEO_FLAG_TYPE_MASK 3
 
 VIDEO_CARD v_cga = {"CGA", "cga", &cga_device, GFX_CGA, VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
-VIDEO_CARD v_stealth32 = {
-        "Diamond Stealth 32 (Tseng ET4000/w32p)", "stealth32", &et4000w32p_device, GFX_ET4000W32, VIDEO_FLAG_TYPE_SPECIAL,
-        {VIDEO_BUS, 4, 4, 4, 10, 10, 10}};
-VIDEO_CARD v_hercules = {"Hercules",   "hercules",          &hercules_device,
-                         GFX_HERCULES, VIDEO_FLAG_TYPE_MDA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
-VIDEO_CARD v_incolor = {"Hercules InColor", "incolor",           &incolor_device,
-                        GFX_INCOLOR,        VIDEO_FLAG_TYPE_MDA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
-VIDEO_CARD v_kasan16 = {"Kasan Hangulmadang-16 (Tseng ET4000AX)",
-                        "kasan16",
-                        &et4000_kasan_device,
-                        GFX_KASAN16VGA,
-                        VIDEO_FLAG_TYPE_SPECIAL,
-                        {VIDEO_ISA, 3, 3, 6, 5, 5, 10}};
-VIDEO_CARD v_genius = {
-        "MDSI Genius", "genius", &genius_device, GFX_GENIUS, VIDEO_FLAG_TYPE_MDA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 VIDEO_CARD v_sigma400 = {"Sigma Color 400", "sigma400",          &sigma_device,
                          GFX_SIGMA400,      VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 VIDEO_CARD v_tvga8900d = {"Trident TVGA8900D",           "tvga8900d", &tvga8900d_device, GFX_TVGA, VIDEO_FLAG_TYPE_SPECIAL,
@@ -67,11 +46,6 @@ VIDEO_CARD v_tgui9400cxi = {"Trident TGUI9400CXi", "tgui9400cxi",           &tgu
                             GFX_TGUI9400CXI,       VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_BUS, 4, 8, 16, 4, 8, 16}};
 VIDEO_CARD v_tgui9440 = {
         "Trident TGUI9440", "tgui9440", &tgui9440_device, GFX_TGUI9440, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_BUS, 4, 8, 16, 4, 8, 16}};
-VIDEO_CARD v_tgkorvga = {
-        "Trigem Korean VGA (Tseng ET4000AX)", "tgkorvga", &et4000k_device, GFX_TGKOREANVGA, VIDEO_FLAG_TYPE_SPECIAL,
-        {VIDEO_ISA, 3, 3, 6, 5, 5, 10}};
-VIDEO_CARD v_et4000ax = {
-        "Tseng ET4000AX", "et4000ax", &et4000_device, GFX_ET4000, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_ISA, 3, 3, 6, 5, 5, 10}};
 VIDEO_CARD v_vga = {"VGA", "vga", &vga_device, GFX_VGA, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 VIDEO_CARD v_wy700 = {"Wyse 700", "wy700", &wy700_device, GFX_WY700, VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 
@@ -145,8 +119,6 @@ device_t *video_card_getdevice(int card, int romset) {
         case ROM_ELX_PC425X:
                 return &tgui9400cxi_elx_device;
 
-        case ROM_PB410A:
-                return &ht216_32_pb410a_device;
 
         }
         return video_cards[card]->device;
@@ -595,13 +567,6 @@ void video_init() {
                 device_add(&tgui9400cxi_elx_device);
                 return;
 
-        case ROM_PB410A:
-                device_add(&ht216_32_pb410a_device);
-                if (gfxcard != GFX_BUILTIN) {
-                        svga_set_override(svga_get_pri(), 1);
-                        break;
-                }
-                return;
         }
         device_add(video_cards[video_old_to_new(gfxcard)]->device);
 }
@@ -991,11 +956,6 @@ void cgapal_rebuild(int display_type, int contrast) {
 
 void video_init_builtin() {
         pcem_add_video(&v_cga);
-        pcem_add_video(&v_stealth32);
-        pcem_add_video(&v_hercules);
-        pcem_add_video(&v_incolor);
-        pcem_add_video(&v_kasan16);
-        pcem_add_video(&v_genius);
 #ifdef USE_EXPERIMENTAL_PGC
         pcem_add_video(&v_pgc);
 #endif
@@ -1004,8 +964,6 @@ void video_init_builtin() {
         pcem_add_video(&v_tvga9000b);
         pcem_add_video(&v_tgui9400cxi);
         pcem_add_video(&v_tgui9440);
-        pcem_add_video(&v_tgkorvga);
-        pcem_add_video(&v_et4000ax);
         pcem_add_video(&v_vga);
         pcem_add_video(&v_wy700);
 }

@@ -1,12 +1,5 @@
 set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/video/video.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_et4000.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_et4000w32.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_genius.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_hercules.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ht216.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_icd2061.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ics2595.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_sdac_ramdac.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_sigma.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_stg_ramdac.h
@@ -26,7 +19,6 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_wy700.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ati_eeprom.h
         ${CMAKE_SOURCE_DIR}/includes/private/video/vid_cga.h
-        ${CMAKE_SOURCE_DIR}/includes/private/video/vid_ddc.h
         )
 
 if(USE_EXPERIMENTAL AND USE_EXPERIMENTAL_PGC)
@@ -35,14 +27,6 @@ endif()
 
 set(PCEM_SRC ${PCEM_SRC}
         video/vid_cga.c
-        video/vid_et4000.c
-        video/vid_et4000w32.c
-        video/vid_genius.c
-        video/vid_hercules.c
-        video/vid_ht216.c
-        video/vid_icd2061.c
-        video/vid_ics2595.c
-        video/vid_incolor.c
         video/vid_sdac_ramdac.c
         video/vid_sigma.c
         video/vid_stg_ramdac.c
