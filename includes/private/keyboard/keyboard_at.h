@@ -9,6 +9,5 @@ void keyboard_at_adddata_mouse(uint8_t val);
 
 extern uint8_t mouse_queue[16];
 extern int mouse_queue_start, mouse_queue_end;
-extern int mouse_scan;
 
 #endif /* _KEYBOARD_AT_H_ */

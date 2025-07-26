@@ -28,7 +28,6 @@
 #include "keyboard_pcjr.h"
 #include "keyboard_xt.h"
 #include "mem.h"
-#include "mouse_ps2.h"
 #include "nmi.h"
 #include "nvr.h"
 #include "pci.h"
