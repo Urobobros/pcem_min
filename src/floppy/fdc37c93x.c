@@ -3,7 +3,6 @@
 #include "fdc.h"
 #include "fdd.h"
 #include "io.h"
-#include "lpt.h"
 #include "serial.h"
 #include "fdc37c93x.h"
 
@@ -98,16 +97,8 @@ void fdc37c93x_write(uint16_t port, uint8_t val, void *p) {
                         /*                        else
                                                         pclog("FDC disabled\n");*/
 
-                        lpt1_remove();
-                        lpt2_remove();
                         addr = (fdc37c93x->lpt_regs[0x61] & 0xfc) | ((fdc37c93x->lpt_regs[0x60] & 3) << 8);
-                        if ((fdc37c93x->global_regs[0x22] & (1 << 3)) && (fdc37c93x->lpt_regs[0x30] & 0x01)) {
-                                //                                pclog("LPT addr = %04x\n", addr);
-                                lpt1_init(addr);
-                        }
-                        /*                        else
-                                                        pclog("LPT disabled\n");*/
-
+                       
                         serial1_remove();
                         addr = (fdc37c93x->com1_regs[0x61] & 0xf8) | ((fdc37c93x->com1_regs[0x60] & 3) << 8);
                         irq = fdc37c93x->com1_regs[0x70] & 0xf;

@@ -9,7 +9,6 @@
 #include "fdd.h"
 #include "gameport.h"
 #include "hdd.h"
-#include "lpt.h"
 #include "model.h"
 #include "mouse.h"
 #include "mem.h"
@@ -536,7 +535,7 @@ int config_dlgsave(void *hdlg) {
             temp_GUS != GUS || temp_SSI2001 != SSI2001 || temp_sound_card_current != sound_card_current ||
             temp_voodoo != voodoo_enabled || temp_dynarec != cpu_use_dynarec || temp_fda_type != fdd_get_type(0) ||
             temp_fdb_type != fdd_get_type(1) || temp_mouse_type != mouse_type || hdd_changed || hd_changed ||
-            cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel || lpt1_current != temp_lpt1_device
+            cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel 
 #ifdef USE_NETWORKING
             || temp_network_card != network_card_current
 #endif
@@ -554,11 +553,10 @@ int config_dlgsave(void *hdlg) {
                         GUS = temp_GUS;
                         SSI2001 = temp_SSI2001;
                         sound_card_current = temp_sound_card_current;
-                        lpt1_current = temp_lpt1_device;
                         voodoo_enabled = temp_voodoo;
                         cpu_use_dynarec = temp_dynarec;
                         mouse_type = temp_mouse_type;
-                        strcpy(lpt1_device_name, lpt_device_get_internal_name(temp_lpt1_device));
+                       
 #ifdef USE_NETWORKING
                         network_card_current = temp_network_card;
 #endif
@@ -646,7 +644,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
         int cpu_type;
         int temp_cd_model, temp_cd_speed;
         int temp_mouse_type;
-        int temp_lpt1_current;
 #ifdef USE_NETWORKING
         int temp_network_card;
 #endif
@@ -763,12 +760,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 else
                         wx_enablewindow(h, FALSE);
 
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURELPT1"));
-                if (lpt_device_has_config(lpt1_current))
-                        wx_enablewindow(h, TRUE);
-                else
-                        wx_enablewindow(h, FALSE);
-
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBODRA"));
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "None");
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "5.25\" 360k");
@@ -856,19 +847,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
                 c = d = 0;
-                while (1) {
-                        char *s = lpt_device_get_name(c);
-
-                        if (!s)
-                                break;
-
-                        wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
-                        if (!strcmp(lpt1_device_name, lpt_device_get_internal_name(c)))
-                                if (lpt1_current == c)
-                                        d = c;
-
-                        c++;
-                }
                 wx_sendmessage(h, WX_CB_SETCURSEL, d, 0);
 
                 recalc_hdd_list(hdlg, romstomodel[romset], 0, 0);
@@ -1243,21 +1221,7 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
                         temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
                         joystickconfig_open(hdlg, 3, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_CONFIGURELPT1")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
-                        temp_lpt1_current = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-                        deviceconfig_open(hdlg, (void *)lpt_get_device(temp_lpt1_current));
-                } else if (wParam == WX_ID("IDC_COMBOLPT1")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
-                        temp_lpt1_current = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURELPT1"));
-                        if (lpt_device_has_config(temp_lpt1_current))
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
-                }
+                } 
 #ifndef __WXGTK__
                 /*Emulate spinner granularity on systems that don't implement wxSpinCtrl->SetIncrement()*/
                 else if (wParam == WX_ID("IDC_MEMSPIN")) {

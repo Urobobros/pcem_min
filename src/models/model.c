@@ -17,7 +17,6 @@
 #include "keyboard_olim24.h"
 #include "keyboard_pcjr.h"
 #include "keyboard_xt.h"
-#include "lpt.h"
 #include "mem.h"
 #include "mouse_ps2.h"
 #include "nmi.h"
@@ -91,7 +90,6 @@ int model_has_optional_gfx(int model) {
 void common_init() {
         dma_init();
         fdc_add();
-        lpt_init();
         pic_init();
         pit_init();
         serial1_init(0x3f8, 4, 1);

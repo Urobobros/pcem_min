@@ -3,7 +3,6 @@
 #include "fdc.h"
 #include "fdd.h"
 #include "io.h"
-#include "lpt.h"
 #include "serial.h"
 #include "fdc37c665.h"
 
@@ -90,19 +89,6 @@ void fdc37c665_write(uint16_t port, uint8_t val, void *priv) {
                                         break;
                                 }
 
-                        lpt1_remove();
-                        lpt2_remove();
-                        switch (fdc37c665_regs[1] & 3) {
-                        case 1:
-                                lpt1_init(0x3bc);
-                                break;
-                        case 2:
-                                lpt1_init(0x378);
-                                break;
-                        case 3:
-                                lpt1_init(0x278);
-                                break;
-                        }
 
                         fdc_update_enh_mode((fdc37c665_regs[3] & 2) ? 1 : 0);
 

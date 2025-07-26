@@ -34,7 +34,6 @@
 #include "fdc.h"
 #include "ide.h"
 #include "io.h"
-#include "lpt.h"
 #include "serial.h"
 #include "x86.h"
 #include "keyboard_at.h"
@@ -94,13 +93,6 @@ void upc_update_config(upc_t *upc) {
                 } else {
                         serial1_remove();
                         pclog("UPC: UART disabled\n");
-                }
-                if (upc->regs[0] & 0x8) {
-                        lpt1_init(upc->regs[6] * 4);
-                        pclog("UPC: PARALLEL at %04X, irq %d\n", upc->regs[6] * 4, upc->parallel_irq);
-                } else {
-                        lpt1_remove();
-                        pclog("UPC: PARALLEL disabled\n");
                 }
                 if ((upc->regs[0] & 0x60) != 0)
                         pclog("UPC: Oscillator control not implemented!\n");
@@ -272,8 +264,6 @@ static void *upc_init() {
         /* Disable all peripherals. upc_update_config will enable configured peripherals */
         serial1_remove();
         serial2_remove();
-        lpt1_remove();
-        lpt2_remove();
         fdc_remove();
         ide_pri_disable();
         ide_sec_disable();

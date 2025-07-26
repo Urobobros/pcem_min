@@ -32,7 +32,6 @@
 #include "io.h"
 #include "keyboard.h"
 #include "keyboard_at.h"
-#include "lpt.h"
 #include "model.h"
 #include "mouse.h"
 #include "nvr.h"
@@ -366,7 +365,7 @@ void resetpchard() {
         mouse_emu_init();
         video_init();
         speaker_init();
-        lpt1_device_init();
+     
 
 #ifdef USE_NETWORKING
         vlan_reset(); // NETWORK
@@ -574,7 +573,6 @@ void closepc() {
         disc_close(1);
         dumpregs();
         closevideo();
-        lpt1_device_close();
         mouse_emu_close();
         device_close_all();
         zip_eject();
@@ -791,14 +789,6 @@ void loadconfig(char *fn) {
         enable_sync = config_get_int(CFG_MACHINE, NULL, "enable_sync", 1);
 
         p = (char *)config_get_string(CFG_MACHINE, NULL, "lpt1_device", "");
-        if (p)
-                strcpy(lpt1_device_name, p);
-        else
-                strcpy(lpt1_device_name, "");
-        if (p)
-                lpt1_current = lpt_device_get_from_internal_name(p);
-        else
-                lpt1_current = 0;
 
 #ifdef USE_NETWORKING
         // network
@@ -943,8 +933,6 @@ void saveconfig(char *fn) {
         config_set_int(CFG_GLOBAL, NULL, "netinterface", ethif);
         config_set_string(CFG_MACHINE, NULL, "netcard", network_card_get_internal_name(network_card_current));
 #endif
-
-        config_set_string(CFG_MACHINE, NULL, "lpt1_device", lpt1_device_name);
 
         for (d = 0; d < num_config_callbacks; ++d)
                 if (config_callbacks[d].saveconfig)

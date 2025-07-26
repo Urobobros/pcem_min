@@ -30,7 +30,6 @@
 #include "keyboard_olim24.h"
 #include "keyboard_pcjr.h"
 #include "keyboard_xt.h"
-#include "lpt.h"
 #include "mem.h"
 #include "mouse_ps2.h"
 #include "nmi.h"
