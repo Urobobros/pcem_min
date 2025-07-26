@@ -1,6 +1,5 @@
 #include "ibm.h"
 #include "device.h"
-#include "cassette.h"
 #include "fdd.h"
 #include "io.h"
 #include "mem.h"
@@ -8,7 +7,6 @@
 #include "pit.h"
 #include "sound.h"
 #include "sound_speaker.h"
-#include "tandy_eeprom.h"
 #include "timer.h"
 #include "video.h"
 
@@ -115,10 +113,7 @@ void keyboard_xt_write(uint16_t port, uint8_t val, void *priv) {
 
                 timer_process();
 
-                if (romset == ROM_IBMPC)
-                        cassette_set_motor((val & 8) ? 0 : 1);
-                else if (keyboard_xt.pb2_turbo)
-                        cpu_set_turbo((val & 4) ? 0 : 1);
+                cpu_set_turbo((val & 4) ? 0 : 1);
 
                 speaker_update();
                 speaker_gated = val & 1;
@@ -168,7 +163,7 @@ uint8_t keyboard_xt_read(uint16_t port, void *priv) {
                         else
                                 temp = ((mem_size - 64) / 32) >> 4;
 
-                        temp |= (cassette_input()) ? 0x10 : 0;
+                        temp |= 0;
                 } else if (romset == ROM_LEDGE_MODELM) {
                         /*High bit of memory size is read from port 0xa0*/
                         temp = ((mem_size - 64) / 32) & 0xf;
@@ -189,8 +184,7 @@ uint8_t keyboard_xt_read(uint16_t port, void *priv) {
                                 temp = hasfpu ? 0xf : 0xd;
                 }
                 temp |= (ppispeakon ? 0x20 : 0);
-                if (keyboard_xt.tandy)
-                        temp |= (tandy_eeprom_read() ? 0x10 : 0);
+            
                 break;
 
         default:

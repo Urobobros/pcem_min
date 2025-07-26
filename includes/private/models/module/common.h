@@ -18,13 +18,11 @@
 #include "cs8230.h"
 #include "dells200.h"
 #include "device.h"
-#include "cassette.h"
 #include "dma.h"
 #include "fdc.h"
 #include "fdc37c665.h"
 #include "fdc37c93x.h"
 #include "ide.h"
-#include "intel_flash.h"
 #include "keyboard_at.h"
 #include "keyboard_olim24.h"
 #include "keyboard_pcjr.h"
@@ -45,9 +43,6 @@
 #include "sound_pssj.h"
 #include "sound_sn76489.h"
 #include "superxt.h"
-#include "sst39sf010.h"
-#include "tandy_eeprom.h"
-#include "tandy_rom.h"
 #include <pcem/devices.h>
 void xt_init();
 void pcjr_init();

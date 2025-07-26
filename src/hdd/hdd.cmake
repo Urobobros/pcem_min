@@ -1,5 +1,4 @@
 set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
-        ${CMAKE_SOURCE_DIR}/includes/private/hdd/hdd_esdi.h
         ${CMAKE_SOURCE_DIR}/includes/private/hdd/hdd_file.h
         ${CMAKE_SOURCE_DIR}/includes/private/hdd/hdd.h
         ${CMAKE_SOURCE_DIR}/includes/private/hdd/ramdisk/ramdisk.h
@@ -15,7 +14,6 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
 
 set(PCEM_SRC ${PCEM_SRC}
         hdd/hdd.c
-        hdd/hdd_esdi.c
         hdd/hdd_file.c
         )
 

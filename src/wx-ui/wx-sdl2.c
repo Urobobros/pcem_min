@@ -18,7 +18,6 @@
 #include <math.h>
 #include "ibm.h"
 #include "device.h"
-#include "cassette.h"
 #include "cdrom-ioctl.h"
 #include "cdrom-image.h"
 #include "config.h"
@@ -761,15 +760,7 @@ int wx_handle_command(void *hwnd, int wParam, int checked) {
                 }
         } else if (ID_IS("IDM_EJECT_ZIP")) {
                 zip_eject();
-        } else if (ID_IS("IDM_CASSETTE_LOAD")) {
-                if (!getfile(hwnd, "Tape image (*.pzxi;*.pzx)|*.pzxi;*.pzx|All files (*.*)|*.*", cassettefn)) {
-                        cassette_eject();
-                        cassette_load(openfilestring);
-                        saveconfig(NULL);
-                }
-        } else if (ID_IS("IDM_CASSETTE_EJECT")) {
-                cassette_eject();
-                saveconfig(NULL);
+        
         } else if (ID_IS("IDM_MACHINE_TOGGLE")) {
                 if (emulation_state != EMULATION_STOPPED)
                         wx_togglewindow(hwnd);

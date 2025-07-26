@@ -7,6 +7,7 @@
         "ide.h": "c",
         "pic.h": "c",
         "vid_pc1512.h": "c",
-        "timer.h": "c"
+        "timer.h": "c",
+        "defines.h": "c"
     }
 }
