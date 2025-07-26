@@ -1,25 +1,25 @@
-OUT port 0x00A0, size 1, value 0x00
-OUT port 0x03D8, size 1, value 0x00
-OUT port 0x0083, size 1, value 0x00
-OUT port 0x03B8, size 1, value 0x01
-OUT port 0x0213, size 1, value 0x01
-OUT port 0x0008, size 1, value 0x04
+OUT port 0x00A0, size 1, value 0x00  # pic2_write/nmi_write
+OUT port 0x03D8, size 1, value 0x00  # cga_out
+OUT port 0x0083, size 1, value 0x00  # dma_page_write
+OUT port 0x03B8, size 1, value 0x01  # unhandled
+OUT port 0x0213, size 1, value 0x01  # unhandled
+OUT port 0x0008, size 1, value 0x04  # dma_write
 OUT port 0x0063, size 1, value 0x99
 OUT port 0x0061, size 1, value 0xA1
 OUT port 0x0020, size 1, value 0x13
-OUT port 0x0021, size 1, value 0x08
-OUT port 0x0021, size 1, value 0x09
-OUT port 0x0021, size 1, value 0xFF
-OUT port 0x0043, size 1, value 0x54
-OUT port 0x0041, size 1, value 0x00
-OUT port 0x0043, size 1, value 0x40
-IN  port 0x0041, size 1, value 0xF3
-OUT port 0x0043, size 1, value 0x40
-IN  port 0x0041, size 1, value 0xDB
-OUT port 0x0043, size 1, value 0x40
-IN  port 0x0041, size 1, value 0xC2
-OUT port 0x0043, size 1, value 0x40
-IN  port 0x0041, size 1, value 0xAA
+OUT port 0x0021, size 1, value 0x08  # pic_write
+OUT port 0x0021, size 1, value 0x09  # pic_write
+OUT port 0x0021, size 1, value 0xFF  # pic_write
+OUT port 0x0043, size 1, value 0x54  # pit_write
+OUT port 0x0041, size 1, value 0x00  # pit_write
+OUT port 0x0043, size 1, value 0x40  # pit_write
+IN  port 0x0041, size 1, value 0xF3  # pit_read
+OUT port 0x0043, size 1, value 0x40  # pit_write
+IN  port 0x0041, size 1, value 0xDB  # pit_read
+OUT port 0x0043, size 1, value 0x40  # pit_write
+IN  port 0x0041, size 1, value 0xC2  # pit_read
+OUT port 0x0043, size 1, value 0x40  # pit_write
+IN  port 0x0041, size 1, value 0xAA  # pit_read
 OUT port 0x0043, size 1, value 0x40
 IN  port 0x0041, size 1, value 0x91
 OUT port 0x0043, size 1, value 0x40
