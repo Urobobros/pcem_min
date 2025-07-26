@@ -7,16 +7,6 @@
 #include "io.h"
 #include "mouse.h"
 
-#include "82091aa.h"
-#include "acc2168.h"
-#include "acc3221.h"
-#include "acer386sx.h"
-#include "ali1429.h"
-#include "cbm_io.h"
-#include "cmd640.h"
-#include "compaq.h"
-#include "cs8230.h"
-#include "dells200.h"
 #include "device.h"
 #include "dma.h"
 #include "fdc.h"
@@ -36,8 +26,6 @@
 #include "scamp.h"
 #include "serial.h"
 #include "sio.h"
-#include "sis496.h"
-#include "sl82c460.h"
 #include "superxt.h"
 #include <pcem/devices.h>
 void xt_init();

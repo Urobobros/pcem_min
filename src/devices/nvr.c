@@ -4,7 +4,6 @@
 #include "device.h"
 #include "io.h"
 #include "nvr.h"
-#include "nvr_tc8521.h"
 #include "pic.h"
 #include "timer.h"
 #include "rtc.h"
@@ -695,10 +694,6 @@ void savenvr() {
         case ROM_T3100E:
                 f = nvrfopen("t3100e.nvr", "wb");
                 break;
-
-        case ROM_T1200:
-                tc8521_savenvr();
-                return;
         case ROM_ELX_PC425X:
                 f = nvrfopen("elx_pc425.nvr", "wb");
                 break;

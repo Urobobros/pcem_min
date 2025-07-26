@@ -23,8 +23,6 @@
 #include "scamp.h"
 #include "serial.h"
 #include "sio.h"
-#include "sis496.h"
-#include "sl82c460.h"
 #include "superxt.h"
 #include <pcem/devices.h>
 

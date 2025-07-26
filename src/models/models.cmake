@@ -11,7 +11,6 @@ set(PCEM_SRC ${PCEM_SRC}
         models/dma.c
         models/model.c
         models/nmi.c
-        models/nvr_tc8521.c
         models/pic.c
         models/pit.c
         models/serial.c
