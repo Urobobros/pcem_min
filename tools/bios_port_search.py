@@ -35,8 +35,13 @@ def search_ports(asm_lines: list[str], ports: list[int]) -> list[str]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Search BIOS for IN/OUT port instructions")
     parser.add_argument("bios", type=Path, help="Path to BIOS binary")
-    parser.add_argument("-p", "--ports", nargs="+", default=["A0", "3D8"],
-                        help="Ports to search for in hex, e.g. A0 3D8")
+    parser.add_argument(
+        "-p",
+        "--ports",
+        nargs="+",
+        default=["A0", "3D8"],
+        help="Ports to search for in hex (defaults to A0 3D8)",
+    )
     args = parser.parse_args()
 
     ports = [int(p, 16) for p in args.ports]
