@@ -13,9 +13,6 @@
 #include "timer.h"
 
 #include "vid_cga.h"
-#include "vid_sigma.h"
-#include "vid_vga.h"
-#include "vid_wy700.h"
 
 #include <pcem/devices.h>
 
@@ -29,10 +26,6 @@ enum { VIDEO_ISA = 0, VIDEO_BUS };
 #define VIDEO_FLAG_TYPE_MASK 3
 
 VIDEO_CARD v_cga = {"CGA", "cga", &cga_device, GFX_CGA, VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
-VIDEO_CARD v_sigma400 = {"Sigma Color 400", "sigma400",          &sigma_device,
-                         GFX_SIGMA400,      VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
-VIDEO_CARD v_vga = {"VGA", "vga", &vga_device, GFX_VGA, VIDEO_FLAG_TYPE_SPECIAL, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
-VIDEO_CARD v_wy700 = {"Wyse 700", "wy700", &wy700_device, GFX_WY700, VIDEO_FLAG_TYPE_CGA, {VIDEO_ISA, 8, 16, 32, 8, 16, 32}};
 
 static video_timings_t timing_dram = {VIDEO_BUS, 0, 0, 0, 0, 0, 0};   /*No additional waitstates*/
 static video_timings_t timing_pc1512 = {VIDEO_BUS, 0, 0, 0, 0, 0, 0}; /*PC1512 video code handles waitstates itself*/
@@ -74,19 +67,7 @@ char *video_card_getname(int card) {
 
 device_t *video_card_getdevice(int card, int romset) {
         switch (romset) {
-        case ROM_IBMPS1_2011:
-        case ROM_IBMPS2_M30_286:
-                return &ps1vga_device;
-
-        case ROM_IBMPS2_M50:
-        case ROM_IBMPS2_M55SX:
-        case ROM_IBMPS2_M70_TYPE3:
-        case ROM_IBMPS2_M70_TYPE4:
-        case ROM_IBMPS2_M80:
-                if (card == GFX_BUILTIN)
-                        return &ps1vga_device;
-                break;
-
+       
         }
         return video_cards[card]->device;
 }
@@ -497,20 +478,6 @@ void video_init() {
         pclog("Video_init %i %i\n", romset, gfxcard);
 
         switch (romset) {
-        case ROM_IBMPS1_2011:
-        case ROM_IBMPS2_M30_286:
-                device_add(&ps1vga_device);
-                return;
-
-        case ROM_IBMPS2_M50:
-        case ROM_IBMPS2_M55SX:
-        case ROM_IBMPS2_M70_TYPE3:
-        case ROM_IBMPS2_M70_TYPE4:
-        case ROM_IBMPS2_M80:
-                device_add(&ps1vga_device);
-                if (gfxcard == GFX_BUILTIN)
-                        return;
-                break;
 
         }
         device_add(video_cards[video_old_to_new(gfxcard)]->device);
@@ -901,10 +868,4 @@ void cgapal_rebuild(int display_type, int contrast) {
 
 void video_init_builtin() {
         pcem_add_video(&v_cga);
-#ifdef USE_EXPERIMENTAL_PGC
-        pcem_add_video(&v_pgc);
-#endif
-        pcem_add_video(&v_sigma400);
-        pcem_add_video(&v_vga);
-        pcem_add_video(&v_wy700);
 }
