@@ -26,7 +26,6 @@
 #include "dma.h"
 #include "fdc.h"
 #include "fdd.h"
-#include "gameport.h"
 #include "sound_gus.h"
 #include "ide.h"
 #include "io.h"
@@ -37,7 +36,6 @@
 #include "nvr.h"
 #include "pic.h"
 #include "pit.h"
-#include "plat-joystick.h"
 #include "plat-keyboard.h"
 #include "plat-midi.h"
 #include "plat-mouse.h"
@@ -460,7 +458,6 @@ void runpc() {
         keyboard_process();
         //        checkkeys();
         pollmouse();
-        joystick_poll();
         endblit();
 
         framecountx++;
@@ -743,30 +740,7 @@ void loadconfig(char *fn) {
         cd_speed = config_get_int(CFG_MACHINE, NULL, "cd_speed", 24);
         cd_model = cd_model_from_config((char *)config_get_string(CFG_MACHINE, NULL, "cd_model", cd_get_config_model(0)));
 
-        joystick_type = config_get_int(CFG_MACHINE, NULL, "joystick_type", 0);
         mouse_type = config_get_int(CFG_MACHINE, NULL, "mouse_type", 0);
-
-        for (c = 0; c < joystick_get_max_joysticks(joystick_type); c++) {
-                sprintf(s, "joystick_%i_nr", c);
-                joystick_state[c].plat_joystick_nr = config_get_int(CFG_MACHINE, "Joysticks", s, 0);
-
-                if (joystick_state[c].plat_joystick_nr) {
-                        for (d = 0; d < joystick_get_axis_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_axis_%i", c, d);
-                                joystick_state[c].axis_mapping[d] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                        }
-                        for (d = 0; d < joystick_get_button_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_button_%i", c, d);
-                                joystick_state[c].button_mapping[d] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                        }
-                        for (d = 0; d < joystick_get_pov_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_pov_%i_x", c, d);
-                                joystick_state[c].pov_mapping[d][0] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                                sprintf(s, "joystick_%i_pov_%i_y", c, d);
-                                joystick_state[c].pov_mapping[d][1] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                        }
-                }
-        }
 
         enable_sync = config_get_int(CFG_MACHINE, NULL, "enable_sync", 1);
 
@@ -869,32 +843,7 @@ void saveconfig(char *fn) {
         config_set_int(CFG_MACHINE, NULL, "cd_speed", cd_speed);
         config_set_string(CFG_MACHINE, NULL, "cd_model", cd_model_to_config(cd_model));
 
-        config_set_int(CFG_MACHINE, NULL, "joystick_type", joystick_type);
         config_set_int(CFG_MACHINE, NULL, "mouse_type", mouse_type);
-
-        for (c = 0; c < joystick_get_max_joysticks(joystick_type); c++) {
-                char s[80];
-
-                sprintf(s, "joystick_%i_nr", c);
-                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].plat_joystick_nr);
-
-                if (joystick_state[c].plat_joystick_nr) {
-                        for (d = 0; d < joystick_get_axis_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_axis_%i", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].axis_mapping[d]);
-                        }
-                        for (d = 0; d < joystick_get_button_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_button_%i", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].button_mapping[d]);
-                        }
-                        for (d = 0; d < joystick_get_pov_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_pov_%i_x", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].pov_mapping[d][0]);
-                                sprintf(s, "joystick_%i_pov_%i_y", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].pov_mapping[d][1]);
-                        }
-                }
-        }
 
         config_set_int(CFG_MACHINE, NULL, "enable_sync", enable_sync);
 

@@ -23,7 +23,6 @@
 #include "fdc.h"
 #include "fdc37c665.h"
 #include "fdc37c93x.h"
-#include "gameport.h"
 #include "ide.h"
 #include "intel_flash.h"
 #include "keyboard_at.h"

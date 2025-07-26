@@ -10,7 +10,6 @@
 #include "fdc.h"
 #include "fdc37c665.h"
 #include "fdc37c93x.h"
-#include "gameport.h"
 #include "ide.h"
 #include "intel_flash.h"
 #include "keyboard_at.h"
@@ -102,7 +101,6 @@ void xt_init() {
         pit_set_out_func(&pit, 1, pit_refresh_timer_xt);
         keyboard_xt_init();
         nmi_init();
-        device_add(&gameport_device);
         if (romset == ROM_IBMPC)
                 device_add(&cassette_device);
 }

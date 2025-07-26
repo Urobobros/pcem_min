@@ -7,7 +7,6 @@
 #include "cpu.h"
 #include "device.h"
 #include "fdd.h"
-#include "gameport.h"
 #include "hdd.h"
 #include "model.h"
 #include "mouse.h"
@@ -407,8 +406,6 @@ int config_dlgsave(void *hdlg) {
         int temp_dynarec;
         int temp_fda_type, temp_fdb_type;
         int temp_mouse_type;
-        int temp_lpt1_device;
-        int temp_joystick_type;
         int hdd_changed = 0;
         char s[260];
         PcemHDC hd[7];
@@ -466,9 +463,6 @@ int config_dlgsave(void *hdlg) {
         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBODRB"));
         temp_fdb_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
 
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOMOUSE"));
         temp_mouse_type = settings_list_to_mouse[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
 
@@ -476,9 +470,6 @@ int config_dlgsave(void *hdlg) {
         c = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
         if (hdd_names[c])
                 hdd_changed = strncmp(hdd_names[c], hdd_controller_name, sizeof(hdd_controller_name) - 1);
-
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
-        temp_lpt1_device = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
 
         if (temp_model != model || gfx != gfxcard || mem != mem_size || temp_fpu != fpu_type || temp_GAMEBLASTER != GAMEBLASTER ||
             temp_GUS != GUS || temp_SSI2001 != SSI2001 || temp_sound_card_current != sound_card_current ||
@@ -567,9 +558,6 @@ int config_dlgsave(void *hdlg) {
                 saveconfig(NULL);
 
         speedchanged();
-
-        joystick_type = temp_joystick_type;
-        gameport_update_joystick_type();
 
         return TRUE;
 }
@@ -727,23 +715,9 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 else
                         wx_sendmessage(h, WX_WM_SETTEXT, 0, (LONG_PARAM) "KB");
 
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
                 c = 0;
-                while (joystick_get_name(c)) {
-                        wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)joystick_get_name(c));
-                        c++;
-                }
-                wx_enablewindow(h, TRUE);
-                wx_sendmessage(h, WX_CB_SETCURSEL, joystick_type, 0);
 
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY1"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 1) ? TRUE : FALSE);
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY2"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 2) ? TRUE : FALSE);
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY3"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 3) ? TRUE : FALSE);
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY4"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 4) ? TRUE : FALSE);
+                wx_enablewindow(h, TRUE);
 
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "System default");
@@ -1093,45 +1067,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_CDSPEED"));
                         temp_cd_speed = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
                         recalc_cd_list(hdlg, cd_get_speed(temp_cd_speed), cd_get_model(temp_cd_model));
-                }
-                else if (wParam == WX_ID("IDC_COMBOJOY")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY1"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 1) ? TRUE : FALSE);
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY2"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 2) ? TRUE : FALSE);
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY3"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 3) ? TRUE : FALSE);
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY4"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 4) ? TRUE : FALSE);
-                } else if (wParam == WX_ID("IDC_JOY1")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 0, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_JOY2")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 1, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_JOY3")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 2, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_JOY4")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 3, temp_joystick_type);
                 } 
 #ifndef __WXGTK__
                 /*Emulate spinner granularity on systems that don't implement wxSpinCtrl->SetIncrement()*/

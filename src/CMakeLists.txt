@@ -11,7 +11,6 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/pch.h
         ${CMAKE_SOURCE_DIR}/includes/private/pgc_palettes.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-dinput.h
-        ${CMAKE_SOURCE_DIR}/includes/private/plat-joystick.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-keyboard.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-midi.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-mouse.h
@@ -35,7 +34,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/flash/flash.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/floppy/floppy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/hdd/hdd.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/ide/ide.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/joystick/joystick.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/keyboard/keyboard.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/mfm/mfm.cmake)
