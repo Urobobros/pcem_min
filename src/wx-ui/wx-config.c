@@ -718,10 +718,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "7 W/S");
                 wx_sendmessage(h, WX_CB_SETCURSEL, cpu_waitstates, 0);
                 cpu_type = models[romstomodel[romset]]->cpu[cpu_manufacturer].cpus[cpu].cpu_type;
-                if ((cpu_type >= CPU_286) && (cpu_type <= CPU_386DX))
-                        wx_enablewindow(h, TRUE);
-                else
-                        wx_enablewindow(h, FALSE);
+
+                wx_enablewindow(h, FALSE);
 
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOMOUSE"));
                 c = d = 0;
@@ -864,10 +862,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                         cpu_type = models[temp_model]->cpu[temp_cpu_m].cpus[temp_cpu].cpu_type;
-                        if (cpu_type >= CPU_286 && cpu_type <= CPU_386DX)
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
+
+                        wx_enablewindow(h, FALSE);
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGUREMOD"));
                         if (model_getdevice(temp_model))
@@ -956,10 +952,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                         cpu_type = models[temp_model]->cpu[temp_cpu_m].cpus[temp_cpu].cpu_type;
-                        if (cpu_type >= CPU_286 && cpu_type <= CPU_386DX)
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
+
+                        wx_enablewindow(h, FALSE);
 
                 } else if (wParam == WX_ID("IDC_COMBO3")) {
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));
@@ -989,10 +983,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                         cpu_type = models[temp_model]->cpu[temp_cpu_m].cpus[temp_cpu].cpu_type;
-                        if (cpu_type >= CPU_286 && cpu_type <= CPU_386DX)
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
+
+                        wx_enablewindow(h, FALSE);
                 } else if (wParam == WX_ID("IDC_CONFIGUREMOD")) {
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));
                         temp_model = listtomodel[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];

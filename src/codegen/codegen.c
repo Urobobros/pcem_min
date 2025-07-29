@@ -374,7 +374,6 @@ void codegen_generate_call(uint8_t opcode, OpFn op, uint32_t fetchdat, uint32_t 
                         last_prefix = 0x0f;
 #endif
                         op_table = x86_dynarec_opcodes_0f;
-                        recomp_op_table = recomp_opcodes_0f;
                         over = 1;
                         break;
 
@@ -610,16 +609,6 @@ generate_call:
                 }
 
                 opcode_3dnow = fastreadb(cs + opcode_pc);
-                //                pclog("recomp_opcodes_3DNOW[%02x]=%p\n", opcode, recomp_opcodes_3DNOW[opcode]);
-                if (recomp_opcodes_3DNOW[opcode_3dnow]) {
-                        next_pc = opcode_pc + 1;
-
-                        op_table = x86_dynarec_opcodes_3DNOW;
-                        recomp_op_table = recomp_opcodes_3DNOW;
-                        opcode = opcode_3dnow;
-                        recomp_opcode_mask = 0xff;
-                        opcode_mask = 0xff;
-                }
         }
         codegen_mark_code_present(block, cs + old_pc, (op_pc - old_pc) - pc_off);
         //        pclog("%04x:%08x : %02x\n", CS, new_pc, opcode);

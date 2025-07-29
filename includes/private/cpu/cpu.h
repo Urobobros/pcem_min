@@ -10,45 +10,6 @@ extern int fpu_type;
 #define CPU_8088 0
 #define CPU_8086 1
 
-/*286 class CPUs*/
-#define CPU_286 2
-
-/*386 class CPUs*/
-#define CPU_386SX 3
-#define CPU_386DX 4
-#define CPU_486SLC 5
-#define CPU_486DLC 6
-
-/*486 class CPUs*/
-#define CPU_i486SX 7
-#define CPU_Am486SX 8
-#define CPU_Cx486S 9
-#define CPU_i486DX 10
-#define CPU_Am486DX 11
-#define CPU_Cx486DX 12
-#define CPU_iDX4 13
-#define CPU_Cx5x86 14
-
-/*586 class CPUs*/
-#define CPU_WINCHIP 15
-#define CPU_WINCHIP2 16
-#define CPU_PENTIUM 17
-#define CPU_PENTIUMMMX 18
-#define CPU_Cx6x86 19
-#define CPU_Cx6x86MX 20
-#define CPU_Cx6x86L 21
-#define CPU_CxGX1 22
-#define CPU_K6 23
-#define CPU_K6_2 24
-#define CPU_K6_3 25
-#define CPU_K6_2P 26
-#define CPU_K6_3P 27
-#define CPU_PENTIUMPRO 28
-#define CPU_PENTIUM_2 29
-#define CPU_CELERON 30
-#define CPU_CELERON_A 31
-#define CPU_CYRIX_III 32
-
 #define MANU_INTEL 0
 #define MANU_AMD 1
 #define MANU_CYRIX 2
