@@ -1,10 +1,8 @@
 #include "ibm.h"
 #include "mouse.h"
 #include "mouse_serial.h"
-#include "keyboard_olim24.h"
 
 static mouse_t *mouse_list[] = {&mouse_serial_microsoft,
-                                &mouse_olim24,
                                 NULL};
 
 static mouse_t *cur_mouse;

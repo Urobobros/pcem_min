@@ -29,7 +29,6 @@
 #include "ide.h"
 #include "io.h"
 #include "keyboard.h"
-#include "keyboard_at.h"
 #include "model.h"
 #include "mouse.h"
 #include "nvr.h"
@@ -353,8 +352,6 @@ void resetpchard() {
         //        cpuspeed2 = (AT)?2:1;
         //        atfullspeed = 0;
         //        setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-
-        keyboard_at_reset();
 
         cpu_cache_int_enabled = cpu_cache_ext_enabled = 0;
 

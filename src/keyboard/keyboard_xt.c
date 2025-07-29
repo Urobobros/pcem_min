@@ -225,13 +225,3 @@ void keyboard_xt_init() {
         timer_add(&keyboard_xt.send_delay_timer, (void *)keyboard_xt_poll, NULL, 1);
 }
 
-void keyboard_tandy_init() {
-        // return;
-        io_sethandler(0x0060, 0x0004, keyboard_xt_read, NULL, NULL, keyboard_xt_write, NULL, NULL, NULL);
-        keyboard_xt_reset();
-        keyboard_send = keyboard_xt_adddata;
-        keyboard_poll = keyboard_xt_poll;
-        keyboard_xt.tandy = (romset != ROM_TANDY) ? 1 : 0;
-
-        timer_add(&keyboard_xt.send_delay_timer, (void *)keyboard_xt_poll, NULL, 1);
-}
