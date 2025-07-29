@@ -27,7 +27,6 @@ int displine;
 uint64_t PITCONST;
 uint64_t CGACONST;
 uint64_t MDACONST;
-uint64_t VGACONST1, VGACONST2;
 uint64_t RTCCONST;
 
 float cpuclock;
@@ -40,8 +39,6 @@ void setpitclock(float clock) {
         PITCONST = (uint64_t)(clock / 1193182.0 * (float)(1ull << 32));
         CGACONST = (uint64_t)((clock / (19687503.0 / 11.0)) * (float)(1ull << 32));
         MDACONST = (uint64_t)((clock / 2032125.0) * (float)(1ull << 32));
-        VGACONST1 = (uint64_t)((clock / 25175000.0) * (float)(1ull << 32));
-        VGACONST2 = (uint64_t)((clock / 28322000.0) * (float)(1ull << 32));
         isa_timing = clock / 8000000.0;
         bus_timing = clock / (double)cpu_busspeed;
         video_updatetiming();

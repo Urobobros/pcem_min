@@ -273,56 +273,7 @@ extern int romset;
 enum {
         GFX_BUILTIN = -1,
         GFX_CGA = 0,
-        GFX_MDA,
-        GFX_HERCULES,
-        GFX_EGA,            /*Using IBM EGA BIOS*/
-        GFX_TVGA,           /*Using Trident TVGA8900D BIOS*/
-        GFX_ET4000,         /*Tseng ET4000*/
-        GFX_KASAN16VGA,     /*Kasan Hangulmadang-16 (Tseng ET4000AX)*/
-        GFX_TGKOREANVGA,    /*Trigem Korean VGA(Tseng ET4000AX)*/
-        GFX_ET4000W32,      /*Tseng ET4000/W32p (Diamond Stealth 32)*/
-        GFX_BAHAMAS64,      /*S3 Vision864 (Paradise Bahamas 64)*/
-        GFX_N9_9FX,         /*S3 764/Trio64 (Number Nine 9FX)*/
-        GFX_VIRGE,          /*S3 Virge*/
-        GFX_TGUI9440,       /*Trident TGUI9440*/
-        GFX_VGA,            /*IBM VGA*/
-        GFX_VGAEDGE16,      /*ATI VGA Edge-16 (18800-1)*/
-        GFX_ATIKOREANVGA,   /*ATI Korean VGA (28800-5)*/
-        GFX_VGACHARGER,     /*ATI VGA Charger (28800-5)*/
-        GFX_OTI067,         /*Oak OTI-067*/
-        GFX_MACH64GX,       /*ATI Graphics Pro Turbo (Mach64)*/
-        GFX_CL_GD5429,      /*Cirrus Logic CL-GD5429*/
-        GFX_VIRGEDX,        /*S3 Virge/DX*/
-        GFX_PHOENIX_TRIO32, /*S3 732/Trio32 (Phoenix)*/
-        GFX_PHOENIX_TRIO64, /*S3 764/Trio64 (Phoenix)*/
-        GFX_INCOLOR,        /* Hercules InColor */
-        GFX_COLORPLUS,      /* Plantronics ColorPlus */
-        GFX_WY700,          /* Wyse 700 */
-        GFX_GENIUS,         /* MDSI Genius */
-        GFX_MACH64VT2,      /*ATI Mach64 VT2*/
-        GFX_OLIVETTI_GO481, /*Olivetti GO481 PVGA1A*/
-        GFX_TGUI9400CXI,    /*Trident TGUI9440CXi*/
-        GFX_CL_GD5430,      /*Cirrus Logic CL-GD5430*/
-        GFX_CL_GD5434,      /*Cirrus Logic CL-GD5434*/
-        GFX_OTI037,         /*Oak OTI-037*/
-        GFX_COMPAQ_CGA,     /*Compaq CGA*/
-        GFX_SIGMA400,       /*Sigma Designs Color 400 */
-        GFX_PGC,            /*Professional Graphics Controller */
-        GFX_IM1024,         /*Vermont Microsystems IM1024 */
-        GFX_EGAWONDER800,   /*ATI EGA Wonder 800+*/
-        GFX_MYSTIQUE,       /*Matrox Mystique*/
-        GFX_AVGA2,          /*Acumos AVGA2 / Cirrus Logic CL-GD5402*/
-        GFX_CL_GD5428,      /*Cirrus Logic CL-GD5428*/
-        GFX_IBM_GD5428,     /*IBM 1MB SVGA Adapter/A*/
-        GFX_TVGA9000B,      /*Trident TVGA9000B*/
-        GFX_BANSHEE,        /*Voodoo Banshee - reference PCI board with SGRAM*/
-        GFX_CL_BANSHEE,     /*Creative Labs Voodoo Blaster Banshee PCI - with SDRAM*/
-        GFX_VOODOO_3_2000,  /*Voodoo 3 2000*/
-        GFX_VOODOO_3_3000,  /*Voodoo 3 3000*/
-        GFX_MILLENNIUM,     /*Matrox Millennium*/
-        GFX_QUADCOLOR,      /*Quadram Quadcolor I/II*/
-
-        GFX_BUILTIN_MAX,
+        GFX_MDA
 };
 
 extern int gfx_present[GFX_MAX];
@@ -344,24 +295,10 @@ extern int changeframecount;
 extern int ppispeakon;
 extern uint64_t CGACONST;
 extern uint64_t MDACONST;
-extern uint64_t VGACONST1, VGACONST2;
 extern uint64_t RTCCONST;
 extern int gated, speakval, speakon;
 
-/*Sound Blaster*/
-#define SADLIB 1     /*No DSP*/
-#define SB1 2        /*DSP v1.05*/
-#define SB15 3       /*DSP v2.00*/
-#define SB2 4        /*DSP v2.01 - needed for high-speed DMA*/
-#define SBPRO 5      /*DSP v3.00*/
-#define SBPRO2 6     /*DSP v3.02 + OPL3*/
-#define SB16 7       /*DSP v4.05 + OPL3*/
-#define SADGOLD 8    /*AdLib Gold*/
-#define SND_WSS 9    /*Windows Sound System*/
-#define SND_PAS16 10 /*Pro Audio Spectrum 16*/
-
 /*Hard disc*/
-
 typedef struct {
         FILE *f;
         int spt, hpc; /*Sectors per track, heads per cylinder*/
