@@ -85,7 +85,6 @@ uint8_t cgastat;
 int pollmouse_delay = 2;
 void pollmouse() {
         int x, y, z;
-        //        return;
         pollmouse_delay--;
         if (pollmouse_delay)
                 return;
@@ -93,7 +92,6 @@ void pollmouse() {
         mouse_poll_host();
         mouse_get_mickeys(&x, &y, &z);
         mouse_poll(x, y, z, mouse_buttons);
-        //        if (mousecapture) position_mouse(64,64);
 }
 
 /*PC1512 languages -
@@ -161,16 +159,10 @@ void pc_reset() {
                 setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
         else
                 setpitclock(14318184.0);
-
-        //        sb_reset();
-
-        //        video_init();
 }
 #undef printf
 
 void initpc(int argc, char *argv[]) {
-        // char *p;
-        //        char *config_file = NULL;
         int c;
 
         for (c = 1; c < argc; c++) {
@@ -216,18 +208,12 @@ void initpc(int argc, char *argv[]) {
                 }
         }
 
-        //        append_filename(config_file_default, pcempath, "pcem.cfg", 511);
-
         loadconfig(NULL);
         pclog("Config loaded\n");
 
         load_plugins();
 
-        //        if (config_file)
-        //                saveconfig();
-
         cpuspeed2 = (AT) ? 2 : 1;
-        //        cpuspeed2=cpuspeed;
         atfullspeed = 0;
 
         device_init();
@@ -235,9 +221,6 @@ void initpc(int argc, char *argv[]) {
         initvideo();
         mem_init();
         loadbios();
-
-        // this is now done per-model
-        // mem_add_bios();
 
 #if defined(__APPLE__) && defined(__aarch64__)
         pthread_jit_write_protect_np(0);
@@ -255,8 +238,6 @@ void initpc(int argc, char *argv[]) {
         fdi_init();
         img_init();
 
-        // loadfont();
-        loadnvr();
         resetide();
 #if __unix
         if (cdrom_drive == -1)
@@ -283,9 +264,8 @@ void initpc(int argc, char *argv[]) {
                 }
         }
 
-        /*        if (romset==ROM_AMI386 || romset==ROM_AMI486) */ fullspeed();
-        //        CPUID=(is486 && (cpuspeed==7 || cpuspeed>=9));
-        //        pclog("Init - CPUID %i %i\n",CPUID,cpuspeed);
+        fullspeed();
+
 
 #if __unix
         if (cdrom_drive == -1)
@@ -305,9 +285,6 @@ void resetpc() {
         cpu_set();
         pc_reset();
         cpu_set_turbo(1);
-        //        cpuspeed2=(AT)?2:1;
-        //        atfullspeed=0;
-        ///*        if (romset==ROM_AMI386 || romset==ROM_AMI486) */fullspeed();
 }
 
 void resetpc_cad() {
@@ -347,15 +324,7 @@ void resetpchard() {
 
         resetide();
 
-        loadnvr();
-
-        //        cpuspeed2 = (AT)?2:1;
-        //        atfullspeed = 0;
-        //        setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-
         cpu_cache_int_enabled = cpu_cache_ext_enabled = 0;
-
-        //        output=3;
 
         image_close();
 #if __unix

@@ -477,7 +477,6 @@ int config_dlgsave(void *hdlg) {
             cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel 
         ) {
                 if (!has_been_inited || confirm()) {
-                        savenvr();
                         model = temp_model;
                         romset = model_getromset();
                         gfxcard = gfx;

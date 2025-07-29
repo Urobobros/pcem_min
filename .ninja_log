@@ -338,3 +338,17 @@
 19958	32394	7755149926801800	src/CMakeFiles/pcem.dir/wx-ui/wx-createdisc.cc.obj	141b50c2c373f92d
 29	284	7755150236655261	src/CMakeFiles/pcem.dir/pc.c.obj	4ef85229bf4890a2
 285	2105	7755150239215224	src/pcem.exe	2809eec7c4b2b3f2
+29	297	7755153352740507	src/CMakeFiles/pcem-plugin-api.dir/plugin-api/logging.c.obj	d96c5be0f7fe1ae2
+37	1780	7755153352830495	src/CMakeFiles/pcem-plugin-api.dir/plugin-api/plugin.c.obj	40ac3cc6e6d35d09
+1780	2057	7755153372810467	src/libpcem-plugin-api.dll	ca4b7bee9c4ceb94
+1780	2057	7755153372810467	src/libpcem-plugin-api.dll.a	ca4b7bee9c4ceb94
+2057	2498	7755153373030482	src/CMakeFiles/pcem.dir/devices/nvr.c.obj	a30811c8311ab6af
+2067	2631	7755153373190500	src/CMakeFiles/pcem.dir/devices/ps2_nvr.c.obj	ea8f588b124074bc
+2093	2965	7755153373420477	src/CMakeFiles/pcem.dir/models/module/amixt.c.obj	9b74c45a4b6024d0
+2082	3139	7755153373290528	src/CMakeFiles/pcem.dir/models/model.c.obj	7877fe8e19d2d500
+2632	3181	7755153378770494	src/CMakeFiles/pcem.dir/rtc.c.obj	369d3ba795f26ea4
+2536	3183	7755153378070494	src/CMakeFiles/pcem.dir/pc.c.obj	4ef85229bf4890a2
+2245	3185	7755153375130538	src/CMakeFiles/pcem.dir/wx-ui/wx-config.c.obj	a515e182599f69dc
+2967	3268	7755153382130528	src/CMakeFiles/pcem.dir/rtc_tc8521.c.obj	b0df1dd128663523
+2114	4597	7755153373660519	src/CMakeFiles/pcem.dir/wx-ui/wx-sdl2.c.obj	f8852a3a00216c62
+4598	5919	7755153398430481	src/pcem.exe	2809eec7c4b2b3f2

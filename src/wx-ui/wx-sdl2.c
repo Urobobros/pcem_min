@@ -175,7 +175,6 @@ int mainthread(void *param) {
                         if (frames >= 200 && nvr_dosave) {
                                 frames = 0;
                                 nvr_dosave = 0;
-                                savenvr();
                         }
                         end_time = timer_read();
                         main_time += end_time - start_time;
@@ -433,7 +432,6 @@ extern void wx_saveconfig();
 int pc_main(int argc, char **argv) {
         // Expose some functions to libpcem-plugin-api without moving them over to
         // the plugin api proper
-        _savenvr = savenvr;
         _dumppic = dumppic;
         _dumpregs = dumpregs;
         _sound_speed_changed = sound_speed_changed;
@@ -601,7 +599,6 @@ int stop_emulation() {
 #endif
         mainthreadh = NULL;
         SDL_RemoveTimer(onesectimer);
-        savenvr();
         saveconfig(NULL);
 
         endblit();
@@ -706,19 +703,16 @@ int wx_handle_command(void *hwnd, int wParam, int checked) {
         } else if (ID_IS("IDM_FILE_RESET")) {
                 pause = 1;
                 SDL_Delay(100);
-                savenvr();
                 resetpc();
                 pause = 0;
         } else if (ID_IS("IDM_FILE_HRESET")) {
                 pause = 1;
                 SDL_Delay(100);
-                savenvr();
                 resetpchard();
                 pause = 0;
         } else if (ID_IS("IDM_FILE_RESET_CAD")) {
                 pause = 1;
                 SDL_Delay(100);
-                savenvr();
                 resetpc_cad();
                 pause = 0;
         } else if (ID_IS("IDM_FILE_EXIT")) {
