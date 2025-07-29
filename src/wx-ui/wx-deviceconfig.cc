@@ -204,7 +204,8 @@ void deviceconfig_open(void *hwnd, device_t *device) {
                         break;
 
                 case CONFIG_SELECTION:
-                
+                        /* TODO: implement selection controls */
+                        break;
                 }
 
                 config++;

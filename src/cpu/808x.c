@@ -41,7 +41,6 @@ int output = 0;
 int timetolive = 0;
 int ins = 0;
 
-int is8086 = 0;
 
 static uint32_t oldds;
 uint32_t oldss;
@@ -72,7 +71,7 @@ static uint8_t readmembf(uint32_t a) {
 
 static uint16_t readmemw(uint32_t s, uint16_t a) {
         if (a != (cs + cpu_state.pc))
-                memcycs += (8 >> is8086);
+                memcycs += 8;
         if ((readlookup2[((s) + (a)) >> 12] == -1 || (s) == 0xFFFFFFFF))
                 return readmemwl(s + a);
         else
@@ -103,7 +102,7 @@ static void writememb(uint32_t a, uint8_t v) {
                 *(uint8_t *)(writelookup2[a >> 12] + a) = v;
 }
 static void writememw(uint32_t s, uint32_t a, uint16_t v) {
-        memcycs += (8 >> is8086);
+        memcycs += 8;
         if (writelookup2[((s) + (a)) >> 12] == -1 || (s) == 0xFFFFFFFF)
                 writememwl(s + a, v);
         else
@@ -146,13 +145,6 @@ static inline uint8_t FETCH() {
                 prefetchpc = cpu_state.pc = cpu_state.pc + 1;
                 //                if (output) printf("   FETCH %04X:%04X %02X %04X %04X
                 //                %i\n",CS,pc-1,temp,pc,prefetchpc,prefetchw);
-                if (is8086 && (cpu_state.pc & 1)) {
-                        prefetchqueue[0] = readmembf(cs + cpu_state.pc);
-                        //                        if (output) printf("   PREFETCHED from %04X:%04X %02X
-                        //                        8086\n",CS,prefetchpc,prefetchqueue[prefetchw]);
-                        prefetchpc++;
-                        prefetchw++;
-                }
         } else {
                 temp = prefetchqueue[0];
                 prefetchqueue[0] = prefetchqueue[1];
@@ -175,18 +167,11 @@ static inline void FETCHADD(int c) {
         //        if (output) printf("FETCHADD %i\n",c);
         if (c < 0)
                 return;
-        if (prefetchw > ((is8086) ? 4 : 3))
+        if (prefetchw > 3)
                 return;
         d = c + (fetchcycles & 3);
-        while (d > 3 && prefetchw < ((is8086) ? 6 : 4)) {
+        while (d > 3 && prefetchw < 4) {
                 d -= 4;
-                if (is8086 && !(prefetchpc & 1)) {
-                        prefetchqueue[prefetchw] = readmembf(cs + prefetchpc);
-                        //                        printf("PREFETCHED from %04X:%04X %02X
-                        //                        8086\n",CS,prefetchpc,prefetchqueue[prefetchw]);
-                        prefetchpc++;
-                        prefetchw++;
-                }
                 if (prefetchw < 6) {
                         prefetchqueue[prefetchw] = readmembf(cs + prefetchpc);
                         //                        printf("PREFETCHED from %04X:%04X
@@ -205,18 +190,12 @@ static void FETCHCOMPLETE() {
         //        pclog("Fetchcomplete %i %i %i\n",fetchcycles&3,fetchcycles,prefetchw);
         if (!(fetchcycles & 3))
                 return;
-        if (prefetchw > ((is8086) ? 4 : 3))
+        if (prefetchw > 3)
                 return;
         if (!prefetchw)
                 nextcyc = (4 - (fetchcycles & 3));
         cycles -= (4 - (fetchcycles & 3));
         fetchclocks += (4 - (fetchcycles & 3));
-        if (is8086 && !(prefetchpc & 1)) {
-                prefetchqueue[prefetchw] = readmembf(cs + prefetchpc);
-                //                        printf("PREFETCHEDc from %04X:%04X %02X 8086\n",CS,prefetchpc,prefetchqueue[prefetchw]);
-                prefetchpc++;
-                prefetchw++;
-        }
         if (prefetchw < 6) {
                 prefetchqueue[prefetchw] = readmembf(cs + prefetchpc);
                 //                        printf("PREFETCHEDc from %04X:%04X %02X\n",CS,prefetchpc,prefetchqueue[prefetchw]);
