@@ -31,7 +31,6 @@
 #include "keyboard.h"
 #include "model.h"
 #include "mouse.h"
-#include "nvr.h"
 #include "pic.h"
 #include "pit.h"
 #include "plat-keyboard.h"
@@ -49,7 +48,7 @@
 #include "plugin.h"
 #include "viewer.h"
 
-int GAMEBLASTER, GUS, SSI2001, voodoo_enabled;
+int GAMEBLASTER, GUS, SSI2001;
 int gfxcard;
 int readflash;
 int romset;
@@ -154,11 +153,7 @@ void pc_reset() {
         fdc_reset();
         pic_reset();
         serial_reset();
-
-        if (AT)
-                setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-        else
-                setpitclock(14318184.0);
+        setpitclock(14318184.0);
 }
 #undef printf
 
@@ -213,7 +208,7 @@ void initpc(int argc, char *argv[]) {
 
         load_plugins();
 
-        cpuspeed2 = (AT) ? 2 : 1;
+        cpuspeed2 = 1;
         atfullspeed = 0;
 
         device_init();
@@ -311,8 +306,6 @@ void resetpchard() {
         disc_load(0, discfns[0]);
         disc_load(1, discfns[1]);
 
-        if (!AT && models[model]->max_ram > 640 && models[model]->max_ram <= 768 && !video_is_ega_vga())
-                mem_set_704kb();
         model_init();
         mouse_emu_init();
         video_init();
@@ -399,8 +392,7 @@ void runpc() {
                         exec386_dynarec(cycles_to_run);
                 else
                         exec386(cycles_to_run);
-        } else if (AT)
-                exec386(cycles_to_run);
+        }
         else
                 execx86(cycles_to_run);
 
@@ -472,22 +464,15 @@ void runpc() {
 void fullspeed() {
         cpuspeed2 = cpuspeed;
         if (!atfullspeed) {
-                pclog("Set fullspeed - %i %i %i\n", is386, AT, cpuspeed2);
-                if (AT)
-                        setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-                else
-                        setpitclock(14318184.0);
-                //                if (is386) setpitclock(clocks[2][cpuspeed2][0]);
-                //                else       setpitclock(clocks[AT?1:0][cpuspeed2][0]);
+                pclog("Set fullspeed - %i %i\n", is386, cpuspeed2);
+             
+                setpitclock(14318184.0);
         }
         atfullspeed = 1;
 }
 
 void speedchanged() {
-        if (AT)
-                setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-        else
-                setpitclock(14318184.0);
+        setpitclock(14318184.0);
 }
 
 void closepc() {
@@ -554,7 +539,6 @@ void loadconfig(char *fn) {
         GAMEBLASTER = config_get_int(CFG_MACHINE, NULL, "gameblaster", 0);
         GUS = config_get_int(CFG_MACHINE, NULL, "gus", 0);
         SSI2001 = config_get_int(CFG_MACHINE, NULL, "ssi2001", 0);
-        voodoo_enabled = config_get_int(CFG_MACHINE, NULL, "voodoo", 0);
 
         p = (char *)config_get_string(CFG_MACHINE, NULL, "model", "");
         if (p)
@@ -692,8 +676,6 @@ void loadconfig(char *fn) {
 
         mouse_type = config_get_int(CFG_MACHINE, NULL, "mouse_type", 0);
 
-        enable_sync = config_get_int(CFG_MACHINE, NULL, "enable_sync", 1);
-
         p = (char *)config_get_string(CFG_MACHINE, NULL, "lpt1_device", "");
 
         for (d = 0; d < num_config_callbacks; ++d)
@@ -733,7 +715,6 @@ void saveconfig(char *fn) {
         config_set_int(CFG_MACHINE, NULL, "gameblaster", GAMEBLASTER);
         config_set_int(CFG_MACHINE, NULL, "gus", GUS);
         config_set_int(CFG_MACHINE, NULL, "ssi2001", SSI2001);
-        config_set_int(CFG_MACHINE, NULL, "voodoo", voodoo_enabled);
 
         config_set_string(CFG_MACHINE, NULL, "model", model_get_internal_name());
         config_set_int(CFG_MACHINE, NULL, "cpu_manufacturer", cpu_manufacturer);
@@ -794,8 +775,6 @@ void saveconfig(char *fn) {
         config_set_string(CFG_MACHINE, NULL, "cd_model", cd_model_to_config(cd_model));
 
         config_set_int(CFG_MACHINE, NULL, "mouse_type", mouse_type);
-
-        config_set_int(CFG_MACHINE, NULL, "enable_sync", enable_sync);
 
         for (d = 0; d < num_config_callbacks; ++d)
                 if (config_callbacks[d].saveconfig)

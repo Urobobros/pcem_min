@@ -16,7 +16,6 @@
 #include "keyboard_xt.h"
 #include "mem.h"
 #include "nmi.h"
-#include "nvr.h"
 #include "pci.h"
 #include "pic.h"
 #include "pit.h"

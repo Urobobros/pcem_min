@@ -673,15 +673,10 @@ void resetx86() {
         cr4 = 0;
         cpu_state.eflags = 0;
         cgate32 = 0;
-        if (AT) {
-                loadcs(0xF000);
-                cpu_state.pc = 0xFFF0;
-                rammask = cpu_16bitbus ? 0xFFFFFF : 0xFFFFFFFF;
-        } else {
-                loadcs(0xFFFF);
-                cpu_state.pc = 0;
-                rammask = 0xfffff;
-        }
+      
+        loadcs(0xFFFF);
+        cpu_state.pc = 0;
+        rammask = 0xfffff;
         idt.base = 0;
         idt.limit = is386 ? 0x03FF : 0xFFFF;
         cpu_state.flags = 2;
@@ -716,16 +711,10 @@ void softresetx86() {
         cpu_update_waitstates();
         cr4 = 0;
         cpu_state.eflags = 0;
-        cgate32 = 0;
-        if (AT) {
-                loadcs(0xF000);
-                cpu_state.pc = 0xFFF0;
-                rammask = cpu_16bitbus ? 0xFFFFFF : 0xFFFFFFFF;
-        } else {
-                loadcs(0xFFFF);
-                cpu_state.pc = 0;
-                rammask = 0xfffff;
-        }
+        cgate32 = 0;        
+        loadcs(0xFFFF);
+        cpu_state.pc = 0;
+        rammask = 0xfffff;
         // rammask=0xFFFFFFFF;
         cpu_state.flags = 2;
         idt.base = 0;

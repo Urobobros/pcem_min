@@ -27,7 +27,6 @@
 #include "hdd.h"
 #include "model.h"
 #include "mouse.h"
-#include "nvr.h"
 #include "scsi_zip.h"
 #include "sound.h"
 #include "thread.h"
@@ -172,9 +171,8 @@ int mainthread(void *param) {
                                 drawits = 0;
                         runpc();
                         frames++;
-                        if (frames >= 200 && nvr_dosave) {
+                        if (frames >= 200) {
                                 frames = 0;
-                                nvr_dosave = 0;
                         }
                         end_time = timer_read();
                         main_time += end_time - start_time;

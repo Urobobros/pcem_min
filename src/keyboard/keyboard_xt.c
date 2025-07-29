@@ -42,8 +42,6 @@ static int key_queue_start = 0, key_queue_end = 0;
 
 void keyboard_xt_poll() {
         timer_advance_u64(&keyboard_xt.send_delay_timer, (1000 * TIMER_USEC));
-        if (!(keyboard_xt.pb & 0x40) && romset != ROM_TANDY)
-                return;
         if (keyboard_xt.wantirq) {
                 keyboard_xt.wantirq = 0;
                 keyboard_xt.pa = keyboard_xt.key_waiting;
@@ -60,30 +58,6 @@ void keyboard_xt_poll() {
 }
 
 void keyboard_xt_adddata(uint8_t val) {
-        /* Test for T1000 'Fn' key (Right Alt / Right Ctrl) */
-        if (romset == ROM_T1000 || romset == ROM_T1200) {
-                if (pcem_key[0xb8] || pcem_key[0x9D]) /* 'Fn' pressed */
-                {
-                        switch (val) {
-                        case 0x45: /* Num Lock => toggle numpad */
-                                break;
-                        case 0x47: /* Home => internal display */
-                                break;
-                        case 0x49: /* PgDn => turbo on */
-                                break;
-                        case 0x4D: /* Right => toggle LCD font */
-                                break;
-                        case 0x4F: /* End => external display */
-                                break;
-                        case 0x51: /* PgDn => turbo off */
-                                break;
-                        case 0x54: /* SysRQ => toggle window */
-                                break;
-                        }
-                } else {
-                }
-        }
-
         key_queue[key_queue_end] = val;
         pclog("keyboard_xt : %02X added to key queue at %i\n", val, key_queue_end);
         key_queue_end = (key_queue_end + 1) & 0xf;
@@ -136,20 +110,9 @@ uint8_t keyboard_xt_read(uint16_t port, void *priv) {
         //        pclog("keyboard_xt : read %04X ", port);
         switch (port) {
         case 0x60:
-                if ((romset == ROM_IBMPC || romset == ROM_LEDGE_MODELM) && (keyboard_xt.pb & 0x80)) {
-                        if (video_is_ega_vga())
-                                temp = 0x4D;
-                        else if (video_is_mda())
-                                temp = 0x7D;
-                        else
-                                temp = 0x6D;
-                        if (hasfpu)
-                                temp |= 0x02;
-                } else if ((romset == ROM_ATARIPC3) && (keyboard_xt.pb & 0x80)) {
-                        temp = 0x7f;
-                } else {
-                        temp = keyboard_xt.pa;
-                }
+               
+                temp = keyboard_xt.pa;
+                
                 break;
 
         case 0x61:
@@ -157,32 +120,17 @@ uint8_t keyboard_xt_read(uint16_t port, void *priv) {
                 break;
 
         case 0x62:
-                if (romset == ROM_IBMPC) {
-                        if (keyboard_xt.pb & 0x04)
-                                temp = ((mem_size - 64) / 32) & 0xf;
-                        else
-                                temp = ((mem_size - 64) / 32) >> 4;
 
-                        temp |= 0;
-                } else if (romset == ROM_LEDGE_MODELM) {
-                        /*High bit of memory size is read from port 0xa0*/
-                        temp = ((mem_size - 64) / 32) & 0xf;
-                } else if (romset == ROM_ATARIPC3) {
-                        if (keyboard_xt.pb & 0x04)
-                                temp = 0xf;
-                        else
+                
+                if (keyboard_xt.pb & 0x08) {
+                        if (video_is_ega_vga())
                                 temp = 4;
-                } else {
-                        if (keyboard_xt.pb & 0x08) {
-                                if (video_is_ega_vga())
-                                        temp = 4;
-                                else if (video_is_mda())
-                                        temp = 7;
-                                else
-                                        temp = 6;
-                        } else
-                                temp = hasfpu ? 0xf : 0xd;
-                }
+                        else if (video_is_mda())
+                                temp = 7;
+                        else
+                                temp = 6;
+                } else
+                        temp = hasfpu ? 0xf : 0xd;
                 temp |= (ppispeakon ? 0x20 : 0);
             
                 break;
@@ -214,13 +162,11 @@ void keyboard_xt_reset() {
 void keyboard_xt_init() {
         // return;
         io_sethandler(0x0060, 0x0004, keyboard_xt_read, NULL, NULL, keyboard_xt_write, NULL, NULL, NULL);
-        if (romset == ROM_LEDGE_MODELM)
-                io_sethandler(0x00a0, 0x0001, ledge_modelm_read, NULL, NULL, NULL, NULL, NULL, NULL);
         keyboard_xt_reset();
         keyboard_send = keyboard_xt_adddata;
         keyboard_poll = keyboard_xt_poll;
         keyboard_xt.tandy = 0;
-        keyboard_xt.pb2_turbo = (romset == ROM_GENXT || romset == ROM_DTKXT || romset == ROM_AMIXT || romset == ROM_PXXT) ? 1 : 0;
+        keyboard_xt.pb2_turbo = (romset == ROM_AMIXT) ? 1 : 0;
 
         timer_add(&keyboard_xt.send_delay_timer, (void *)keyboard_xt_poll, NULL, 1);
 }

@@ -11,6 +11,7 @@
         "defines.h": "c",
         "82091aa.h": "c",
         "sio.h": "c",
-        "keyboard_at.h": "c"
+        "keyboard_at.h": "c",
+        "devices.h": "c"
     }
 }

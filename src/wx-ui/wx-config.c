@@ -11,7 +11,6 @@
 #include "model.h"
 #include "mouse.h"
 #include "mem.h"
-#include "nvr.h"
 #include "scsi_cd.h"
 #include "sound.h"
 #include "video.h"
@@ -233,8 +232,8 @@ static void recalc_hdd_list(void *hdlg, int model, int use_selected_hdd, int for
                         c++;
                         continue;
                 }
-                if ((((hdd_controller_get_flags(c) & DEVICE_PS1) && models[model]->id != ROM_IBMPS1_2011) ||
-                     (!(hdd_controller_get_flags(c) & DEVICE_PS1) && models[model]->id == ROM_IBMPS1_2011)) &&
+                if ((((hdd_controller_get_flags(c) & DEVICE_PS1)) ||
+                     (!(hdd_controller_get_flags(c) & DEVICE_PS1))) &&
                     c) {
                         c++;
                         continue;
@@ -445,9 +444,6 @@ int config_dlgsave(void *hdlg) {
         h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSSI"));
         temp_SSI2001 = wx_sendmessage(h, WX_BM_GETCHECK, 0, 0);
 
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSYNC"));
-        enable_sync = wx_sendmessage(h, WX_BM_GETCHECK, 0, 0);
-
         h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKVOODOO"));
         temp_voodoo = wx_sendmessage(h, WX_BM_GETCHECK, 0, 0);
 
@@ -472,7 +468,7 @@ int config_dlgsave(void *hdlg) {
 
         if (temp_model != model || gfx != gfxcard || mem != mem_size || temp_fpu != fpu_type || temp_GAMEBLASTER != GAMEBLASTER ||
             temp_GUS != GUS || temp_SSI2001 != SSI2001 || temp_sound_card_current != sound_card_current ||
-            temp_voodoo != voodoo_enabled || temp_dynarec != cpu_use_dynarec || temp_fda_type != fdd_get_type(0) ||
+            temp_dynarec != cpu_use_dynarec || temp_fda_type != fdd_get_type(0) ||
             temp_fdb_type != fdd_get_type(1) || temp_mouse_type != mouse_type || hdd_changed || hd_changed ||
             cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel 
         ) {
@@ -488,7 +484,6 @@ int config_dlgsave(void *hdlg) {
                         GUS = temp_GUS;
                         SSI2001 = temp_SSI2001;
                         sound_card_current = temp_sound_card_current;
-                        voodoo_enabled = temp_voodoo;
                         cpu_use_dynarec = temp_dynarec;
                         mouse_type = temp_mouse_type;
                        
@@ -635,12 +630,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSSI"));
                 wx_sendmessage(h, WX_BM_SETCHECK, SSI2001, 0);
-
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSYNC"));
-                wx_sendmessage(h, WX_BM_SETCHECK, enable_sync, 0);
-
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKVOODOO"));
-                wx_sendmessage(h, WX_BM_SETCHECK, voodoo_enabled, 0);
 
                 cpu_flags = models[romstomodel[romset]]->cpu[cpu_manufacturer].cpus[cpu].cpu_flags;
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKDYNAREC"));

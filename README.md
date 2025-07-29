@@ -407,7 +407,6 @@ ESDI | <b>Western Digital WD1007V-SE1</b> | 16-bit ESDI controller | 62-000279-0
 ESDI | <b>IBM ESDI Fixed Disk Controller</b> | MCA ESDI controller. Only supported on PS/2 models. | 90x8969.bin<br/>90x8970.bin
 IDE | <b>Standard IDE</b> | Standard IDE controller. Supported by all AT-compatible BIOSes. Use this if in any doubt! | <i>(none)</i>
 IDE | <b>XTIDE</b> | 8-bit IDE controller. The BIOS is available [here](http://code.google.com/p/xtideuniversalbios/). <br/>v2.0.0 beta 1 is the version I've mostly tested. v2.0.0 beta 3 is known to have some issues. | ide_xt.bin
-IDE | <b>XTIDE (AT)</b> | 16-bit IDE controller. | ide_at.bin
 IDE | <b>XTIDE (PS/1)</b> | IDE controller for the PS/1 model 2033. For this machine you will need BIOS version v1.1.5. The PS/1 is a bit fussy with XTIDE, and I've found that it works best when the XTIDE configuration has 'Full Operating Mode' disabled. | ide_at_1_1_5.bin
 SCSI | <b>Longshine LCS-6821N</b> | 8-bit SCSI controller. | Longshine LCS-6821N - BIOS version 1.04.bin
 SCSI | <b>Rancho RT1000B</b> | 8-bit SCSI controller. | Rancho_RT1000_RTBios_version_8.10R.bin

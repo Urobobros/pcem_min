@@ -96,11 +96,10 @@ IDE *ext_ide;
  * by GRiD. Their BIOS only works with these, so this allows running GRiD
  * BIOS unpatched.
  */
-static IDE_HDD_EMU hddemu[] = {
-        { ROM_GRID1520, "Conner Peripherals 20MB - CP3024", 615, 4, 17 }, // type 2, 20MB
-        { ROM_GRID1520, "Conner Peripherals 40MB - CP3044", 980, 5, 17 }, // type 17, 
-        { ROM_GRID1520, "Conner Peripherals 104MB - CP3104", 776, 8, 33 }  // extended type 224 104MB
-};
+
+static IDE_HDD_EMU* hddemu = NULL;
+int hdd_count = 0;  // Počet položek
+//static IDE_HDD_EMU hddemu[] = {};
 
 char ide_fn[7][512];
 

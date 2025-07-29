@@ -13,7 +13,6 @@
 #include "keyboard_xt.h"
 #include "mem.h"
 #include "nmi.h"
-#include "nvr.h"
 #include "pci.h"
 #include "pic.h"
 #include "pit.h"
@@ -26,7 +25,7 @@
 void xt_init();
 
 extern MODEL m_amixt;
-int AMSTRAD, AT, PCI, TANDY, MCA;
+int AMSTRAD, PCI, TANDY, MCA;
 
 int model_getromset() { return models[model]->id; }
 
@@ -91,7 +90,7 @@ void xt_init() {
 
 void model_init() {
         pclog("Initting as %s\n", model_getname());
-        AMSTRAD = AT = PCI = TANDY = MCA = 0;
+        AMSTRAD = PCI = TANDY = MCA = 0;
         ide_set_bus_master(NULL, NULL, NULL, NULL);
 
         models[model]->init();

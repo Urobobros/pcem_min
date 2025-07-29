@@ -3,7 +3,6 @@
 #include "device.h"
 #include "io.h"
 #include "ps2_nvr.h"
-#include "nvr.h"
 
 typedef struct ps2_nvr_t {
         int addr;
@@ -50,17 +49,6 @@ static void *ps2_nvr_init() {
 
         io_sethandler(0x0074, 0x0003, ps2_nvr_read, NULL, NULL, ps2_nvr_write, NULL, NULL, nvr);
 
-        switch (romset) {
-        case ROM_IBMPS2_M70_TYPE3:
-                f = nvrfopen("ibmps2_m70_type3_sec.nvr", "rb");
-                break;
-        case ROM_IBMPS2_M70_TYPE4:
-                f = nvrfopen("ibmps2_m70_type4_sec.nvr", "rb");
-                break;
-        case ROM_IBMPS2_M80:
-                f = nvrfopen("ibmps2_m80_sec.nvr", "rb");
-                break;
-        }
         if (f) {
                 fread(nvr->ram, 8192, 1, f);
                 fclose(f);
@@ -74,17 +62,6 @@ static void ps2_nvr_close(void *p) {
         ps2_nvr_t *nvr = (ps2_nvr_t *)p;
         FILE *f = NULL;
 
-        switch (romset) {
-        case ROM_IBMPS2_M70_TYPE3:
-                f = nvrfopen("ibmps2_m70_type3_sec.nvr", "wb");
-                break;
-        case ROM_IBMPS2_M70_TYPE4:
-                f = nvrfopen("ibmps2_m70_type4_sec.nvr", "wb");
-                break;
-        case ROM_IBMPS2_M80:
-                f = nvrfopen("ibmps2_m80_sec.nvr", "wb");
-                break;
-        }
         if (f) {
                 fwrite(nvr->ram, 8192, 1, f);
                 fclose(f);

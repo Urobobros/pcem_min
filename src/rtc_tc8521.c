@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "nvr.h"
 #include "rtc_tc8521.h"
 
 #define peek2(a) (nvrram[(a##1)] + 10 * nvrram[(a##10)])
