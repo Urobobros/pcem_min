@@ -428,3 +428,5 @@ build-*/
 cmake-build-*/
 output/
 !.vs/launch.vs.json
+tests/test_*
+!tests/*.c

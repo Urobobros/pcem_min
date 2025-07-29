@@ -10,4 +10,6 @@
 | 6 | Exportovat kód do NASM | Ghidra → *Export Program* | Zítra | 🔲 |
 | 7 | Vyčistit ASM a přeložit | `nasm -f bin exported.asm -o new.bin` | Zítra | 🔲 |
 | 8 | Patchnout originální BIOS | `dd if=new.bin of=bios/ami_8088_bios_31jan89.bin bs=1 seek=OFFSET conv=notrunc` | Zítra | 🔲 |
-| 9 | Test v emulátoru | `qemu-system-i386 -bios bios/ami_8088_bios_31jan89.bin` | Později | 🔲 |
+| 9 | Implementovat testy inicializace (pit/dma/pic/fdc/serial/kbd/nmi/cga/io) | `gcc tests/test_init.c ...` | Později | ✅ |
+| 10 | Kompilace testů pod Windows | `tools/build_tests.bat` | Později | ✅ |
+| 11 | Test v emulátoru | `qemu-system-i386 -bios bios/ami_8088_bios_31jan89.bin` | Později | 🔲 |
