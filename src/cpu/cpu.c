@@ -178,7 +178,6 @@ void cpu_set() {
 
         CPUID = cpu_s->cpuid_model;
         cpuspeed = cpu_s->speed;
-        is8086 = (cpu_s->cpu_type > CPU_8088);
         hasfpu = (fpu_type != FPU_NONE);
 
         if (cpu_s->multi)
@@ -306,7 +305,6 @@ void cpu_set() {
 
         switch (cpu_s->cpu_type) {
         case CPU_8088:
-        case CPU_8086:
                 break;
 
         default:

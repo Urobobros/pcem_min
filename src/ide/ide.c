@@ -181,7 +181,7 @@ static void ide_identify(IDE *ide) {
 
         ide_padstr((char *)(ide->buffer + 10), "", 20);       /* Serial Number */
         ide_padstr((char *)(ide->buffer + 23), "v1.0", 8);    /* Firmware */
-        for (h = 0; h < sizeof(hddemu) / sizeof(hddemu[0]); h++)
+        for (h = 0; h < hdd_count; h++)
                 if (romset == hddemu[h].romset
                         && hdc[cur_ide[ide->board]].tracks == hddemu[h].tracks
                         && hdc[cur_ide[ide->board]].hpc == hddemu[h].hpc

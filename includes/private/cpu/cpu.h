@@ -8,7 +8,6 @@ extern int fpu_type;
 
 /*808x class CPUs*/
 #define CPU_8088 0
-#define CPU_8086 1
 
 #define MANU_INTEL 0
 #define MANU_AMD 1
@@ -35,39 +34,6 @@ enum { FPU_NONE, FPU_8087, FPU_287, FPU_287XL, FPU_387, FPU_BUILTIN };
 extern CPU *cpu_s;
 
 extern CPU cpus_8088[];
-extern CPU cpus_8086[];
-extern CPU cpus_286[];
-extern CPU cpus_i386SX[];
-extern CPU cpus_i386DX[];
-extern CPU cpus_Am386SX[];
-extern CPU cpus_Am386DX[];
-extern CPU cpus_486SLC[];
-extern CPU cpus_486DLC[];
-extern CPU cpus_i486[];
-extern CPU cpus_Am486[];
-extern CPU cpus_Cx486[];
-extern CPU cpus_WinChip[];
-extern CPU cpus_WinChip_SS7[];
-extern CPU cpus_Pentium5V[];
-extern CPU cpus_PentiumS5[];
-extern CPU cpus_Pentium[];
-extern CPU cpus_6x86[];
-extern CPU cpus_6x86_SS7[];
-extern CPU cpus_K6_S7[];
-extern CPU cpus_K6_SS7[];
-extern CPU cpus_PentiumPro[];
-extern CPU cpus_Slot1_100MHz[];
-extern CPU cpus_VIA_100MHz[];
-
-extern CPU cpus_pcjr[];
-extern CPU cpus_europc[];
-extern CPU cpus_pc1512[];
-extern CPU cpus_super286tr[];
-extern CPU cpus_ibmat[];
-extern CPU cpus_ibmxt286[];
-extern CPU cpus_ps1_m2011[];
-extern CPU cpus_ps2_m30_286[];
-extern CPU cpus_acer[];
 
 extern int cpu_iscyrix;
 extern int cpu_16bitbus;
@@ -108,7 +74,6 @@ extern uint64_t tsc;
 void cyrix_write(uint16_t addr, uint8_t val, void *priv);
 uint8_t cyrix_read(uint16_t addr, void *priv);
 
-extern int is8086;
 extern int is486;
 extern int CPUID;
 
