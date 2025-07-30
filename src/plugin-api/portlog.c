@@ -4,10 +4,11 @@
 #include <errno.h>
 #include "config.h"
 #include "paths.h"
-#include "ibm.h"
+#include <SDL.h>
 
 static FILE *portlogf = NULL;
 static uint64_t portlog_start_time = 0;
+static uint64_t portlog_freq = 0;
 
 static int portlog_start() {
 #ifndef RELEASE_BUILD
@@ -21,7 +22,8 @@ static int portlog_start() {
             fprintf(stderr, "Could not open port log file for writing: %s", strerror(errno));
             return 0;
         }
-        portlog_start_time = timer_read();
+        portlog_freq = SDL_GetPerformanceFrequency();
+        portlog_start_time = SDL_GetPerformanceCounter();
     }
     return 1;
 #else
@@ -51,11 +53,13 @@ void portlog(const char *format, ...) {
     char buf[1024];
     if (!portlog_start())
         return;
+    if (!portlog_freq)
+        portlog_freq = SDL_GetPerformanceFrequency();
     if (!portlog_start_time)
-        portlog_start_time = timer_read();
-    uint64_t now = timer_read();
+        portlog_start_time = SDL_GetPerformanceCounter();
+    uint64_t now = SDL_GetPerformanceCounter();
     double ms = ((double)(now - portlog_start_time) * 1000.0) /
-                (double)timer_freq;
+                (double)portlog_freq;
     va_list ap;
     va_start(ap, format);
     vsprintf(buf, format, ap);
