@@ -9,6 +9,7 @@
 static FILE *portlogf = NULL;
 static uint64_t portlog_start_time = 0;
 static uint64_t portlog_freq = 0;
+static uint64_t portlog_index = 0;
 
 static int portlog_start() {
 #ifndef RELEASE_BUILD
@@ -62,9 +63,12 @@ void portlog(const char *format, ...) {
                 (double)portlog_freq;
     va_list ap;
     va_start(ap, format);
-    vsprintf(buf, format, ap);
+    vsnprintf(buf, sizeof(buf), format, ap);
     va_end(ap);
-    fprintf(portlogf, "[%10.3f ms] %s", ms, buf);
+    size_t len = strlen(buf);
+    if (len && buf[len - 1] == '\n')
+        buf[len - 1] = '\0';
+    fprintf(portlogf, "index: %llu %s [%10.3f ms]\n", (unsigned long long)portlog_index++, buf, ms);
     fflush(portlogf);
 #endif
 }
