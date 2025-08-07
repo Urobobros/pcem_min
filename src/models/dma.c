@@ -4,7 +4,6 @@
 #include "fdc.h"
 #include "io.h"
 #include "mem.h"
-#include "ps2_mca.h"
 #include "video.h"
 #include "x86.h"
 
@@ -429,22 +428,22 @@ void dma_page_write(uint16_t addr, uint8_t val, void *priv) {
         dmapages[addr & 0xf] = val;
         switch (addr & 0xf) {
         case 1:
-                dma[2].page = (AT) ? val : val & 0xf;
+                dma[2].page = val & 0xf;
                 dma[2].ab = (dma[2].ab & 0xffff) | (dma[2].page << 16);
                 dma[2].ac = (dma[2].ac & 0xffff) | (dma[2].page << 16);
                 break;
         case 2:
-                dma[3].page = (AT) ? val : val & 0xf;
+                dma[3].page = val & 0xf;
                 dma[3].ab = (dma[3].ab & 0xffff) | (dma[3].page << 16);
                 dma[3].ac = (dma[3].ac & 0xffff) | (dma[3].page << 16);
                 break;
         case 3:
-                dma[1].page = (AT) ? val : val & 0xf;
+                dma[1].page = val & 0xf;
                 dma[1].ab = (dma[1].ab & 0xffff) | (dma[1].page << 16);
                 dma[1].ac = (dma[1].ac & 0xffff) | (dma[1].page << 16);
                 break;
         case 7:
-                dma[0].page = (AT) ? val : val & 0xf;
+                dma[0].page = val & 0xf;
                 dma[0].ab = (dma[0].ab & 0xffff) | (dma[0].page << 16);
                 dma[0].ac = (dma[0].ac & 0xffff) | (dma[0].page << 16);
                 break;
@@ -507,9 +506,6 @@ int dma_channel_read(int channel) {
                 if (dma16_command & 0x04)
                         return DMA_NODATA;
         }
-
-        if (!AT)
-                refreshread();
 
         if (dma_m & (1 << channel))
                 return DMA_NODATA;
@@ -575,9 +571,6 @@ int dma_channel_write(int channel, uint16_t val) {
                 if (dma16_command & 0x04)
                         return DMA_NODATA;
         }
-
-        if (!AT)
-                refreshread();
 
         if (dma_m & (1 << channel))
                 return DMA_NODATA;
@@ -690,7 +683,6 @@ static void dma_ps2_run(int channel) {
                         dma_c->cc--;
                 } while (dma_c->cc > 0);
 
-                ps2_cache_clean();
                 dma_stat |= (1 << channel);
                 break;
 

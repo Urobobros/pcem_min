@@ -33,7 +33,6 @@ set(PCEM_SRC ${PCEM_SRC}
         wx-ui/wx-dialogbox.cc
         wx-ui/wx-utils.cc
         wx-ui/wx-app.cc
-        wx-ui/wx-sdl2-joystick.c
         wx-ui/wx-sdl2-mouse.c
         wx-ui/wx-sdl2-keyboard.c
         wx-ui/wx-sdl2-video.c
@@ -49,17 +48,10 @@ set(PCEM_SRC ${PCEM_SRC}
         wx-ui/wx-glslp-parser.c
         wx-ui/wx-shader_man.c
         wx-ui/wx-shaderconfig.cc
-        wx-ui/wx-joystickconfig.cc
         wx-ui/wx-config-eventbinder.cc
         wx-ui/wx-createdisc.cc
         ${CMAKE_CURRENT_BINARY_DIR}/wx-ui/wx-resources.cpp
         )
-
-if(USE_NETWORKING)
-        set(PCEM_SRC ${PCEM_SRC}
-                wx-ui/wx-hostconfig.c
-                )
-endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         set(PCEM_SRC ${PCEM_SRC}

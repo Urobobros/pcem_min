@@ -9,18 +9,7 @@
 
 #include "filters.h"
 
-#include "sound_opl.h"
-
 #include "sound.h"
-#include "sound_adlib.h"
-#include "sound_adlibgold.h"
-#include "sound_audiopci.h"
-#include "sound_azt2316a.h"
-#include "sound_pas16.h"
-#include "sound_sb.h"
-#include "sound_sb_dsp.h"
-#include "sound_wss.h"
-#include "sound_mmb.h"
 
 #include "timer.h"
 #include "thread.h"
@@ -33,25 +22,6 @@ int sound_card_current = 0;
 static int sound_card_last = 0;
 
 SOUND_CARD sc_none = {"None", "none", NULL};
-SOUND_CARD sc_adlib = {"Adlib", "adlib", &adlib_device};
-SOUND_CARD sc_adlib_mca = {"Adlib", "adlib_mca", &adlib_mca_device};
-SOUND_CARD sc_sb = {"Sound Blaster 1.0", "sb", &sb_1_device};
-SOUND_CARD sc_sb1_5 = {"Sound Blaster 1.5", "sb1.5", &sb_15_device};
-SOUND_CARD sc_sbmcv = {"Sound Blaster MCV", "sbmcv", &sb_mcv_device};
-SOUND_CARD sc_sb2_0 = {"Sound Blaster 2.0", "sb2.0", &sb_2_device};
-SOUND_CARD sc_sbprov1 = {"Sound Blaster Pro v1", "sbprov1", &sb_pro_v1_device};
-SOUND_CARD sc_sbprov2 = {"Sound Blaster Pro v2", "sbprov2", &sb_pro_v2_device};
-SOUND_CARD sc_sbpromcv = {"Sound Blaster Pro MCV", "sbpromcv", &sb_pro_mcv_device};
-SOUND_CARD sc_sb16 = {"Sound Blaster 16", "sb16", &sb_16_device};
-SOUND_CARD sc_sbawe32 = {"Sound Blaster AWE32", "sbawe32", &sb_awe32_device};
-SOUND_CARD sc_adlibgold = {"Adlib Gold", "adlibgold", &adgold_device};
-SOUND_CARD sc_wss = {"Windows Sound System", "wss", &wss_device};
-SOUND_CARD sc_azt2316a = {"Aztech Sound Galaxy Pro 16 AB (Washington)", "azt2316a", &azt2316a_device};
-SOUND_CARD sc_azt1605 = {"Aztech Sound Galaxy Nova 16 Extra (Clinton)", "azt1605", &azt1605_device};
-SOUND_CARD sc_pas16 = {"Pro Audio Spectrum 16", "pas16", &pas16_device};
-SOUND_CARD sc_es1371 = {"Ensoniq AudioPCI (ES1371)", "es1371", &es1371_device};
-SOUND_CARD sc_sbpci128 = {"Sound Blaster PCI 128", "sbpci128", &es1371_device};
-SOUND_CARD sc_mmb = {"Mindscape Music Board", "mmb", &mmb_device};
 
 int sound_card_available(int card) {
         if (sound_cards[card] != NULL && sound_cards[card]->device != NULL)
@@ -268,23 +238,4 @@ void sound_reset() {
 
 void sound_init_builtin() {
         pcem_add_sound(&sc_none);
-        pcem_add_sound(&sc_adlib);
-        pcem_add_sound(&sc_adlib_mca);
-        pcem_add_sound(&sc_sb);
-        pcem_add_sound(&sc_sb1_5);
-        pcem_add_sound(&sc_sbmcv);
-        pcem_add_sound(&sc_sb2_0);
-        pcem_add_sound(&sc_sbprov1);
-        pcem_add_sound(&sc_sbprov2);
-        pcem_add_sound(&sc_sbpromcv);
-        pcem_add_sound(&sc_sb16);
-        pcem_add_sound(&sc_sbawe32);
-        pcem_add_sound(&sc_adlibgold);
-        pcem_add_sound(&sc_wss);
-        pcem_add_sound(&sc_azt2316a);
-        pcem_add_sound(&sc_azt1605);
-        pcem_add_sound(&sc_pas16);
-        pcem_add_sound(&sc_es1371);
-        pcem_add_sound(&sc_sbpci128);
-        pcem_add_sound(&sc_mmb);
 }

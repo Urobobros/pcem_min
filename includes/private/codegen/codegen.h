@@ -328,14 +328,7 @@ typedef struct codegen_timing_t {
         int (*jump_cycles)();
 } codegen_timing_t;
 
-extern codegen_timing_t codegen_timing_pentium;
-extern codegen_timing_t codegen_timing_686;
 extern codegen_timing_t codegen_timing_486;
-extern codegen_timing_t codegen_timing_winchip;
-extern codegen_timing_t codegen_timing_winchip2;
-extern codegen_timing_t codegen_timing_cyrixiii;
-extern codegen_timing_t codegen_timing_k6;
-extern codegen_timing_t codegen_timing_p6;
 
 void codegen_timing_set(codegen_timing_t *timing);
 

@@ -7,18 +7,13 @@
 #include "cpu.h"
 #include "device.h"
 #include "fdd.h"
-#include "gameport.h"
 #include "hdd.h"
-#include "lpt.h"
 #include "model.h"
 #include "mouse.h"
 #include "mem.h"
-#include "nethandler.h"
-#include "nvr.h"
 #include "scsi_cd.h"
 #include "sound.h"
 #include "video.h"
-#include "vid_voodoo.h"
 #include "wx-config-eventbinder.h"
 
 #include "minivhd/minivhd.h"
@@ -31,9 +26,6 @@ extern int is486;
 static int romstolist[ROM_MAX], listtomodel[ROM_MAX], romstomodel[ROM_MAX], modeltolist[ROM_MAX];
 static int settings_sound_to_list[20], settings_list_to_sound[20];
 static int settings_mouse_to_list[20], settings_list_to_mouse[20];
-#ifdef USE_NETWORKING
-static int settings_network_to_list[20], settings_list_to_network[20];
-#endif
 static char *hdd_names[16];
 static void *eventBinder;
 
@@ -240,8 +232,8 @@ static void recalc_hdd_list(void *hdlg, int model, int use_selected_hdd, int for
                         c++;
                         continue;
                 }
-                if ((((hdd_controller_get_flags(c) & DEVICE_PS1) && models[model]->id != ROM_IBMPS1_2011) ||
-                     (!(hdd_controller_get_flags(c) & DEVICE_PS1) && models[model]->id == ROM_IBMPS1_2011)) &&
+                if ((((hdd_controller_get_flags(c) & DEVICE_PS1)) ||
+                     (!(hdd_controller_get_flags(c) & DEVICE_PS1))) &&
                     c) {
                         c++;
                         continue;
@@ -402,46 +394,6 @@ static void recalc_cd_list(void *hdlg, int cur_speed, char *cur_model) {
                 wx_sendmessage(h, WX_CB_SETCURSEL, 0, 0); // fall back TODO: is this necessary?
 }
 
-#ifdef USE_NETWORKING
-static void recalc_net_list(void *hdlg, int model) {
-        void *h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-        int c = 0, d = 0;
-        int found_card = 0;
-
-        wx_sendmessage(h, WX_CB_RESETCONTENT, 0, 0);
-
-        while (1) {
-                char *s = network_card_getname(c);
-                device_t *dev;
-
-                if (!s[0])
-                        break;
-
-                settings_network_to_list[c] = d;
-
-                dev = network_card_getdevice(c);
-
-                if (network_card_available(c) && (!dev || (models[model]->flags & MODEL_PCI) || !(dev->flags & DEVICE_PCI))) {
-                        device_t *network_dev = network_card_getdevice(c);
-
-                        if (!network_dev || (network_dev->flags & DEVICE_MCA) == (models[model]->flags & MODEL_MCA)) {
-                                wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
-                                settings_list_to_network[d] = c;
-                                if (c == network_card_current) {
-                                        wx_sendmessage(h, WX_CB_SETCURSEL, d, 0);
-                                        found_card = 1;
-                                }
-                                d++;
-                        }
-                }
-
-                c++;
-        }
-        if (!found_card)
-                wx_sendmessage(h, WX_CB_SETCURSEL, 0, 0);
-}
-#endif
-
 int config_dlgsave(void *hdlg) {
         char temp_str[256];
         void *h;
@@ -452,11 +404,6 @@ int config_dlgsave(void *hdlg) {
         int temp_dynarec;
         int temp_fda_type, temp_fdb_type;
         int temp_mouse_type;
-        int temp_lpt1_device;
-        int temp_joystick_type;
-#ifdef USE_NETWORKING
-        int temp_network_card;
-#endif
         int hdd_changed = 0;
         char s[260];
         PcemHDC hd[7];
@@ -497,9 +444,6 @@ int config_dlgsave(void *hdlg) {
         h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSSI"));
         temp_SSI2001 = wx_sendmessage(h, WX_BM_GETCHECK, 0, 0);
 
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSYNC"));
-        enable_sync = wx_sendmessage(h, WX_BM_GETCHECK, 0, 0);
-
         h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKVOODOO"));
         temp_voodoo = wx_sendmessage(h, WX_BM_GETCHECK, 0, 0);
 
@@ -514,9 +458,6 @@ int config_dlgsave(void *hdlg) {
         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBODRB"));
         temp_fdb_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
 
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOMOUSE"));
         temp_mouse_type = settings_list_to_mouse[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
 
@@ -525,25 +466,13 @@ int config_dlgsave(void *hdlg) {
         if (hdd_names[c])
                 hdd_changed = strncmp(hdd_names[c], hdd_controller_name, sizeof(hdd_controller_name) - 1);
 
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
-        temp_lpt1_device = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-#ifdef USE_NETWORKING
-        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-        temp_network_card = settings_list_to_network[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
-#endif
-
         if (temp_model != model || gfx != gfxcard || mem != mem_size || temp_fpu != fpu_type || temp_GAMEBLASTER != GAMEBLASTER ||
             temp_GUS != GUS || temp_SSI2001 != SSI2001 || temp_sound_card_current != sound_card_current ||
-            temp_voodoo != voodoo_enabled || temp_dynarec != cpu_use_dynarec || temp_fda_type != fdd_get_type(0) ||
+            temp_dynarec != cpu_use_dynarec || temp_fda_type != fdd_get_type(0) ||
             temp_fdb_type != fdd_get_type(1) || temp_mouse_type != mouse_type || hdd_changed || hd_changed ||
-            cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel || lpt1_current != temp_lpt1_device
-#ifdef USE_NETWORKING
-            || temp_network_card != network_card_current
-#endif
+            cdrom_channel != new_cdrom_channel || zip_channel != new_zip_channel 
         ) {
                 if (!has_been_inited || confirm()) {
-                        savenvr();
                         model = temp_model;
                         romset = model_getromset();
                         gfxcard = gfx;
@@ -555,14 +484,9 @@ int config_dlgsave(void *hdlg) {
                         GUS = temp_GUS;
                         SSI2001 = temp_SSI2001;
                         sound_card_current = temp_sound_card_current;
-                        lpt1_current = temp_lpt1_device;
-                        voodoo_enabled = temp_voodoo;
                         cpu_use_dynarec = temp_dynarec;
                         mouse_type = temp_mouse_type;
-                        strcpy(lpt1_device_name, lpt_device_get_internal_name(temp_lpt1_device));
-#ifdef USE_NETWORKING
-                        network_card_current = temp_network_card;
-#endif
+                       
 
                         fdd_set_type(0, temp_fda_type);
                         fdd_set_type(1, temp_fdb_type);
@@ -628,9 +552,6 @@ int config_dlgsave(void *hdlg) {
 
         speedchanged();
 
-        joystick_type = temp_joystick_type;
-        gameport_update_joystick_type();
-
         return TRUE;
 }
 
@@ -647,10 +568,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
         int cpu_type;
         int temp_cd_model, temp_cd_speed;
         int temp_mouse_type;
-        int temp_lpt1_current;
-#ifdef USE_NETWORKING
-        int temp_network_card;
-#endif
 
         switch (message) {
         case WX_INITDIALOG: {
@@ -714,12 +631,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSSI"));
                 wx_sendmessage(h, WX_BM_SETCHECK, SSI2001, 0);
 
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKSYNC"));
-                wx_sendmessage(h, WX_BM_SETCHECK, enable_sync, 0);
-
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKVOODOO"));
-                wx_sendmessage(h, WX_BM_SETCHECK, voodoo_enabled, 0);
-
                 cpu_flags = models[romstomodel[romset]]->cpu[cpu_manufacturer].cpus[cpu].cpu_flags;
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_CHECKDYNAREC"));
                 if (!(cpu_flags & CPU_SUPPORTS_DYNAREC) || (cpu_flags & CPU_REQUIRES_DYNAREC))
@@ -764,12 +675,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 else
                         wx_enablewindow(h, FALSE);
 
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURELPT1"));
-                if (lpt_device_has_config(lpt1_current))
-                        wx_enablewindow(h, TRUE);
-                else
-                        wx_enablewindow(h, FALSE);
-
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBODRA"));
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "None");
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "5.25\" 360k");
@@ -797,23 +702,9 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 else
                         wx_sendmessage(h, WX_WM_SETTEXT, 0, (LONG_PARAM) "KB");
 
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
                 c = 0;
-                while (joystick_get_name(c)) {
-                        wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)joystick_get_name(c));
-                        c++;
-                }
-                wx_enablewindow(h, TRUE);
-                wx_sendmessage(h, WX_CB_SETCURSEL, joystick_type, 0);
 
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY1"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 1) ? TRUE : FALSE);
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY2"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 2) ? TRUE : FALSE);
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY3"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 3) ? TRUE : FALSE);
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY4"));
-                wx_enablewindow(h, (joystick_get_max_joysticks(joystick_type) >= 4) ? TRUE : FALSE);
+                wx_enablewindow(h, TRUE);
 
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "System default");
@@ -827,10 +718,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM) "7 W/S");
                 wx_sendmessage(h, WX_CB_SETCURSEL, cpu_waitstates, 0);
                 cpu_type = models[romstomodel[romset]]->cpu[cpu_manufacturer].cpus[cpu].cpu_type;
-                if ((cpu_type >= CPU_286) && (cpu_type <= CPU_386DX))
-                        wx_enablewindow(h, TRUE);
-                else
-                        wx_enablewindow(h, FALSE);
+
+                wx_enablewindow(h, FALSE);
 
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOMOUSE"));
                 c = d = 0;
@@ -857,19 +746,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                 h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
                 c = d = 0;
-                while (1) {
-                        char *s = lpt_device_get_name(c);
-
-                        if (!s)
-                                break;
-
-                        wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
-                        if (!strcmp(lpt1_device_name, lpt_device_get_internal_name(c)))
-                                if (lpt1_current == c)
-                                        d = c;
-
-                        c++;
-                }
                 wx_sendmessage(h, WX_CB_SETCURSEL, d, 0);
 
                 recalc_hdd_list(hdlg, romstomodel[romset], 0, 0);
@@ -897,16 +773,6 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                 }
 
                 recalc_cd_list(hdlg, cd_speed, cd_model);
-
-#ifdef USE_NETWORKING
-                recalc_net_list(hdlg, romstomodel[romset]);
-
-                h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURE_NETCARD"));
-                if (network_card_has_config(network_card_current))
-                        wx_enablewindow(h, TRUE);
-                else
-                        wx_enablewindow(h, FALSE);
-#endif
 
                 return TRUE;
         } break;
@@ -996,10 +862,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                         cpu_type = models[temp_model]->cpu[temp_cpu_m].cpus[temp_cpu].cpu_type;
-                        if (cpu_type >= CPU_286 && cpu_type <= CPU_386DX)
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
+
+                        wx_enablewindow(h, FALSE);
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGUREMOD"));
                         if (model_getdevice(temp_model))
@@ -1047,9 +911,7 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                         recalc_cd_list(hdlg, cd_get_speed(temp_cd_speed), cd_get_model(temp_cd_model));
 
                         recalc_snd_list(hdlg, temp_model);
-#ifdef USE_NETWORKING
-                        recalc_net_list(hdlg, temp_model);
-#endif
+
                 } else if (wParam == WX_ID("IDC_COMBOCPUM")) {
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));
                         temp_model = listtomodel[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
@@ -1090,10 +952,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                         cpu_type = models[temp_model]->cpu[temp_cpu_m].cpus[temp_cpu].cpu_type;
-                        if (cpu_type >= CPU_286 && cpu_type <= CPU_386DX)
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
+
+                        wx_enablewindow(h, FALSE);
 
                 } else if (wParam == WX_ID("IDC_COMBO3")) {
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));
@@ -1123,10 +983,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOWS"));
                         cpu_type = models[temp_model]->cpu[temp_cpu_m].cpus[temp_cpu].cpu_type;
-                        if (cpu_type >= CPU_286 && cpu_type <= CPU_386DX)
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
+
+                        wx_enablewindow(h, FALSE);
                 } else if (wParam == WX_ID("IDC_CONFIGUREMOD")) {
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));
                         temp_model = listtomodel[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
@@ -1167,9 +1025,8 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                                 wx_enablewindow(h, TRUE);
                         else
                                 wx_enablewindow(h, FALSE);
-                } else if (wParam == WX_ID("IDC_CONFIGUREVOODOO")) {
-                        deviceconfig_open(hdlg, (void *)&voodoo_device);
-                } else if (wParam == WX_ID("IDC_COMBOHDD")) {
+                } 
+                else if (wParam == WX_ID("IDC_COMBOHDD")) {
                         hdconf_update(hdlg);
 
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO1"));
@@ -1189,77 +1046,7 @@ int config_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam)
                         h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_CDSPEED"));
                         temp_cd_speed = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
                         recalc_cd_list(hdlg, cd_get_speed(temp_cd_speed), cd_get_model(temp_cd_model));
-                }
-#ifdef USE_NETWORKING
-                else if (wParam == WX_ID("IDC_COMBO_NETCARD")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-                        temp_network_card = settings_list_to_network[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURE_NETCARD"));
-                        if (network_card_has_config(temp_network_card))
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
-                } else if (wParam == WX_ID("IDC_CONFIGURE_NETCARD")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBO_NETCARD"));
-                        temp_network_card = settings_list_to_network[wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0)];
-
-                        deviceconfig_open(hdlg, (void *)network_card_getdevice(temp_network_card));
-                }
-#endif
-                else if (wParam == WX_ID("IDC_COMBOJOY")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY1"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 1) ? TRUE : FALSE);
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY2"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 2) ? TRUE : FALSE);
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY3"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 3) ? TRUE : FALSE);
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_JOY4"));
-                        wx_enablewindow(h, (joystick_get_max_joysticks(temp_joystick_type) >= 4) ? TRUE : FALSE);
-                } else if (wParam == WX_ID("IDC_JOY1")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 0, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_JOY2")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 1, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_JOY3")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 2, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_JOY4")) {
-                        int temp_joystick_type;
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOJOY"));
-                        temp_joystick_type = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                        joystickconfig_open(hdlg, 3, temp_joystick_type);
-                } else if (wParam == WX_ID("IDC_CONFIGURELPT1")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
-                        temp_lpt1_current = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-                        deviceconfig_open(hdlg, (void *)lpt_get_device(temp_lpt1_current));
-                } else if (wParam == WX_ID("IDC_COMBOLPT1")) {
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_COMBOLPT1"));
-                        temp_lpt1_current = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-                        h = wx_getdlgitem(hdlg, WX_ID("IDC_CONFIGURELPT1"));
-                        if (lpt_device_has_config(temp_lpt1_current))
-                                wx_enablewindow(h, TRUE);
-                        else
-                                wx_enablewindow(h, FALSE);
-                }
+                } 
 #ifndef __WXGTK__
                 /*Emulate spinner granularity on systems that don't implement wxSpinCtrl->SetIncrement()*/
                 else if (wParam == WX_ID("IDC_MEMSPIN")) {

@@ -17,7 +17,7 @@
 #include "video.h"
 #include "model.h"
 
-PIT pit, pit2;
+PIT pit;
 
 /*B0 to 40, two writes to 43, then two reads - value does not change!*/
 /*B4 to 40, two writes to 43, then two reads - value _does_ change!*/
@@ -27,7 +27,6 @@ int displine;
 uint64_t PITCONST;
 uint64_t CGACONST;
 uint64_t MDACONST;
-uint64_t VGACONST1, VGACONST2;
 uint64_t RTCCONST;
 
 float cpuclock;
@@ -40,8 +39,6 @@ void setpitclock(float clock) {
         PITCONST = (uint64_t)(clock / 1193182.0 * (float)(1ull << 32));
         CGACONST = (uint64_t)((clock / (19687503.0 / 11.0)) * (float)(1ull << 32));
         MDACONST = (uint64_t)((clock / 2032125.0) * (float)(1ull << 32));
-        VGACONST1 = (uint64_t)((clock / 25175000.0) * (float)(1ull << 32));
-        VGACONST2 = (uint64_t)((clock / 28322000.0) * (float)(1ull << 32));
         isa_timing = clock / 8000000.0;
         bus_timing = clock / (double)cpu_busspeed;
         video_updatetiming();
@@ -529,35 +526,9 @@ void pit_irq0_timer(int new_out, int old_out) {
                 picintc(1);
 }
 
-void pit_irq0_timer_pcjr(int new_out, int old_out) {
-        if (new_out && !old_out) {
-                picint(1);
-                pit_clock(&pit, 1);
-        }
-        if (!new_out)
-                picintc(1);
-}
-
-void pit_irq0_ps2(int new_out, int old_out) {
-        // pclog("pit_irq0_ps2 %i %i\n", new_out, old_out);
-        if (new_out && !old_out) {
-                picint(1);
-                pit_set_gate_no_timer(&pit2, 0, 1);
-        }
-        if (!new_out)
-                picintc(1);
-        if (!new_out && old_out)
-                pit_clock(&pit2, 0);
-}
-
 void pit_refresh_timer_xt(int new_out, int old_out) {
         if (new_out && !old_out)
                 dma_channel_read(0);
-}
-
-void pit_refresh_timer_at(int new_out, int old_out) {
-        if (new_out && !old_out)
-                ppi.pb ^= 0x10;
 }
 
 void pit_speaker_timer(int new_out, int old_out) {
@@ -601,21 +572,3 @@ void pit_init() {
         pit_set_out_func(&pit, 2, pit_speaker_timer);
 }
 
-void pit_ps2_init() {
-        pit_reset(&pit2);
-
-        io_sethandler(0x0044, 0x0001, pit_read, NULL, NULL, pit_write, NULL, NULL, &pit2);
-        io_sethandler(0x0047, 0x0001, pit_read, NULL, NULL, pit_write, NULL, NULL, &pit2);
-
-        pit2.gate[0] = 0;
-        pit2.using_timer[0] = 0;
-        pit2.disabled[0] = 1;
-
-        pit2.pit_nr[0].nr = 0;
-        pit2.pit_nr[0].pit = &pit2;
-
-        timer_add(&pit2.timer[0], pit_timer_over, (void *)&pit2.pit_nr[0], 0);
-
-        pit_set_out_func(&pit, 0, pit_irq0_ps2);
-        pit_set_out_func(&pit2, 0, pit_nmi_ps2);
-}

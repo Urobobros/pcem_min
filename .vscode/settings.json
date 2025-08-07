@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "ibm.h": "c",
+        "codegen.h": "c",
+        "fdc37c93x.h": "c",
+        "mouse_serial.h": "c",
+        "ide.h": "c",
+        "pic.h": "c",
+        "vid_pc1512.h": "c",
+        "timer.h": "c",
+        "defines.h": "c",
+        "82091aa.h": "c",
+        "sio.h": "c",
+        "keyboard_at.h": "c",
+        "devices.h": "c",
+        "stdio.h": "c",
+        "cpu.h": "c",
+        "sound.h": "c",
+        "sound_speaker.h": "c"
+    }
+}

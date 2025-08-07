@@ -11,10 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "nvr.h"
 #include "rtc.h"
-
-int enable_sync;
 
 struct {
         int sec;

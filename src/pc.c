@@ -11,7 +11,6 @@
 #include "ibm.h"
 #include "device.h"
 
-#include "ali1429.h"
 #include "cdrom-ioctl.h"
 #include "cdrom-image.h"
 #include "cpu.h"
@@ -27,51 +26,29 @@
 #include "dma.h"
 #include "fdc.h"
 #include "fdd.h"
-#include "gameport.h"
-#include "sound_gus.h"
 #include "ide.h"
 #include "io.h"
 #include "keyboard.h"
-#include "keyboard_at.h"
-#include "lpt.h"
 #include "model.h"
 #include "mouse.h"
-#include "nvr.h"
 #include "pic.h"
 #include "pit.h"
-#include "plat-joystick.h"
 #include "plat-keyboard.h"
-#include "plat-midi.h"
 #include "plat-mouse.h"
 #include "scsi_cd.h"
 #include "scsi_zip.h"
 #include "serial.h"
 #include "sound.h"
-#include "sound_cms.h"
-#include "sound_dbopl.h"
-#include "sound_opl.h"
-#include "sound_sb.h"
 #include "sound_speaker.h"
-#include "sound_ssi2001.h"
 #include "timer.h"
-#include "vid_voodoo.h"
 #include "video.h"
-#include "amstrad.h"
 #include "hdd.h"
 #include "x86.h"
 #include "paths.h"
 #include "plugin.h"
 #include "viewer.h"
 
-#ifdef USE_NETWORKING
-#include "nethandler.h"
-#include "wx-utils.h"
-#define NE2000 1
-uint8_t ethif;
-int inum;
-#endif
-
-int GAMEBLASTER, GUS, SSI2001, voodoo_enabled;
+int GAMEBLASTER, GUS, SSI2001;
 int gfxcard;
 int readflash;
 int romset;
@@ -107,7 +84,6 @@ uint8_t cgastat;
 int pollmouse_delay = 2;
 void pollmouse() {
         int x, y, z;
-        //        return;
         pollmouse_delay--;
         if (pollmouse_delay)
                 return;
@@ -115,7 +91,6 @@ void pollmouse() {
         mouse_poll_host();
         mouse_get_mickeys(&x, &y, &z);
         mouse_poll(x, y, z, mouse_buttons);
-        //        if (mousecapture) position_mouse(64,64);
 }
 
 /*PC1512 languages -
@@ -178,22 +153,11 @@ void pc_reset() {
         fdc_reset();
         pic_reset();
         serial_reset();
-
-        if (AT)
-                setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-        else
-                setpitclock(14318184.0);
-
-        //        sb_reset();
-
-        ali1429_reset();
-        //        video_init();
+        setpitclock(14318184.0);
 }
 #undef printf
 
 void initpc(int argc, char *argv[]) {
-        // char *p;
-        //        char *config_file = NULL;
         int c;
 
         for (c = 1; c < argc; c++) {
@@ -239,29 +203,19 @@ void initpc(int argc, char *argv[]) {
                 }
         }
 
-        //        append_filename(config_file_default, pcempath, "pcem.cfg", 511);
-
         loadconfig(NULL);
         pclog("Config loaded\n");
 
         load_plugins();
 
-        //        if (config_file)
-        //                saveconfig();
-
-        cpuspeed2 = (AT) ? 2 : 1;
-        //        cpuspeed2=cpuspeed;
+        cpuspeed2 = 1;
         atfullspeed = 0;
 
         device_init();
-        viewer_reset();
 
         initvideo();
         mem_init();
         loadbios();
-
-        // this is now done per-model
-        // mem_add_bios();
 
 #if defined(__APPLE__) && defined(__aarch64__)
         pthread_jit_write_protect_np(0);
@@ -278,13 +232,7 @@ void initpc(int argc, char *argv[]) {
         disc_init();
         fdi_init();
         img_init();
-#ifdef USE_NETWORKING
-        vlan_reset(); // NETWORK
-        network_card_init();
-#endif
 
-        // loadfont();
-        loadnvr();
         resetide();
 #if __unix
         if (cdrom_drive == -1)
@@ -311,10 +259,8 @@ void initpc(int argc, char *argv[]) {
                 }
         }
 
-        /*        if (romset==ROM_AMI386 || romset==ROM_AMI486) */ fullspeed();
-        ali1429_reset();
-        //        CPUID=(is486 && (cpuspeed==7 || cpuspeed>=9));
-        //        pclog("Init - CPUID %i %i\n",CPUID,cpuspeed);
+        fullspeed();
+
 
 #if __unix
         if (cdrom_drive == -1)
@@ -334,9 +280,6 @@ void resetpc() {
         cpu_set();
         pc_reset();
         cpu_set_turbo(1);
-        //        cpuspeed2=(AT)?2:1;
-        //        atfullspeed=0;
-        ///*        if (romset==ROM_AMI386 || romset==ROM_AMI486) */fullspeed();
 }
 
 void resetpc_cad() {
@@ -351,9 +294,7 @@ void resetpc_cad() {
 void resetpchard() {
         device_close_all();
         mouse_emu_close();
-        viewer_close_all();
         device_init();
-        viewer_reset();
 
         timer_reset();
         sound_reset();
@@ -365,46 +306,18 @@ void resetpchard() {
         disc_load(0, discfns[0]);
         disc_load(1, discfns[1]);
 
-        if (!AT && models[model]->max_ram > 640 && models[model]->max_ram <= 768 && !video_is_ega_vga())
-                mem_set_704kb();
         model_init();
         mouse_emu_init();
         video_init();
         speaker_init();
-        lpt1_device_init();
-
-#ifdef USE_NETWORKING
-        vlan_reset(); // NETWORK
-        network_card_init();
-#endif
-
+     
         sound_card_init();
-        if (GUS)
-                device_add(&gus_device);
-        if (GAMEBLASTER)
-                device_add(&cms_device);
-        if (SSI2001)
-                device_add(&ssi2001_device);
-        if (voodoo_enabled)
-                device_add(&voodoo_device);
         hdd_controller_init(hdd_controller_name);
         pc_reset();
 
         resetide();
 
-        loadnvr();
-
-        //        cpuspeed2 = (AT)?2:1;
-        //        atfullspeed = 0;
-        //        setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-
-        ali1429_reset();
-
-        keyboard_at_reset();
-
         cpu_cache_int_enabled = cpu_cache_ext_enabled = 0;
-
-        //        output=3;
 
         image_close();
 #if __unix
@@ -479,8 +392,7 @@ void runpc() {
                         exec386_dynarec(cycles_to_run);
                 else
                         exec386(cycles_to_run);
-        } else if (AT)
-                exec386(cycles_to_run);
+        }
         else
                 execx86(cycles_to_run);
 
@@ -488,7 +400,6 @@ void runpc() {
         keyboard_process();
         //        checkkeys();
         pollmouse();
-        joystick_poll();
         endblit();
 
         framecountx++;
@@ -553,22 +464,15 @@ void runpc() {
 void fullspeed() {
         cpuspeed2 = cpuspeed;
         if (!atfullspeed) {
-                pclog("Set fullspeed - %i %i %i\n", is386, AT, cpuspeed2);
-                if (AT)
-                        setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-                else
-                        setpitclock(14318184.0);
-                //                if (is386) setpitclock(clocks[2][cpuspeed2][0]);
-                //                else       setpitclock(clocks[AT?1:0][cpuspeed2][0]);
+                pclog("Set fullspeed - %i %i\n", is386, cpuspeed2);
+             
+                setpitclock(14318184.0);
         }
         atfullspeed = 1;
 }
 
 void speedchanged() {
-        if (AT)
-                setpitclock(models[model]->cpu[cpu_manufacturer].cpus[cpu].rspeed);
-        else
-                setpitclock(14318184.0);
+        setpitclock(14318184.0);
 }
 
 void closepc() {
@@ -583,7 +487,6 @@ void closepc() {
         disc_close(1);
         dumpregs();
         closevideo();
-        lpt1_device_close();
         mouse_emu_close();
         device_close_all();
         zip_eject();
@@ -636,7 +539,6 @@ void loadconfig(char *fn) {
         GAMEBLASTER = config_get_int(CFG_MACHINE, NULL, "gameblaster", 0);
         GUS = config_get_int(CFG_MACHINE, NULL, "gus", 0);
         SSI2001 = config_get_int(CFG_MACHINE, NULL, "ssi2001", 0);
-        voodoo_enabled = config_get_int(CFG_MACHINE, NULL, "voodoo", 0);
 
         p = (char *)config_get_string(CFG_MACHINE, NULL, "model", "");
         if (p)
@@ -772,55 +674,9 @@ void loadconfig(char *fn) {
         cd_speed = config_get_int(CFG_MACHINE, NULL, "cd_speed", 24);
         cd_model = cd_model_from_config((char *)config_get_string(CFG_MACHINE, NULL, "cd_model", cd_get_config_model(0)));
 
-        joystick_type = config_get_int(CFG_MACHINE, NULL, "joystick_type", 0);
         mouse_type = config_get_int(CFG_MACHINE, NULL, "mouse_type", 0);
 
-        for (c = 0; c < joystick_get_max_joysticks(joystick_type); c++) {
-                sprintf(s, "joystick_%i_nr", c);
-                joystick_state[c].plat_joystick_nr = config_get_int(CFG_MACHINE, "Joysticks", s, 0);
-
-                if (joystick_state[c].plat_joystick_nr) {
-                        for (d = 0; d < joystick_get_axis_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_axis_%i", c, d);
-                                joystick_state[c].axis_mapping[d] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                        }
-                        for (d = 0; d < joystick_get_button_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_button_%i", c, d);
-                                joystick_state[c].button_mapping[d] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                        }
-                        for (d = 0; d < joystick_get_pov_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_pov_%i_x", c, d);
-                                joystick_state[c].pov_mapping[d][0] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                                sprintf(s, "joystick_%i_pov_%i_y", c, d);
-                                joystick_state[c].pov_mapping[d][1] = config_get_int(CFG_MACHINE, "Joysticks", s, d);
-                        }
-                }
-        }
-
-        enable_sync = config_get_int(CFG_MACHINE, NULL, "enable_sync", 1);
-
         p = (char *)config_get_string(CFG_MACHINE, NULL, "lpt1_device", "");
-        if (p)
-                strcpy(lpt1_device_name, p);
-        else
-                strcpy(lpt1_device_name, "");
-        if (p)
-                lpt1_current = lpt_device_get_from_internal_name(p);
-        else
-                lpt1_current = 0;
-
-#ifdef USE_NETWORKING
-        // network
-        ethif = config_get_int(CFG_GLOBAL, NULL, "netinterface", 1);
-        if (ethif >= inum)
-                inum = ethif + 1;
-
-        p = (char *)config_get_string(CFG_MACHINE, NULL, "netcard", "");
-        if (p)
-                network_card_current = network_card_get_from_internal_name(p);
-        else
-                network_card_current = 0;
-#endif
 
         for (d = 0; d < num_config_callbacks; ++d)
                 if (config_callbacks[d].loadconfig)
@@ -859,7 +715,6 @@ void saveconfig(char *fn) {
         config_set_int(CFG_MACHINE, NULL, "gameblaster", GAMEBLASTER);
         config_set_int(CFG_MACHINE, NULL, "gus", GUS);
         config_set_int(CFG_MACHINE, NULL, "ssi2001", SSI2001);
-        config_set_int(CFG_MACHINE, NULL, "voodoo", voodoo_enabled);
 
         config_set_string(CFG_MACHINE, NULL, "model", model_get_internal_name());
         config_set_int(CFG_MACHINE, NULL, "cpu_manufacturer", cpu_manufacturer);
@@ -919,41 +774,7 @@ void saveconfig(char *fn) {
         config_set_int(CFG_MACHINE, NULL, "cd_speed", cd_speed);
         config_set_string(CFG_MACHINE, NULL, "cd_model", cd_model_to_config(cd_model));
 
-        config_set_int(CFG_MACHINE, NULL, "joystick_type", joystick_type);
         config_set_int(CFG_MACHINE, NULL, "mouse_type", mouse_type);
-
-        for (c = 0; c < joystick_get_max_joysticks(joystick_type); c++) {
-                char s[80];
-
-                sprintf(s, "joystick_%i_nr", c);
-                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].plat_joystick_nr);
-
-                if (joystick_state[c].plat_joystick_nr) {
-                        for (d = 0; d < joystick_get_axis_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_axis_%i", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].axis_mapping[d]);
-                        }
-                        for (d = 0; d < joystick_get_button_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_button_%i", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].button_mapping[d]);
-                        }
-                        for (d = 0; d < joystick_get_pov_count(joystick_type); d++) {
-                                sprintf(s, "joystick_%i_pov_%i_x", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].pov_mapping[d][0]);
-                                sprintf(s, "joystick_%i_pov_%i_y", c, d);
-                                config_set_int(CFG_MACHINE, "Joysticks", s, joystick_state[c].pov_mapping[d][1]);
-                        }
-                }
-        }
-
-        config_set_int(CFG_MACHINE, NULL, "enable_sync", enable_sync);
-
-#ifdef USE_NETWORKING
-        config_set_int(CFG_GLOBAL, NULL, "netinterface", ethif);
-        config_set_string(CFG_MACHINE, NULL, "netcard", network_card_get_internal_name(network_card_current));
-#endif
-
-        config_set_string(CFG_MACHINE, NULL, "lpt1_device", lpt1_device_name);
 
         for (d = 0; d < num_config_callbacks; ++d)
                 if (config_callbacks[d].saveconfig)

@@ -95,10 +95,7 @@ void fdc_reset() {
         fdc.lock = 0;
         fdc.head = 0;
         fdc.abort = 0;
-        if (!AT && romset != ROM_XI8088 && romset != ROM_PC5086) {
-                fdc.rate = 2;
-                // fdc_update_rate();
-        }
+        fdc.rate = 2;
         //        pclog("Reset FDC\n");
 }
 
@@ -631,11 +628,9 @@ void fdc_write(uint16_t addr, uint8_t val, void *priv) {
                 }
                 return;
         case 7:
-                if (!AT && romset != ROM_XI8088 && romset != ROM_PC5086)
-                        return;
-                fdc.rate = val & 3;
+//                fdc.rate = val & 3;
 
-                disc_3f7 = val;
+//                disc_3f7 = val;
                 return;
         }
         //        printf("Write FDC %04X %02X\n",addr,val);

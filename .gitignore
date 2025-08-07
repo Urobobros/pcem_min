@@ -110,7 +110,9 @@ StyleCopReport.xml
 *.tmp
 *.tmp_proj
 *_wpftmp.csproj
-*.log
+*.
+!/log_ami_xt_clone*
+!/logs
 *.tlog
 *.vspscc
 *.vssscc
@@ -426,3 +428,5 @@ build-*/
 cmake-build-*/
 output/
 !.vs/launch.vs.json
+tests/test_*
+!tests/*.c

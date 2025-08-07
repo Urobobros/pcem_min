@@ -10,7 +10,6 @@
 #include "paths.h"
 #include "plugin.h"
 
-void (*_savenvr)();
 void (*_dumppic)();
 void (*_dumpregs)();
 
@@ -89,7 +88,6 @@ void fatal(const char *format, ...) {
         fflush(pclogf);
 #endif
 
-        _savenvr();
         _dumppic();
         _dumpregs();
         pclog_end();

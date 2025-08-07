@@ -13,7 +13,7 @@
 
 extern "C" {
 #include "config.h"
-#include "plat-midi.h"
+
 void saveconfig(char *);
 void resetpchard();
 int deviceconfig_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM lParam);
@@ -62,21 +62,6 @@ int deviceconfig_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM l
                                 id += 2;
                                 break;
 
-                        case CONFIG_MIDI:
-                                num = midi_get_num_devs();
-                                if (num > 0) {
-                                        h = wx_getdlgitem(hdlg, id + 1);
-                                        val_int = config_get_int(CFG_MACHINE, NULL, config->name, config->default_int);
-
-                                        for (c = 0; c < num; c++) {
-                                                midi_get_dev_name(c, s);
-                                                wx_sendmessage(h, WX_CB_ADDSTRING, 0, (LONG_PARAM)s);
-                                                if (val_int == c)
-                                                        wx_sendmessage(h, WX_CB_SETCURSEL, c, 0);
-                                        }
-                                        id += 2;
-                                }
-                                break;
                         }
                         config++;
                 }
@@ -124,18 +109,7 @@ int deviceconfig_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM l
                                         id += 2;
                                         break;
 
-                                case CONFIG_MIDI:
-                                        if (midi_get_num_devs() > 0) {
-                                                h = wx_getdlgitem(hdlg, id + 1);
-                                                val_int = config_get_int(CFG_MACHINE, NULL, config->name, config->default_int);
-
-                                                c = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-
-                                                if (val_int != c)
-                                                        changed = 1;
-                                                id += 2;
-                                        }
-                                        break;
+                               
                                 }
                                 config++;
                         }
@@ -176,15 +150,7 @@ int deviceconfig_dlgproc(void *hdlg, int message, INT_PARAM wParam, LONG_PARAM l
                                         id += 2;
                                         break;
 
-                                case CONFIG_MIDI:
-                                        if (midi_get_num_devs() > 0) {
-                                                h = wx_getdlgitem(hdlg, id + 1);
-                                                c = wx_sendmessage(h, WX_CB_GETCURSEL, 0, 0);
-                                                config_set_int(CFG_MACHINE, NULL, config->name, c);
-
-                                                id += 2;
-                                        }
-                                        break;
+                               
                                 }
                                 config++;
                         }
@@ -238,18 +204,8 @@ void deviceconfig_open(void *hwnd, device_t *device) {
                         break;
 
                 case CONFIG_SELECTION:
-                case CONFIG_MIDI: {
-                        if (config->type == CONFIG_MIDI && midi_get_num_devs() == 0)
-                                break;
-                        sprintf(s, "%s:", config->description);
-                        sizer->Add(new wxStaticText(&dialog, id++, s), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-                        wxBoxSizer *comboSizer = new wxBoxSizer(wxHORIZONTAL);
-                        sizer->Add(comboSizer, 1, wxEXPAND, 5);
-                        wxComboBox *cb = new wxComboBox(&dialog, id++);
-                        cb->SetEditable(false);
-                        comboSizer->Add(cb, 1, wxALL, 5);
+                        /* TODO: implement selection controls */
                         break;
-                }
                 }
 
                 config++;

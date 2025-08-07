@@ -45,8 +45,7 @@ default value.
 ```
   -DCMAKE_BUILD_TYPE=Release : Generate release build. Recommended for regular use.
   -DCMAKE_BUILD_TYPE=Debug   : Compile with debugging enabled.
-  -DUSE_NETWORKING=ON        : Build with networking support.
-  -DUSE_PCAP_NETWORKING=ON   : Build with pcap networking support. (Needs USE_NETWORKING to compile) Requires libpcap.
+Requires libpcap.
   -DUSE_ALSA=OFF             : Build with support for MIDI output through ALSA. Requires libasound. (Linux Only)
   -DFORCE_X11=ON             : Enables a hack to force X11 on Wayland systems. See #128 for details. (Linux Only)
   -DPLUGIN_ENGINE=ON         : Build with plugin support. Builds libpcem-plugin-api and links PCem with it. 
@@ -54,13 +53,9 @@ default value.
 
 If you are using -DCMAKE_BUILD_TYPE=Debug, there are some more debug options you can enable if needed
 ```
-  -DPCEM_SLIRP_DEBUG=OFF           : Build PCem with SLIRP_DEBUG debug output
   -DPCEM_RECOMPILER_DEBUG=OFF      : Build PCem with RECOMPILER_DEBUG debug output
-  -DPCEM_NE2000_DEBUG=OFF          : Build PCem with NE2000_DEBUG debug output
-  -DPCEM_EMU8K_DEBUG_REGISTERS=OFF : Build PCem with EMU8K_DEBUG_REGISTERS debug output
-  -DPCEM_SB_DSP_RECORD_DEBUG=OFF   : Build PCem with SB_DSP_RECORD_DEBUG debug output
-  -DPCEM_MACH64_DEBUG=OFF          : Build PCem with MACH64_DEBUG debug output
   -DPCEM_DEBUG_EXTRA=OFF           : Build PCem with DEBUG_EXTRA debug output
+  -DPCEM_PORT_DEBUG=OFF            : Log all port I/O to a separate file
 ```
 
 If you are using -DCMAKE_BUILD_TYPE=RelWithDebInfo, there are additional options you can do
@@ -412,7 +407,6 @@ ESDI | <b>Western Digital WD1007V-SE1</b> | 16-bit ESDI controller | 62-000279-0
 ESDI | <b>IBM ESDI Fixed Disk Controller</b> | MCA ESDI controller. Only supported on PS/2 models. | 90x8969.bin<br/>90x8970.bin
 IDE | <b>Standard IDE</b> | Standard IDE controller. Supported by all AT-compatible BIOSes. Use this if in any doubt! | <i>(none)</i>
 IDE | <b>XTIDE</b> | 8-bit IDE controller. The BIOS is available [here](http://code.google.com/p/xtideuniversalbios/). <br/>v2.0.0 beta 1 is the version I've mostly tested. v2.0.0 beta 3 is known to have some issues. | ide_xt.bin
-IDE | <b>XTIDE (AT)</b> | 16-bit IDE controller. | ide_at.bin
 IDE | <b>XTIDE (PS/1)</b> | IDE controller for the PS/1 model 2033. For this machine you will need BIOS version v1.1.5. The PS/1 is a bit fussy with XTIDE, and I've found that it works best when the XTIDE configuration has 'Full Operating Mode' disabled. | ide_at_1_1_5.bin
 SCSI | <b>Longshine LCS-6821N</b> | 8-bit SCSI controller. | Longshine LCS-6821N - BIOS version 1.04.bin
 SCSI | <b>Rancho RT1000B</b> | 8-bit SCSI controller. | Rancho_RT1000_RTBios_version_8.10R.bin

@@ -18,7 +18,7 @@
 #include "rom.h"
 #include "x86_ops.h"
 #include "codegen.h"
-#include "xi8088.h"
+
 
 page_t *pages;
 page_t **page_lookup;
@@ -1233,20 +1233,6 @@ void mem_set_mem_state(uint32_t base, uint32_t size, int state) {
 }
 
 void mem_add_bios() {
-        if (AT || (romset == ROM_XI8088 && xi8088_bios_128kb())) {
-                mem_mapping_add(&bios_mapping[0], 0xe0000, 0x04000, mem_read_bios, mem_read_biosw, mem_read_biosl, mem_write_null,
-                                mem_write_nullw, mem_write_nulll, rom + (0x20000 & biosmask),
-                                MEM_MAPPING_EXTERNAL | MEM_MAPPING_ROM, 0);
-                mem_mapping_add(&bios_mapping[1], 0xe4000, 0x04000, mem_read_bios, mem_read_biosw, mem_read_biosl, mem_write_null,
-                                mem_write_nullw, mem_write_nulll, rom + (0x24000 & biosmask),
-                                MEM_MAPPING_EXTERNAL | MEM_MAPPING_ROM, 0);
-                mem_mapping_add(&bios_mapping[2], 0xe8000, 0x04000, mem_read_bios, mem_read_biosw, mem_read_biosl, mem_write_null,
-                                mem_write_nullw, mem_write_nulll, rom + (0x28000 & biosmask),
-                                MEM_MAPPING_EXTERNAL | MEM_MAPPING_ROM, 0);
-                mem_mapping_add(&bios_mapping[3], 0xec000, 0x04000, mem_read_bios, mem_read_biosw, mem_read_biosl, mem_write_null,
-                                mem_write_nullw, mem_write_nulll, rom + (0x2c000 & biosmask),
-                                MEM_MAPPING_EXTERNAL | MEM_MAPPING_ROM, 0);
-        }
         mem_mapping_add(&bios_mapping[4], 0xf0000, 0x04000, mem_read_bios, mem_read_biosw, mem_read_biosl, mem_write_null,
                         mem_write_nullw, mem_write_nulll, rom + (0x30000 & biosmask), MEM_MAPPING_EXTERNAL | MEM_MAPPING_ROM, 0);
         mem_mapping_add(&bios_mapping[5], 0xf4000, 0x04000, mem_read_bios, mem_read_biosw, mem_read_biosl, mem_write_null,
@@ -1256,32 +1242,32 @@ void mem_add_bios() {
         mem_mapping_add(&bios_mapping[7], 0xfc000, 0x04000, mem_read_bios, mem_read_biosw, mem_read_biosl, mem_write_null,
                         mem_write_nullw, mem_write_nulll, rom + (0x3c000 & biosmask), MEM_MAPPING_EXTERNAL | MEM_MAPPING_ROM, 0);
 
-        mem_mapping_add(&bios_high_mapping[0], (AT && cpu_16bitbus) ? 0xfe0000 : 0xfffe0000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[0], 0xfffe0000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x20000 & biosmask), MEM_MAPPING_ROM, 0);
-        mem_mapping_add(&bios_high_mapping[1], (AT && cpu_16bitbus) ? 0xfe4000 : 0xfffe4000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[1], 0xfffe4000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x24000 & biosmask), MEM_MAPPING_ROM, 0);
-        mem_mapping_add(&bios_high_mapping[2], (AT && cpu_16bitbus) ? 0xfe8000 : 0xfffe8000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[2], 0xfffe8000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x28000 & biosmask), MEM_MAPPING_ROM, 0);
-        mem_mapping_add(&bios_high_mapping[3], (AT && cpu_16bitbus) ? 0xfec000 : 0xfffec000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[3], 0xfffec000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x2c000 & biosmask), MEM_MAPPING_ROM, 0);
-        mem_mapping_add(&bios_high_mapping[4], (AT && cpu_16bitbus) ? 0xff0000 : 0xffff0000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[4], 0xffff0000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x30000 & biosmask), MEM_MAPPING_ROM, 0);
-        mem_mapping_add(&bios_high_mapping[5], (AT && cpu_16bitbus) ? 0xff4000 : 0xffff4000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[5], 0xffff4000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x34000 & biosmask), MEM_MAPPING_ROM, 0);
-        mem_mapping_add(&bios_high_mapping[6], (AT && cpu_16bitbus) ? 0xff8000 : 0xffff8000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[6], 0xffff8000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x38000 & biosmask), MEM_MAPPING_ROM, 0);
-        mem_mapping_add(&bios_high_mapping[7], (AT && cpu_16bitbus) ? 0xffc000 : 0xffffc000, 0x04000, mem_read_bios,
+        mem_mapping_add(&bios_high_mapping[7], 0xffffc000, 0x04000, mem_read_bios,
                         mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll,
                         rom + (0x3c000 & biosmask), MEM_MAPPING_ROM, 0);
         if (biosmask == 0x3ffff)
-                mem_mapping_add(&bios_high_mapping[8], (AT && cpu_16bitbus) ? 0xfc0000 : 0xfffc0000, 0x20000, mem_read_bios,
+                mem_mapping_add(&bios_high_mapping[8], 0xfffc0000, 0x20000, mem_read_bios,
                                 mem_read_biosw, mem_read_biosl, mem_write_null, mem_write_nullw, mem_write_nulll, rom,
                                 MEM_MAPPING_ROM, 0);
 }
@@ -1375,31 +1361,8 @@ void mem_alloc() {
         memset(_mem_state, 0, sizeof(_mem_state));
 
         mem_set_mem_state(0x000000, (mem_size > 640) ? 0xa0000 : mem_size * 1024, MEM_READ_INTERNAL | MEM_WRITE_INTERNAL);
-        if (romset == ROM_XI8088) {
-                // Xi 8088 UMBs are selected by DIP Switches
-                mem_set_mem_state(0x0a0000, 0x20000, MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL);
-                mem_set_mem_state(0x0c0000, 0x08000,
-                                  model_get_config_int("umb_c0000h_c7fff") ? (MEM_READ_INTERNAL | MEM_WRITE_INTERNAL)
-                                                                           : (MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL));
-                mem_set_mem_state(0x0c8000, 0x08000,
-                                  model_get_config_int("umb_c8000h_cffff") ? (MEM_READ_INTERNAL | MEM_WRITE_INTERNAL)
-                                                                           : (MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL));
-                mem_set_mem_state(0x0d0000, 0x08000,
-                                  model_get_config_int("umb_d0000h_d7fff") ? (MEM_READ_INTERNAL | MEM_WRITE_INTERNAL)
-                                                                           : (MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL));
-                mem_set_mem_state(0x0d8000, 0x08000,
-                                  model_get_config_int("umb_d8000h_dffff") ? (MEM_READ_INTERNAL | MEM_WRITE_INTERNAL)
-                                                                           : (MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL));
-                mem_set_mem_state(0x0e0000, 0x08000,
-                                  model_get_config_int("umb_e0000h_e7fff") ? (MEM_READ_INTERNAL | MEM_WRITE_INTERNAL)
-                                                                           : (MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL));
-                mem_set_mem_state(0x0e8000, 0x08000,
-                                  model_get_config_int("umb_e8000h_effff") ? (MEM_READ_INTERNAL | MEM_WRITE_INTERNAL)
-                                                                           : (MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL));
-                mem_set_mem_state(0x0f0000, 0x10000, MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL);
-        } else {
-                mem_set_mem_state(0x0a0000, 0x60000, MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL);
-        }
+
+        mem_set_mem_state(0x0a0000, 0x60000, MEM_READ_EXTERNAL | MEM_WRITE_EXTERNAL);
 
         mem_mapping_add(&ram_low_mapping, 0x00000, (mem_size > 640) ? 0xa0000 : mem_size * 1024, mem_read_ram, mem_read_ramw,
                         mem_read_raml, mem_write_ram, mem_write_ramw, mem_write_raml, ram, MEM_MAPPING_INTERNAL, NULL);
@@ -1420,9 +1383,6 @@ void mem_alloc() {
                 mem_mapping_add(&ram_mid_mapping, 0xa0000, 0x60000, mem_read_ram, mem_read_ramw, mem_read_raml, mem_write_ram,
                                 mem_write_ramw, mem_write_raml, ram + 0xa0000, MEM_MAPPING_INTERNAL, NULL);
 
-        if (romset == ROM_IBMPS1_2011)
-                mem_mapping_add(&romext_mapping, 0xc8000, 0x08000, mem_read_romext, mem_read_romextw, mem_read_romextl, NULL,
-                                NULL, NULL, romext, 0, NULL);
 
         //        pclog("Mem resize %i %i\n",mem_size,c);
         mem_a20_key = 2;
@@ -1448,13 +1408,6 @@ void mem_reset_page_blocks() {
 void mem_a20_recalc() {
         int state = mem_a20_key | mem_a20_alt;
         //        pclog("A20 recalc %i %i\n", state, mem_a20_state);
-        if (state && !mem_a20_state) {
-                rammask = (AT && cpu_16bitbus) ? 0xffffff : 0xffffffff;
-                flushmmucache();
-        } else if (!state && mem_a20_state) {
-                rammask = (AT && cpu_16bitbus) ? 0xefffff : 0xffefffff;
-                flushmmucache();
-        }
         //        pclog("rammask now %08X\n", rammask);
         mem_a20_state = state;
 }

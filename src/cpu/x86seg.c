@@ -10,8 +10,8 @@
 #include "cpu.h"
 #include "config.h"
 #include "paths.h"
-#include "i440bx.h"
 #include "logging-internal.h"
+#include "portlog-internal.h"
 
 /*Controls whether the accessed bit in a descriptor is set when CS is loaded.*/
 #define CS_ACCESSED
@@ -44,6 +44,7 @@ void x86abort(const char *format, ...) {
         va_end(ap);
         dumpregs();
         pclog_end();
+        portlog_end();
         exit(-1);
 }
 
@@ -56,8 +57,8 @@ static void seg_reset(x86seg *s) {
         if (s == &cpu_state.seg_cs) {
                 // TODO - When the PC is reset, initialization of the CS descriptor must be like the annotated line below.
                 // s->base = AT ? (cpu_16bitbus ? 0xFF0000 : 0xFFFF0000) : 0xFFFF0;
-                s->base = AT ? 0xF0000 : 0xFFFF0;
-                s->seg = AT ? 0xF000 : 0xFFFF;
+                s->base = 0xFFFF0;
+                s->seg = 0xFFFF;
         } else {
                 s->base = 0;
                 s->seg = 0;

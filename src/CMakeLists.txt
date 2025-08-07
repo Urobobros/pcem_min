@@ -9,16 +9,11 @@ set(PCEM_PRIVATE_API ${PCEM_PRIVATE_API}
         ${CMAKE_SOURCE_DIR}/includes/private/ibm.h
         ${CMAKE_SOURCE_DIR}/includes/private/io.h
         ${CMAKE_SOURCE_DIR}/includes/private/pch.h
-        ${CMAKE_SOURCE_DIR}/includes/private/pgc_palettes.h
-        ${CMAKE_SOURCE_DIR}/includes/private/plat-dinput.h
-        ${CMAKE_SOURCE_DIR}/includes/private/plat-joystick.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-keyboard.h
-        ${CMAKE_SOURCE_DIR}/includes/private/plat-midi.h
         ${CMAKE_SOURCE_DIR}/includes/private/plat-mouse.h
         ${CMAKE_SOURCE_DIR}/includes/private/pzx.h
         ${CMAKE_SOURCE_DIR}/includes/private/resources.h
         ${CMAKE_SOURCE_DIR}/includes/private/rtc.h
-        ${CMAKE_SOURCE_DIR}/includes/private/rtc_tc8521.h
         ${CMAKE_SOURCE_DIR}/includes/private/scamp.h
         ${CMAKE_SOURCE_DIR}/includes/private/thread.h
         ${CMAKE_SOURCE_DIR}/includes/private/timer.h
@@ -35,23 +30,16 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/flash/flash.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/floppy/floppy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/hdd/hdd.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/ide/ide.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/joystick/joystick.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/keyboard/keyboard.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/lpt/lpt.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/mfm/mfm.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/models/models.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/mouse/mouse.cmake)
-if(USE_NETWORKING)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/networking/networking.cmake)
-endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/scsi/scsi.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/sound/sound.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/video/video.cmake)
 
 if(${PCEM_DISPLAY_ENGINE} STREQUAL "wxWidgets")
         include(${CMAKE_CURRENT_SOURCE_DIR}/wx-ui/wx-ui.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/wx-ui/viewers/viewers.cmake)
 endif()
 if(${PCEM_DISPLAY_ENGINE} STREQUAL "Qt")
         message(FATAL_ERROR "Qt Mode is not yet implemented.")
@@ -65,7 +53,6 @@ set(PCEM_SRC ${PCEM_SRC}
         ppi.c
         pzx.c
         rtc.c
-        rtc_tc8521.c
         timer.c
         )
 

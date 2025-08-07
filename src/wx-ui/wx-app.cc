@@ -5,6 +5,7 @@
 #include "wx-utils.h"
 #include "wx-common.h"
 #include "logging-internal.h"
+#include "portlog-internal.h"
 
 #ifdef _WIN32
 #define BITMAP WINDOWS_BITMAP
@@ -174,6 +175,7 @@ void Frame::OnCommand(wxCommandEvent &event) { wx_handle_command(this, event.Get
 
 void Frame::OnClose(wxCloseEvent &event) {
         pclog_end();
+        portlog_end();
         wx_exit(this, 0);
 }
 
@@ -193,6 +195,7 @@ void Frame::Quit(bool stop_emulator) {
                 }
         }
         pclog_end();
+        portlog_end();
         Destroy();
 }
 
@@ -207,6 +210,7 @@ void Frame::OnExitEvent(wxCommandEvent &event) {
 void Frame::OnExitCompleteEvent(wxCommandEvent &event) {
         if (event.GetInt()) {
                 pclog_end();
+                portlog_end();
                 Destroy();
         } else
                 closing = false;

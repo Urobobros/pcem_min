@@ -18,7 +18,6 @@
 #include <math.h>
 #include "ibm.h"
 #include "device.h"
-#include "cassette.h"
 #include "cdrom-ioctl.h"
 #include "cdrom-image.h"
 #include "config.h"
@@ -28,10 +27,6 @@
 #include "hdd.h"
 #include "model.h"
 #include "mouse.h"
-#include "nvr.h"
-#include "lpt.h"
-#include "plat-joystick.h"
-#include "plat-midi.h"
 #include "scsi_zip.h"
 #include "sound.h"
 #include "thread.h"
@@ -39,7 +34,6 @@
 #include "disc_img.h"
 #include "mem.h"
 #include "paths.h"
-#include "nethandler.h"
 
 #include "wx-sdl2-video.h"
 #include "wx-utils.h"
@@ -177,10 +171,8 @@ int mainthread(void *param) {
                                 drawits = 0;
                         runpc();
                         frames++;
-                        if (frames >= 200 && nvr_dosave) {
+                        if (frames >= 200) {
                                 frames = 0;
-                                nvr_dosave = 0;
-                                savenvr();
                         }
                         end_time = timer_read();
                         main_time += end_time - start_time;
@@ -357,7 +349,6 @@ void wx_initmenu() {
 int wx_setupmenu(void *data) {
         int c;
         update_cdrom_menu(menu);
-        update_viewers_menu(menu);
         sprintf(menuitem, "IDM_VID_RESOLUTION[%d]", vid_resize);
         wx_checkmenuitem(menu, WX_ID(menuitem), WX_MB_CHECKED);
         wx_enablemenuitem(menu, wx_xrcid("IDM_VID_SCALE_MENU"), !vid_resize);
@@ -439,7 +430,6 @@ extern void wx_saveconfig();
 int pc_main(int argc, char **argv) {
         // Expose some functions to libpcem-plugin-api without moving them over to
         // the plugin api proper
-        _savenvr = savenvr;
         _dumppic = dumppic;
         _dumpregs = dumpregs;
         _sound_speed_changed = sound_speed_changed;
@@ -449,12 +439,8 @@ int pc_main(int argc, char **argv) {
         init_plugin_engine();
         model_init_builtin();
         video_init_builtin();
-        lpt_init_builtin();
         sound_init_builtin();
         hdd_controller_init_builtin();
-#ifdef USE_NETWORKING
-        network_card_init_builtin();
-#endif
 
         add_config_callback(sdl_loadconfig, sdl_saveconfig, sdl_onconfigloaded);
         add_config_callback(wx_loadconfig, wx_saveconfig, 0);
@@ -468,7 +454,6 @@ int pc_main(int argc, char **argv) {
         display_init();
 #endif
         sdl_video_init();
-        joystick_init();
 
         return TRUE;
 }
@@ -500,7 +485,7 @@ int wx_start(void *hwnd) {
         for (c = 0; c < ROM_MAX; c++) {
                 romset = c;
                 romspresent[c] = loadbios();
-                pclog("romset %i - %i\n", c, romspresent[c]);
+               // pclog("romset %i - %i\n", c, romspresent[c]);
         }
 
         for (c = 0; c < ROM_MAX; c++) {
@@ -524,7 +509,6 @@ int resume_emulation() {
         if (emulation_state == EMULATION_PAUSED) {
                 emulation_state = EMULATION_RUNNING;
                 pause = 0;
-                viewer_notify_resume();
                 return TRUE;
         }
         return FALSE;
@@ -571,7 +555,6 @@ int start_emulation(void *params) {
 
         loadbios();
         resetpchard();
-        midi_init();
 
         display_start(params);
         mainthreadh = SDL_CreateThread(mainthread, "Main Thread", NULL);
@@ -592,7 +575,6 @@ int pause_emulation() {
         pclog("Emulation paused.\n");
         emulation_state = EMULATION_PAUSED;
         pause = 1;
-        viewer_notify_pause();
         return TRUE;
 }
 
@@ -615,18 +597,15 @@ int stop_emulation() {
 #endif
         mainthreadh = NULL;
         SDL_RemoveTimer(onesectimer);
-        savenvr();
         saveconfig(NULL);
 
         endblit();
         SDL_DestroyMutex(ghMutex);
 
         device_close_all();
-        midi_close();
 
         pclog("Emulation stopped.\n");
 
-        viewer_close_all();
         wx_close_status(ghwnd);
 
         return TRUE;
@@ -722,19 +701,16 @@ int wx_handle_command(void *hwnd, int wParam, int checked) {
         } else if (ID_IS("IDM_FILE_RESET")) {
                 pause = 1;
                 SDL_Delay(100);
-                savenvr();
                 resetpc();
                 pause = 0;
         } else if (ID_IS("IDM_FILE_HRESET")) {
                 pause = 1;
                 SDL_Delay(100);
-                savenvr();
                 resetpchard();
                 pause = 0;
         } else if (ID_IS("IDM_FILE_RESET_CAD")) {
                 pause = 1;
                 SDL_Delay(100);
-                savenvr();
                 resetpc_cad();
                 pause = 0;
         } else if (ID_IS("IDM_FILE_EXIT")) {
@@ -772,15 +748,7 @@ int wx_handle_command(void *hwnd, int wParam, int checked) {
                 }
         } else if (ID_IS("IDM_EJECT_ZIP")) {
                 zip_eject();
-        } else if (ID_IS("IDM_CASSETTE_LOAD")) {
-                if (!getfile(hwnd, "Tape image (*.pzxi;*.pzx)|*.pzxi;*.pzx|All files (*.*)|*.*", cassettefn)) {
-                        cassette_eject();
-                        cassette_load(openfilestring);
-                        saveconfig(NULL);
-                }
-        } else if (ID_IS("IDM_CASSETTE_EJECT")) {
-                cassette_eject();
-                saveconfig(NULL);
+        
         } else if (ID_IS("IDM_MACHINE_TOGGLE")) {
                 if (emulation_state != EMULATION_STOPPED)
                         wx_togglewindow(hwnd);
@@ -954,8 +922,6 @@ int wx_handle_command(void *hwnd, int wParam, int checked) {
                 cdrom_drive = new_cdrom_drive;
                 saveconfig(NULL);
                 update_cdrom_menu(hmenu);
-        } else if (wParam >= IDM_VIEWER && wParam < IDM_VIEWER_MAX) {
-                viewer_open(hwnd, wParam - IDM_VIEWER);
         }
         return 0;
 }
