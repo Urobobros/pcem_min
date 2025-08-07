@@ -71,9 +71,6 @@ extern int cpu_cache_int_enabled, cpu_cache_ext_enabled;
 
 extern uint64_t tsc;
 
-void cyrix_write(uint16_t addr, uint8_t val, void *priv);
-uint8_t cyrix_read(uint16_t addr, void *priv);
-
 extern int is486;
 extern int CPUID;
 

@@ -208,11 +208,6 @@ void cpu_set() {
         }
         pclog("PCI burst=%i nonburst=%i\n", pci_burst_time, pci_nonburst_time);
 
-        if (cpu_iscyrix)
-                io_sethandler(0x0022, 0x0002, cyrix_read, NULL, NULL, cyrix_write, NULL, NULL, NULL);
-        else
-                io_removehandler(0x0022, 0x0002, cyrix_read, NULL, NULL, cyrix_write, NULL, NULL, NULL);
-
         pclog("hasfpu - %i\n", hasfpu);
         pclog("is486 - %i  %i\n", is486, cpu_s->cpu_type);
 
@@ -348,95 +343,6 @@ static int cyrix_addr;
 
 #define CCR3_SMI_LOCK (1 << 0)
 #define CCR3_NMI_EN (1 << 1)
-
-void cyrix_write(uint16_t addr, uint8_t val, void *priv) {
-        if (!(addr & 1))
-                cyrix_addr = val;
-        else
-                switch (cyrix_addr) {
-                case 0xc0: /*CCR0*/
-                        ccr0 = val;
-                        break;
-                case 0xc1: /*CCR1*/
-                        if ((ccr3 & CCR3_SMI_LOCK) && !(cpu_cur_status & CPU_STATUS_SMM))
-                                val = (val & ~(CCR1_USE_SMI | CCR1_SMAC | CCR1_SM3)) |
-                                      (ccr1 & (CCR1_USE_SMI | CCR1_SMAC | CCR1_SM3));
-                        ccr1 = val;
-                        break;
-                case 0xc2: /*CCR2*/
-                        ccr2 = val;
-                        break;
-                case 0xc3: /*CCR3*/
-                        if ((ccr3 & CCR3_SMI_LOCK) && !(cpu_cur_status & CPU_STATUS_SMM))
-                                val = (val & ~(CCR3_NMI_EN)) | (ccr3 & CCR3_NMI_EN) | CCR3_SMI_LOCK;
-                        ccr3 = val;
-                        break;
-                case 0xcd:
-                        if (!(ccr3 & CCR3_SMI_LOCK) || (cpu_cur_status & CPU_STATUS_SMM)) {
-                                cyrix.arr[3].base = (cyrix.arr[3].base & ~0xff000000) | (val << 24);
-                                cyrix.smhr &= ~SMHR_VALID;
-                        }
-                        break;
-                case 0xce:
-                        if (!(ccr3 & CCR3_SMI_LOCK) || (cpu_cur_status & CPU_STATUS_SMM)) {
-                                cyrix.arr[3].base = (cyrix.arr[3].base & ~0x00ff0000) | (val << 16);
-                                cyrix.smhr &= ~SMHR_VALID;
-                        }
-                        break;
-                case 0xcf:
-                        if (!(ccr3 & CCR3_SMI_LOCK) || (cpu_cur_status & CPU_STATUS_SMM)) {
-                                cyrix.arr[3].base = (cyrix.arr[3].base & ~0x0000f000) | ((val & 0xf0) << 8);
-                                if ((val & 0xf) == 0xf)
-                                        cyrix.arr[3].size = 1ull << 32; /*4 GB*/
-                                else if (val & 0xf)
-                                        cyrix.arr[3].size = 2048 << (val & 0xf);
-                                else
-                                        cyrix.arr[3].size = 0; /*Disabled*/
-                                cyrix.smhr &= ~SMHR_VALID;
-                        }
-                        break;
-
-                case 0xe8: /*CCR4*/
-                        if ((ccr3 & 0xf0) == 0x10) {
-                                ccr4 = val;
-                        }
-                        break;
-                case 0xe9: /*CCR5*/
-                        if ((ccr3 & 0xf0) == 0x10)
-                                ccr5 = val;
-                        break;
-                case 0xea: /*CCR6*/
-                        if ((ccr3 & 0xf0) == 0x10)
-                                ccr6 = val;
-                        break;
-                }
-}
-
-uint8_t cyrix_read(uint16_t addr, void *priv) {
-        if (addr & 1) {
-                switch (cyrix_addr) {
-                case 0xc0:
-                        return ccr0;
-                case 0xc1:
-                        return ccr1;
-                case 0xc2:
-                        return ccr2;
-                case 0xc3:
-                        return ccr3;
-                case 0xe8:
-                        return ((ccr3 & 0xf0) == 0x10) ? ccr4 : 0xff;
-                case 0xe9:
-                        return ((ccr3 & 0xf0) == 0x10) ? ccr5 : 0xff;
-                case 0xea:
-                        return ((ccr3 & 0xf0) == 0x10) ? ccr6 : 0xff;
-                case 0xfe:
-                        return models[model]->cpu[cpu_manufacturer].cpus[cpu].cyrix_id & 0xff;
-                case 0xff:
-                        return models[model]->cpu[cpu_manufacturer].cpus[cpu].cyrix_id >> 8;
-                }
-        }
-        return 0xff;
-}
 
 void x86_setopcodes(OpFn *opcodes, OpFn *opcodes_0f, OpFn *dynarec_opcodes, OpFn *dynarec_opcodes_0f) {
         x86_opcodes = opcodes;
