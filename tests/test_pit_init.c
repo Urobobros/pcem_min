@@ -9,7 +9,7 @@
 
 extern uint8_t pit_read(uint16_t, void *);
 extern void pit_write(uint16_t, uint8_t, void *);
-extern PIT pit, pit2;
+extern PIT pit;
 extern uint8_t (*port_inb[0x10000][2])(uint16_t, void*);
 extern void (*port_outb[0x10000][2])(uint16_t, uint8_t, void*);
 extern void *port_priv[0x10000][2];
@@ -56,14 +56,6 @@ int main() {
         assert(port_outb[p][0] == pit_write);
         assert(port_priv[p][0] == &pit);
     }
-
-    pit_ps2_init();
-    assert(port_inb[0x44][0] == pit_read);
-    assert(port_outb[0x44][0] == pit_write);
-    assert(port_priv[0x44][0] == &pit2);
-    assert(port_inb[0x47][0] == pit_read);
-    assert(port_outb[0x47][0] == pit_write);
-    assert(port_priv[0x47][0] == &pit2);
 
     printf("pit_init tests passed\n");
     return 0;

@@ -104,7 +104,7 @@ typedef struct PIT {
         void (*set_out_funcs[3])(int new_out, int old_out);
 } PIT;
 
-extern PIT pit, pit2;
+extern PIT pit;
 void setpitclock(float clock);
 
 float pit_timer0_freq();
