@@ -54,6 +54,7 @@ set(PCEM_SRC ${PCEM_SRC}
         pzx.c
         rtc.c
         timer.c
+        instrumentation.c
         )
 
 set(PCEM_LIBRARIES ${DISPLAY_ENGINE_LIBRARIES} ${SDL2_LIBRARIES} ${OPENAL_LIBRARY} ${OPENGL_LIBRARIES} ${PCEM_ADDITIONAL_LIBS})

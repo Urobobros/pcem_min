@@ -426,6 +426,7 @@ void sdl_onconfigloaded() {
 
 extern void wx_loadconfig();
 extern void wx_saveconfig();
+#include "func_trace.h"
 
 int pc_main(int argc, char **argv) {
         // Expose some functions to libpcem-plugin-api without moving them over to
@@ -435,6 +436,7 @@ int pc_main(int argc, char **argv) {
         _sound_speed_changed = sound_speed_changed;
 
         paths_init();
+        instrumentation_init();
 
         init_plugin_engine();
         model_init_builtin();
